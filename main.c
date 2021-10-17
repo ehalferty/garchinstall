@@ -202,7 +202,7 @@ void DrawCursor() {
     }
 }
 void DrawText(uint32_t x, uint32_t y, char *str) {
-    unsigned int xCharPos, yCharPos, glyphIdx, charIdx, len, j, w, h, x2, y2;
+    unsigned int xCharPos, yCharPos, glyphIdx, charIdx, len, j, w, h, x2, y2, c;
     len = strlen(str);
     for (charIdx = 0; charIdx < len; charIdx++) {
         if (str[charIdx] >= 32 && str[charIdx] < 128) { // Check if printable
