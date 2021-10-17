@@ -21,6 +21,7 @@
         "ratio": "c",
         "tuple": "c",
         "type_traits": "c",
-        "vector": "c"
+        "vector": "c",
+        "termios.h": "c"
     }
 }
