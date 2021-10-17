@@ -240,7 +240,6 @@ void DrawArchLogo(uint32_t x, uint32_t y) {
             offset = (((y + j) * 65) + x + i) * (vinfo->bits_per_pixel / 8);
             DrawPixel32U(x + i, y + j, (uint32_t *)(&(arch_logo[offset])));
         }
-
     }
 }
 void Cleanup() {
@@ -273,6 +272,7 @@ int main(int argc, char *argv[]) {
         DrawPixel(i, i, 0xFF, 0xFF, 0xFF);
     }
     DrawText(0, 0, "Hello, there!");
+    DrawArchLogo(200, 200);
     SaveUnderCursor();
     kbfd = OpenKeyboard();
     msfd = OpenMouse();
