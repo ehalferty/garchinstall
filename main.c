@@ -57,7 +57,7 @@ void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b) {
 }
 void DrawPixel32U(uint32_t x, uint32_t y, uint32_t c) {
     uint32_t fb_offset = GetFBOffset(x, y);
-    if (x2 >= vinfo->xres || y2 >= vinfo->yres || (fb_offset + 3) > mmapsize) { return; }
+    if (x >= vinfo->xres || y >= vinfo->yres || (fb_offset + 3) > mmapsize) { return; }
     *((uint32_t *)((uint64_t)fbp + fb_offset)) = c;
 }
 uint32_t GetPixel(uint32_t x, uint32_t y) {
@@ -76,9 +76,7 @@ void OpenFramebuffer() {
     mouseY = vinfo->yres / 2;
     screensize = vinfo->xres * vinfo->yres * (vinfo->bits_per_pixel / 8);
     for (i = 8; i >= 0; i--) {
-        if (i == 0) {
-            perror("Error: failed to map framebuffer device to memory"); exit(4);
-        }
+        if (i == 0) { perror("Error: failed to map framebuffer device to memory"); exit(4); }
         mmapsize = screensize * i;
         fbp = (char *)mmap(0, mmapsize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
         if (fbp != -1) { break; }
@@ -100,9 +98,7 @@ int OpenKeyboard() {
                 kbPath = malloc(256);
                 sprintf(kbLink, "/dev/input/by-path/%s", dir->d_name);
                 res = realpath(kbLink, kbPath);
-                if (res == 0) {
-                    perror("ERror getting realpath of kbd device symlink");exit(10);
-                }
+                if (res == 0) { perror("ERror getting realpath of kbd device symlink"); exit(10); }
                 // printf("Opened kbd: %s\n", kbPath);
                 res = open(kbPath, O_RDONLY);
                 if (res == -1) {
@@ -126,30 +122,21 @@ int OpenMouse() {
 }
 void SaveUnderCursor() {
     unsigned int x, y, location;
-    for (y = 0; y < CURSOR_SIZE; y++) {
-        for (x = 0; x < CURSOR_SIZE; x++) {
-            if (x + mouseX < vinfo->xres && y + mouseY < vinfo->yres) {
-                // location = (x + mouseX + vinfo->xoffset) * (vinfo->bits_per_pixel/8) +
-                //            (y + mouseY + vinfo->yoffset) * finfo->line_length;
-                underCursor[y][x] = GetPixel(x + mouseX, y + mouseY);//*((uint32_t *)(fb->screen_base + location));
-            }
+    for (y = 0; y < CURSOR_SIZE; y++) { for (x = 0; x < CURSOR_SIZE; x++) {
+        if (x + mouseX < vinfo->xres && y + mouseY < vinfo->yres) {
+            underCursor[y][x] = GetPixel(x + mouseX, y + mouseY);
         }
-    }
+    } }
     underCursorX = mouseX;
     underCursorY = mouseY;
 }
 void RestoreUnderCursor() {
     unsigned int x, y, location;
-    for (y = 0; y < CURSOR_SIZE; y++) {
-        for (x = 0; x < CURSOR_SIZE; x++) {
-            if (x + underCursorX < vinfo->xres && y + underCursorY < vinfo->yres) {
-                DrawPixel32U(x + underCursorX, y + underCursorY, underCursor[y][x]);
-                // location = (x + underCursorX + vinfo->xoffset) * (vinfo->bits_per_pixel/8) +
-                //            (y + underCursorY + vinfo->yoffset) * finfo->line_length;
-                // *((uint32_t *)(fb->screen_base + location)) = underCursor[y][x];
-            }
+    for (y = 0; y < CURSOR_SIZE; y++) { for (x = 0; x < CURSOR_SIZE; x++) {
+        if (x + underCursorX < vinfo->xres && y + underCursorY < vinfo->yres) {
+            DrawPixel32U(x + underCursorX, y + underCursorY, underCursor[y][x]);
         }
-    }
+    } }
 }
 void DrawCursor() {
     unsigned int x, y, location;
