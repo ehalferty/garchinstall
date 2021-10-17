@@ -202,7 +202,7 @@ void DrawCursor() {
     }
 }
 void DrawText(uint32_t x, uint32_t y, char *str) {
-    unsigned int xCharPos, yCharPos, charIdx, len, j, w, h, x2, y2
+    unsigned int xCharPos, yCharPos, glyphIdx, charIdx, len, j, w, h, x2, y2;
     len = strlen(str);
     for (charIdx = 0; charIdx < len; charIdx++) {
         if (str[charIdx] >= 32 && str[charIdx] < 128) { // Check if printable
@@ -213,8 +213,6 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
             for (j = 0; j < 16; j++) { for (i = 0; i < 16; i++) {
                 x2 = x + i + (xCharPos * FONT_WIDTH_INCLUDING_PADDING);
                 y2 = y + j + (yCharPos * FONT_HEIGHT_INCLUDING_PADDING);
-                styleFlags = tempWindowRef->data->params.styleFlags;
-                drawFlags = tempWindowRef->drawFlags;
                 glyphRow = font_glyph_bitmaps[glyphIdx * 32 + (j * 2) + 1];
                 glyphRow |= (font_glyph_bitmaps[glyphIdx * 32 + (j * 2)] & 0xFF) << 8;
                 c = ((glyphRow >> (16 - i)) & 1) ? foregroundColor : backgroundColor;
