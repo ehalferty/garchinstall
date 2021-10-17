@@ -81209,7 +81209,7 @@ unsigned const char font_glyph_bitmaps[] = \
 "\x00\x00"
 "\x00\x00";
 
-unsigned const int kmm_standard_font_glyph_encodings[] = {
+unsigned const int font_glyph_encodings[] = {
     0,
     32,
     33,
