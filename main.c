@@ -234,14 +234,17 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
         }
     }
 }
-void DrawArchLogo(uint32_t x, uint32_t y) {
+void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
     uint32_t i, j, offset;
-    for (i = 0; i < 65; i++) {
-        for (j = 0; j < 65; j++) {
-            offset = ((j * 65) + i) * (vinfo->bits_per_pixel / 8);
-            DrawPixel(x + i, y + j, arch_logo[offset + 2], arch_logo[offset + 1], arch_logo[offset]);
+    for (i = 0; i < w; i++) {
+        for (j = 0; j < h; j++) {
+            offset = ((j * w) + i) * (vinfo->bits_per_pixel / 8);
+            DrawPixel(x + i, y + j, bmp[offset + 2], bmp[offset + 1], bmp[offset]);
         }
     }
+}
+void DrawArchLogo(uint32_t x, uint32_t y) {
+    DrawBitmap(x, y, ARCH_LOGO_WIDTH, ARCH_LOGO_HEIGHT, arch_logo);
 }
 void Cleanup() {
     munmap(fbp, screensize);

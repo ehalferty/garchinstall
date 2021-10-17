@@ -2,6 +2,8 @@ void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b);
 void DrawPixel32U(uint32_t x2, uint32_t y2, uint32_t c);
 void DrawText(uint32_t x, uint32_t y, char *str);
 uint32_t GetPixel(uint32_t x2, uint32_t y2);
+void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp);
+void DrawArchLogo(uint32_t x, uint32_t y);
 void OpenFramebuffer();
 int OpenKeyboard();
 int OpenMouse();
