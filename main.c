@@ -183,9 +183,7 @@ int main(int argc, char *argv[]) {
     newt.c_lflag = 0;//&= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
     printf("\f");
-    for (xx = 0; xx < vinfo->xres; xx++) { for (yy = 0; yy < vinfo->yres; yy++) {
-        DrawPixel(xx, yy, 0x00, 0xFF, 0xFF);
-    } }
+    for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
     for (i = 0; i < 600; i++) { DrawPixel(i, i, 0xFF, 0xFF, 0xFF); }
     DrawText(0, 0, "Hello, there!");
     DrawArchLogo(200, 200);
@@ -200,37 +198,32 @@ int main(int argc, char *argv[]) {
         ready = poll(pfds, 2, 30);
         if (ready == -1) { perror("poll() returned -1");exit(9); }
         if (pfds[0].revents != 0) {
-            // There's a kbd event
             if (pfds[0].revents & POLLIN) {
                 siz = read(pfds[0].fd, buff, 65536);
-                if (siz == -1) {
-                    printf("errno=%d\n", errno);
-                    perror("Problem reading from kbfd"); exit(8);
-                } else {
-                    evt = (struct input_event *)buff;
-                    for (i = 0, evt = (struct input_event *)buff; i < siz; i += sizeof(struct input_event), evt++) {
-                        if (evt->type == EV_KEY) {
-                            if (evt->code >= BTN_MOUSE && evt->code < BTN_JOYSTICK) {} // mouse click: ignore
-                            else { // Keyboard key
-                                if (evt->value == 1) {
-                                    if (evt->code == 42 || evt->code == 54) { shiftDown = 1; }
-                                    if (evt->code == 29 || evt->code == 97) { ctrlDown = 1; }
-                                } else if (evt->value == 0) {
-                                    temp = ctrlDown || (get_nsecs() < (ctrlUpTimeNanos + MOD_LINGER_NANOS));
-                                    if (evt->code == 16 && temp) { // ctrl-q quits
-                                        while (getchar() != EOF) {} // TODO: Do this for all exit conditions
-                                        exit(20);
-                                    }
-                                    if (evt->code == 42 || evt->code == 54) {
-                                        shiftDown = 0;
-                                        shiftUpTimeNanos = get_nsecs();
-                                    }
-                                    if (evt->code == 29 || evt->code == 97) {
-                                        ctrlDown = 0;
-                                        ctrlUpTimeNanos = get_nsecs();
-                                    }
-                                } else if (evt->value == 2) {} // Key repeat: ignore for now
-                            }
+                if (siz == -1) { perror("Problem reading from kbfd"); exit(8); }
+                evt = (struct input_event *)buff;
+                for (i = 0, evt = (struct input_event *)buff; i < siz; i += sizeof(struct input_event), evt++) {
+                    if (evt->type == EV_KEY) {
+                        if (evt->code >= BTN_MOUSE && evt->code < BTN_JOYSTICK) {} // mouse click: ignore
+                        else { // Keyboard key
+                            if (evt->value == 1) {
+                                if (evt->code == 42 || evt->code == 54) { shiftDown = 1; }
+                                if (evt->code == 29 || evt->code == 97) { ctrlDown = 1; }
+                            } else if (evt->value == 0) {
+                                temp = ctrlDown || (get_nsecs() < (ctrlUpTimeNanos + MOD_LINGER_NANOS));
+                                if (evt->code == 16 && temp) { // ctrl-q quits
+                                    while (getchar() != EOF) {} // TODO: Do this for all exit conditions
+                                    exit(20);
+                                }
+                                if (evt->code == 42 || evt->code == 54) {
+                                    shiftDown = 0;
+                                    shiftUpTimeNanos = get_nsecs();
+                                }
+                                if (evt->code == 29 || evt->code == 97) {
+                                    ctrlDown = 0;
+                                    ctrlUpTimeNanos = get_nsecs();
+                                }
+                            } else if (evt->value == 2) {} // Key repeat: ignore for now
                         }
                     }
                 }
@@ -240,33 +233,30 @@ int main(int argc, char *argv[]) {
             // There's a mouse event
             if (pfds[1].revents & POLLIN) {
                 siz = read(pfds[1].fd, buff, 65536);
-                if (siz == -1) {
-                    perror("Problem reading from msfd"); exit(8);
-                } else {
-                    leftBtn = buff[0] & 1; rightBtn = (buff[0] >> 1) & 1; midBtn = (buff[0] >> 1) & 1;
-                    xdiff = (int8_t)buff[1]; ydiff = (int8_t)buff[2];
-                    if (xdiff != 0 || ydiff != 0) {
-                        if (((int)mouseX + xdiff) < 0) { mouseX = 0; }
-                        else if ((mouseX + xdiff) > vinfo->xres) { mouseX = vinfo->xres; }
-                        else { mouseX += xdiff; }
-                        if (((int)mouseY - ydiff) < 0) { mouseY = 0; }
-                        else if ((mouseY - ydiff) > vinfo->yres) { mouseY = vinfo->yres; }
-                        else { mouseY -= ydiff; }
-                        RestoreUnderCursor();
-                        SaveUnderCursor();
-                        DrawCursor();
-                    }
-                    if (old_leftBtn != leftBtn) {
-                        if (leftBtn) { // Mouse down
-                            mouseClickedAtX = mouseX;
-                            mouseClickedAtY = mouseY;
-                        } else { // Mouse up
-                        }
-                    }
-                    old_leftBtn = leftBtn;
-                    old_rightBtn = rightBtn;
-                    old_midBtn = midBtn;
+                if (siz == -1) { perror("Problem reading from msfd"); exit(8); }
+                leftBtn = buff[0] & 1; rightBtn = (buff[0] >> 1) & 1; midBtn = (buff[0] >> 1) & 1;
+                xdiff = (int8_t)buff[1]; ydiff = (int8_t)buff[2];
+                if (xdiff != 0 || ydiff != 0) {
+                    if (((int)mouseX + xdiff) < 0) { mouseX = 0; }
+                    else if ((mouseX + xdiff) > vinfo->xres) { mouseX = vinfo->xres; }
+                    else { mouseX += xdiff; }
+                    if (((int)mouseY - ydiff) < 0) { mouseY = 0; }
+                    else if ((mouseY - ydiff) > vinfo->yres) { mouseY = vinfo->yres; }
+                    else { mouseY -= ydiff; }
+                    RestoreUnderCursor();
+                    SaveUnderCursor();
+                    DrawCursor();
                 }
+                if (old_leftBtn != leftBtn) {
+                    if (leftBtn) { // Mouse down
+                        mouseClickedAtX = mouseX;
+                        mouseClickedAtY = mouseY;
+                    } else { // Mouse up
+                    }
+                }
+                old_leftBtn = leftBtn;
+                old_rightBtn = rightBtn;
+                old_midBtn = midBtn;
             }
         }
         usleep(3000);
