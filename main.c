@@ -24,7 +24,7 @@ uint32_t PixelColor(uint8_t r, uint8_t g, uint8_t b) {
 uint32_t GetFBOffset(uint32_t x, uint32_t y) {
     return (x + vinfo->xoffset) * (vinfo->bits_per_pixel / 8) + (y + vinfo->yoffset) * finfo->line_length;
 }
-void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b) {
+void DrawPixel(uint32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b) {
     uint32_t fb_offset = GetFBOffset(x, y);
     if (x >= vinfo->xres || y >= vinfo->yres || (fb_offset + 3) > mmapsize) { return; }
     *((uint32_t *)((uint64_t)fbp + fb_offset)) = PixelColor(r, g, b);
@@ -38,6 +38,7 @@ uint32_t GetPixel(uint32_t x, uint32_t y) {
     return *((uint32_t *)((uint64_t)fbp + GetFBOffset(x, y)));
 }
 void OpenFramebuffer() {
+    int i;
     st = malloc(sizeof(struct stat));
     vinfo = malloc(sizeof(struct fb_var_screeninfo));
     finfo = malloc(sizeof(struct fb_fix_screeninfo));
@@ -129,7 +130,7 @@ void SetFGColor(uint8_t r, uint8_t g, uint8_t b) {
     foregroundColor = ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
 }
 void DrawText(uint32_t x, uint32_t y, char *str) {
-    unsigned long xCharPos = 0, yCharPos = 0, glyphIdx, glyphRow, charIdx, len, j, x2, y2, c;
+    unsigned long xCharPos = 0, yCharPos = 0, glyphIdx, glyphRow, charIdx, len, j, x2, y2, c, i;
     len = strlen(str);
     for (charIdx = 0; charIdx < len; charIdx++) {
         if (str[charIdx] >= 32 && str[charIdx] < 128) { // Check if printable
