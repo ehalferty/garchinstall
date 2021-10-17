@@ -1,37 +1,12 @@
-#include <dirent.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <poll.h>
-#include <signal.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <termios.h>
-#include <time.h>
-#include <unistd.h>
-#include <linux/fb.h>
-#include <linux/input.h>
-#include <sys/ioctl.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
 #include "main.h"
-#include "keycode_names.h"
-#include "cursor.h"
-#include "font.h"
-#include "arch_logo.h"
-
-#define MOD_LINGER_NANOS 100000000 // How many nanoseconds modifier keys remain down after the user lifts them
-#define CURSOR_SIZE 24
 
 int fbfd = 0, x = 0, y = 0, i = 0, j = 0, kbfd = 0, msfd = 0, stdoutfd;
 struct fb_var_screeninfo *vinfo;
 struct fb_fix_screeninfo *finfo;
 long int screensize = 0, rowsize = 0, temp = 0, top = 0, left = 0, w = 0, h = 0, s = 0, mmapsize = 0;
-char *fbp = 0;
+char *fbp = 0, *keyboardDeviceName = 0;
 struct stat *st;
 const int PADDING = 4096;
-char *keyboardDeviceName = 0;
 uint8_t old_leftBtn, old_rightBtn, old_midBtn, shiftDown, ctrlDown;
 uint32_t mouseX, mouseY, mouseClickedAtX, mouseClickedAtY, underCursorX, underCursorY;
 uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
@@ -43,7 +18,6 @@ unsigned long get_nsecs() {
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return ts.tv_sec * 1000000000UL + ts.tv_nsec;
 };
-
 uint32_t PixelColor(uint8_t r, uint8_t g, uint8_t b) {
     return (r<<vinfo->red.offset) | (g<<vinfo->green.offset) | (b<<vinfo->blue.offset);
 }
@@ -87,19 +61,15 @@ int OpenKeyboard() {
     struct dirent *dir;
     int res;
     char *kbLink = 0, *kbPath = 0;
-    // First, get a directory listing for /dev/input/by-path
     d = opendir("/dev/input/by-path");
     if (d) {
         while ((dir = readdir(d)) != NULL) {
-            // Search for results containing "event-kbd"
-            if (strstr(dir->d_name, "event-kbd") != NULL) {
-                // Open the first one (TODO: Eventually open all of them!)
+            if (strstr(dir->d_name, "event-kbd") != NULL) { // TODO: What if more than one keyboard?
                 kbLink = malloc(256);
                 kbPath = malloc(256);
                 sprintf(kbLink, "/dev/input/by-path/%s", dir->d_name);
                 res = realpath(kbLink, kbPath);
                 if (res == 0) { perror("ERror getting realpath of kbd device symlink"); exit(10); }
-                // printf("Opened kbd: %s\n", kbPath);
                 res = open(kbPath, O_RDONLY);
                 if (res == -1) {
                     sprintf(kbPath, "Error: Can't open %s", kbPath);
@@ -147,13 +117,7 @@ void DrawCursor() {
                 unsigned char g = cursor[((y * 24 + x) * 4) + 1];
                 unsigned char b = cursor[((y * 24 + x) * 4) + 2];
                 unsigned char a = cursor[((y * 24 + x) * 4) + 3];
-                if (a > 128) {
-                    DrawPixel(mouseX + x, mouseY + y, r, g, b);
-                    // location = (mouseX + x + vinfo->xoffset) * (vinfo->bits_per_pixel/8) +
-                    //            (mouseY + y + vinfo->yoffset) * finfo->line_length;
-                    
-                    // *((uint32_t *)(fb->screen_base + location)) = kmm_pixelColor(r, g, b, vinfo);
-                }
+                if (a > 128) { DrawPixel(mouseX + x, mouseY + y, r, g, b); }
             }
         }
     }
@@ -190,12 +154,10 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
 }
 void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
     uint32_t i, j, offset;
-    for (i = 0; i < w; i++) {
-        for (j = 0; j < h; j++) {
-            offset = ((j * w) + i) * (vinfo->bits_per_pixel / 8);
-            DrawPixel(x + i, y + j, bmp[offset + 2], bmp[offset + 1], bmp[offset]);
-        }
-    }
+    for (i = 0; i < w; i++) { for (j = 0; j < h; j++) {
+        offset = ((j * w) + i) * (vinfo->bits_per_pixel / 8);
+        DrawPixel(x + i, y + j, bmp[offset + 2], bmp[offset + 1], bmp[offset]);
+    } }
 }
 void DrawArchLogo(uint32_t x, uint32_t y) {
     DrawBitmap(x, y, ARCH_LOGO_WIDTH, ARCH_LOGO_HEIGHT, arch_logo);
@@ -209,7 +171,7 @@ int main(int argc, char *argv[]) {
     struct pollfd *pfds;
     ssize_t siz;
     char *buff;
-    int ready, xx, yy, ppid, pid, i, qKeycode;
+    int ready, x, y, ppid, pid, i, qKeycode;
     struct input_event *evt;
     uint8_t xdir, ydir, leftBtn, rightBtn, midBtn, temp;
     int8_t xdiff, ydiff;
@@ -221,14 +183,10 @@ int main(int argc, char *argv[]) {
     newt.c_lflag = 0;//&= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
     printf("\f");
-    for (xx = 0; xx < vinfo->xres; xx++) { //, 
-        for (yy = 0; yy < vinfo->yres; yy++) {
-            DrawPixel(xx, yy, 0x00, 0xFF, 0xFF);
-        }
-    }
-    for (i = 0; i < 600; i++) {
-        DrawPixel(i, i, 0xFF, 0xFF, 0xFF);
-    }
+    for (xx = 0; xx < vinfo->xres; xx++) { for (yy = 0; yy < vinfo->yres; yy++) {
+        DrawPixel(xx, yy, 0x00, 0xFF, 0xFF);
+    } }
+    for (i = 0; i < 600; i++) { DrawPixel(i, i, 0xFF, 0xFF, 0xFF); }
     DrawText(0, 0, "Hello, there!");
     DrawArchLogo(200, 200);
     SaveUnderCursor();
@@ -238,43 +196,29 @@ int main(int argc, char *argv[]) {
     pfds[0].events = POLLIN;
     pfds[1].fd = msfd;
     pfds[1].events = POLLIN;
-    // printf("kbfd=%d, msfd=%d\n", kbfd, msfd);
     while (1) {
         ready = poll(pfds, 2, 30);
-        if (ready == -1) {
-            perror("poll");exit(9);
-        }
+        if (ready == -1) { perror("poll() returned -1");exit(9); }
         if (pfds[0].revents != 0) {
             // There's a kbd event
             if (pfds[0].revents & POLLIN) {
-                // printf("Reading from fd: %d buff=%08llx sizeof(buff)=%d sizeof(struct input_event)=%d\n",
-                    // pfds[0].fd, (unsigned long)buff, 65536, sizeof(struct input_event));
                 siz = read(pfds[0].fd, buff, 65536);
                 if (siz == -1) {
                     printf("errno=%d\n", errno);
                     perror("Problem reading from kbfd"); exit(8);
                 } else {
-                    // printf("Read %d bytes from kbfd\n", siz);
                     evt = (struct input_event *)buff;
                     for (i = 0, evt = (struct input_event *)buff; i < siz; i += sizeof(struct input_event), evt++) {
                         if (evt->type == EV_KEY) {
-                            if (evt->code >= BTN_MOUSE && evt->code < BTN_JOYSTICK) {
-                                // Mouse click. Ignore?
-                            } else {
-                                // Keyboard key
+                            if (evt->code >= BTN_MOUSE && evt->code < BTN_JOYSTICK) {} // mouse click: ignore
+                            else { // Keyboard key
                                 if (evt->value == 1) {
                                     if (evt->code == 42 || evt->code == 54) { shiftDown = 1; }
                                     if (evt->code == 29 || evt->code == 97) { ctrlDown = 1; }
-                                    // Keydown
-                                    // printf("keydown\n");
                                 } else if (evt->value == 0) {
-                                    // Keyup
-                                    // printf("keyup\n");
                                     temp = ctrlDown || (get_nsecs() < (ctrlUpTimeNanos + MOD_LINGER_NANOS));
-                                    // ctrl-q quits
-                                    if (evt->code == 16 && temp) {
-                                        // TODO: Use this for all exit conditions
-                                        while (getchar() != EOF) {}
+                                    if (evt->code == 16 && temp) { // ctrl-q quits
+                                        while (getchar() != EOF) {} // TODO: Do this for all exit conditions
                                         exit(20);
                                     }
                                     if (evt->code == 42 || evt->code == 54) {
@@ -285,12 +229,9 @@ int main(int argc, char *argv[]) {
                                         ctrlDown = 0;
                                         ctrlUpTimeNanos = get_nsecs();
                                     }
-                                } else if (evt->value == 2) {
-                                    // Key repeat
-                                }
+                                } else if (evt->value == 2) {} // Key repeat: ignore for now
                             }
                         }
-                        // printf("Event: type=%d code=%d value=%d\n", evt->type, evt->code, evt->value);
                     }
                 }
             }
@@ -302,18 +243,8 @@ int main(int argc, char *argv[]) {
                 if (siz == -1) {
                     perror("Problem reading from msfd"); exit(8);
                 } else {
-                    // xdir = (buff[0] >> 4) & 1;
-                    // ydir = (buff[0] >> 5) & 1;
-                    leftBtn = buff[0] & 1;
-                    rightBtn = (buff[0] >> 1) & 1;
-                    midBtn = (buff[0] >> 1) & 1;
-                    xdiff = (int8_t)buff[1];
-                    ydiff = (int8_t)buff[2];
-                    // xdir = (buff[1] >> 6) & 1;
-                    // ydir = (buff[1] >> 6) & 1;
-                    // xdiff = buff[1] & 0x3F;
-                    // ydiff = buff[2] & 0x3F;
-                    // printf("(%d, %d)\n", xdiff, ydiff);
+                    leftBtn = buff[0] & 1; rightBtn = (buff[0] >> 1) & 1; midBtn = (buff[0] >> 1) & 1;
+                    xdiff = (int8_t)buff[1]; ydiff = (int8_t)buff[2];
                     if (xdiff != 0 || ydiff != 0) {
                         if (((int)mouseX + xdiff) < 0) { mouseX = 0; }
                         else if ((mouseX + xdiff) > vinfo->xres) { mouseX = vinfo->xres; }
@@ -326,12 +257,10 @@ int main(int argc, char *argv[]) {
                         DrawCursor();
                     }
                     if (old_leftBtn != leftBtn) {
-                        if (leftBtn) {
-                            // Left button pressed
+                        if (leftBtn) { // Mouse down
                             mouseClickedAtX = mouseX;
                             mouseClickedAtY = mouseY;
-                        } else {
-                            // Left button released
+                        } else { // Mouse up
                         }
                     }
                     old_leftBtn = leftBtn;

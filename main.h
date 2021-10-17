@@ -1,3 +1,28 @@
+#include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <poll.h>
+#include <signal.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <termios.h>
+#include <time.h>
+#include <unistd.h>
+#include <linux/fb.h>
+#include <linux/input.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include "keycode_names.h"
+#include "cursor.h"
+#include "font.h"
+#include "arch_logo.h"
+
+#define MOD_LINGER_NANOS 100000000 // How many nanoseconds modifier keys remain down after the user lifts them
+#define CURSOR_SIZE 24
+
 uint32_t GetFBOffset(uint32_t x, uint32_t y);
 void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b);
 void DrawPixel32U(uint32_t x2, uint32_t y2, uint32_t c);
