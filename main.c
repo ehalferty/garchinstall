@@ -34,6 +34,7 @@ uint8_t old_leftBtn, old_rightBtn, old_midBtn, shiftDown, ctrlDown;
 uint32_t mouseX, mouseY, mouseClickedAtX, mouseClickedAtY, underCursorX, underCursorY;
 uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
 uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
+uint32_t foregroundColor = 0, backgroundColor = 0xFFFFFF;
 // struct timespec newtimespec, oldtimespec
 
 unsigned long get_nsecs() {
@@ -201,8 +202,14 @@ void DrawCursor() {
         }
     }
 }
+void SetBGColor(uint8_t r, uint8_t g, uint8_t b) {
+    backgroundColor = ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
+}
+void SetFGColor(uint8_t r, uint8_t g, uint8_t b) {
+    foregroundColor = ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
+}
 void DrawText(uint32_t x, uint32_t y, char *str) {
-    unsigned int xCharPos, yCharPos, glyphIdx, charIdx, len, j, w, h, x2, y2, c;
+    unsigned long xCharPos, yCharPos, glyphIdx, glyphRow, charIdx, len, j, w, h, x2, y2, c;
     len = strlen(str);
     for (charIdx = 0; charIdx < len; charIdx++) {
         if (str[charIdx] >= 32 && str[charIdx] < 128) { // Check if printable
