@@ -12,7 +12,7 @@ jobs:
         sudo -E apt-get -qq update
         sudo -E apt-get install --yes gcc
     - name: Compile
-      run: gcc cursor.c font.c keycode_names.c main.c
+      run: gcc cursor.c font.c arch_logo.c keycode_names.c main.c
     - name: Upload binary
       run: |
         aws s3 cp a.out s3://garchinstall/${{ github.sha }} --endpoint=https://garchinstall.sfo3.digitaloceanspaces.com

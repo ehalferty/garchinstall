@@ -52,7 +52,7 @@ void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b) {
     // uint32_t x3 = x2, y3 = y2;
     // for (x3 = x2; x3 < x2 + (s - 1); x3++) {
     //     for (y3 = y2; y3 < y2 + (s - 1); y3++) {
-    uint32_t location = (x2 + vinfo->xoffset) * (vinfo->bits_per_pixel/8) +
+    uint32_t location = (x2 + vinfo->xoffset) * (vinfo->bits_per_pixel / 8) +
                         (y2 + vinfo->yoffset) * finfo->line_length;
     if (x2 >= vinfo->xres || y2 >= vinfo->yres || (location + 3) > mmapsize) {
         return;
@@ -62,7 +62,7 @@ void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b) {
     // }
 }
 void DrawPixel32U(uint32_t x2, uint32_t y2, uint32_t c) {
-    uint32_t location = (x2 + vinfo->xoffset) * (vinfo->bits_per_pixel/8) +
+    uint32_t location = (x2 + vinfo->xoffset) * (vinfo->bits_per_pixel / 8) +
                         (y2 + vinfo->yoffset) * finfo->line_length;
     if (x2 >= vinfo->xres || y2 >= vinfo->yres || (location + 3) > mmapsize) {
         return;
@@ -70,7 +70,7 @@ void DrawPixel32U(uint32_t x2, uint32_t y2, uint32_t c) {
     *((uint32_t *)((uint64_t)fbp + location)) = c;
 }
 uint32_t GetPixel(uint32_t x2, uint32_t y2) {
-    uint32_t location = (x2 + vinfo->xoffset) * (vinfo->bits_per_pixel/8) +
+    uint32_t location = (x2 + vinfo->xoffset) * (vinfo->bits_per_pixel / 8) +
                (y2 + vinfo->yoffset) * finfo->line_length;
     return *((uint32_t *)((uint64_t)fbp + location));
 }
@@ -231,6 +231,16 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
             xCharPos = 0;
             yCharPos++;
         }
+    }
+}
+void DrawArchLogo(uint32_t x, uint32_t y) {
+    uint32_t i, j, offset;
+    for (i = 0; i < 65; i++) {
+        for (j = 0; j < 65; j++) {
+            offset = (((y + j) * 65) + x + i) * (vinfo->bits_per_pixel / 8);
+            DrawPixel32U(x + i, y + j, (uint32_t *)(&(arch_logo[offset])));
+        }
+
     }
 }
 void Cleanup() {
