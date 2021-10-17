@@ -360,7 +360,7 @@ int main(int argc, char *argv[]) {
                         // TODO: Redraw mouse here
                         // printf("->(%d, %d)\n", mouseX, mouseY);
                         RestoreUnderCursor();
-                        // SaveUnderCursor();
+                        SaveUnderCursor();
                         DrawCursor();
                     }
                     if (old_leftBtn != leftBtn) {
