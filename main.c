@@ -37,7 +37,6 @@ uint32_t mouseX, mouseY, mouseClickedAtX, mouseClickedAtY, underCursorX, underCu
 uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
 uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
-// struct timespec newtimespec, oldtimespec
 
 unsigned long get_nsecs() {
     struct timespec ts;
@@ -48,32 +47,21 @@ unsigned long get_nsecs() {
 uint32_t PixelColor(uint8_t r, uint8_t g, uint8_t b) {
     return (r<<vinfo->red.offset) | (g<<vinfo->green.offset) | (b<<vinfo->blue.offset);
 }
-
+uint32_t GetFBOffset(uint32_t x, uint32_t y) {
+    return (x + vinfo->xoffset) * (vinfo->bits_per_pixel / 8) + (y + vinfo->yoffset) * finfo->line_length;
+}
 void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b) {
-    // uint32_t x3 = x2, y3 = y2;
-    // for (x3 = x2; x3 < x2 + (s - 1); x3++) {
-    //     for (y3 = y2; y3 < y2 + (s - 1); y3++) {
-    uint32_t location = (x2 + vinfo->xoffset) * (vinfo->bits_per_pixel / 8) +
-                        (y2 + vinfo->yoffset) * finfo->line_length;
-    if (x2 >= vinfo->xres || y2 >= vinfo->yres || (location + 3) > mmapsize) {
-        return;
-    }
-    *((uint32_t *)((uint64_t)fbp + location)) = PixelColor(r, g, b);
-    //     }
-    // }
+    uint32_t fb_offset = GetFBOffset(x, y);
+    if (x >= vinfo->xres || y >= vinfo->yres || (fb_offset + 3) > mmapsize) { return; }
+    *((uint32_t *)((uint64_t)fbp + fb_offset)) = PixelColor(r, g, b);
 }
-void DrawPixel32U(uint32_t x2, uint32_t y2, uint32_t c) {
-    uint32_t location = (x2 + vinfo->xoffset) * (vinfo->bits_per_pixel / 8) +
-                        (y2 + vinfo->yoffset) * finfo->line_length;
-    if (x2 >= vinfo->xres || y2 >= vinfo->yres || (location + 3) > mmapsize) {
-        return;
-    }
-    *((uint32_t *)((uint64_t)fbp + location)) = c;
+void DrawPixel32U(uint32_t x, uint32_t y, uint32_t c) {
+    uint32_t fb_offset = GetFBOffset(x, y);
+    if (x2 >= vinfo->xres || y2 >= vinfo->yres || (fb_offset + 3) > mmapsize) { return; }
+    *((uint32_t *)((uint64_t)fbp + fb_offset)) = c;
 }
-uint32_t GetPixel(uint32_t x2, uint32_t y2) {
-    uint32_t location = (x2 + vinfo->xoffset) * (vinfo->bits_per_pixel / 8) +
-               (y2 + vinfo->yoffset) * finfo->line_length;
-    return *((uint32_t *)((uint64_t)fbp + location));
+uint32_t GetPixel(uint32_t x, uint32_t y) {
+    return *((uint32_t *)((uint64_t)fbp + GetFBOffset(x, y)));
 }
 void OpenFramebuffer() {
     st = malloc(sizeof(struct stat));
@@ -81,41 +69,20 @@ void OpenFramebuffer() {
     finfo = malloc(sizeof(struct fb_fix_screeninfo));
     fbfd = open("/dev/fb0", O_RDWR);
     if (fbfd == -1) { perror("Error: cannot open framebuffer device"); exit(1); }
-    // printf("The framebuffer device was opened successfully.\n");
     fstat(fbfd, st);
-    printf("/dev/mem -> size: %u blksize: %u blkcnt: %u\n", st->st_size, st->st_blksize, st->st_blocks);
     if (ioctl(fbfd, FBIOGET_FSCREENINFO, finfo) == -1) { perror("Error reading fixed information"); exit(2); }
     if (ioctl(fbfd, FBIOGET_VSCREENINFO, vinfo) == -1) { perror("Error reading variable information"); exit(3); }
-    printf("%dx%d, %dbpp\n", vinfo->xres, vinfo->yres, vinfo->bits_per_pixel);
     mouseX = vinfo->xres / 2;
     mouseY = vinfo->yres / 2;
-    // rowsize = ;
     screensize = vinfo->xres * vinfo->yres * (vinfo->bits_per_pixel / 8);
-    // mmapsize = screensize;//4096 * mult;//8294400;//screensize * 10;
-    // mmapsize = (screensize + PADDING - 1) & ~(PADDING-1);
     for (i = 8; i >= 0; i--) {
         if (i == 0) {
             perror("Error: failed to map framebuffer device to memory"); exit(4);
         }
         mmapsize = screensize * i;
-        printf("Trying to mmap screen size * %d\n", i);
         fbp = (char *)mmap(0, mmapsize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
-        if (fbp != -1) {
-            printf("It worked!\n");
-            break;
-        }
+        if (fbp != -1) { break; }
     }
-    // printf("mmapsize=%d flags=%d flags2=%d fbfd=%d\n", mmapsize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd);
-    // fbp = (char *)mmap(0, mmapsize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
-    // if ((int)fbp == -1) { perror("Error: failed to map framebuffer device to memory"); exit(4); }
-    // printf("The framebuffer device was mapped to memory successfully.\n");
-    // Figure out the position and scale of the drawing area
-    // w = vinfo->xres / 640;
-    // h = vinfo->yres / 480;
-    // s = (w > h) ? h : w;
-    // left = (vinfo->xres - (640 * s)) / 2;
-    // top = (vinfo->yres - (480 * s)) / 2;
-    // printf("Scale: %d left=%d top=%d\n", s, left, top);
 }
 int OpenKeyboard() {
     DIR *d;

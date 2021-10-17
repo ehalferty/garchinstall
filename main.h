@@ -1,3 +1,4 @@
+uint32_t GetFBOffset(uint32_t x, uint32_t y);
 void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b);
 void DrawPixel32U(uint32_t x2, uint32_t y2, uint32_t c);
 void DrawText(uint32_t x, uint32_t y, char *str);
