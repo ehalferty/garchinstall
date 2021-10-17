@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <string.h>
 #include "keycode_names.h"
 const char *keycode_to_key_name(unsigned int id) {
   if (id == 0) { return "RESERVED"; }
