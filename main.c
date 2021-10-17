@@ -35,7 +35,7 @@ uint8_t old_leftBtn, old_rightBtn, old_midBtn, shiftDown, ctrlDown;
 uint32_t mouseX, mouseY, mouseClickedAtX, mouseClickedAtY, underCursorX, underCursorY;
 uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
 uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
-uint32_t foregroundColor = 0, backgroundColor = 0xFFFFFF;
+uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
 // struct timespec newtimespec, oldtimespec
 
 unsigned long get_nsecs() {
@@ -224,7 +224,7 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
                 glyphRow = font_glyph_bitmaps[glyphIdx * 32 + (j * 2) + 1];
                 glyphRow |= (font_glyph_bitmaps[glyphIdx * 32 + (j * 2)] & 0xFF) << 8;
                 c = ((glyphRow >> (16 - i)) & 1) ? foregroundColor : backgroundColor;
-                DrawPixel(left + x2, top + y2, (c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
+                DrawPixel(x2, y2, (c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
             } }
             xCharPos++;
         } else if (str[charIdx] == '\n') {
