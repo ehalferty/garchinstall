@@ -14,8 +14,10 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
+#include "main.h"
 #include "keycode_names.h"
 #include "cursor.h"
+#include "font.h"
 
 #define MOD_LINGER_NANOS 100000000 // How many nanoseconds modifier keys remain down after the user lifts them
 #define CURSOR_SIZE 24
@@ -69,11 +71,7 @@ uint32_t GetPixel(uint32_t x2, uint32_t y2) {
     uint32_t location = (x2 + vinfo->xoffset) * (vinfo->bits_per_pixel/8) +
                (y2 + vinfo->yoffset) * finfo->line_length;
     return *((uint32_t *)((uint64_t)fbp + location));
-                // location = (x + mouseX + vinfo->xoffset) * (vinfo->bits_per_pixel/8) +
-                //            (y + mouseY + vinfo->yoffset) * finfo->line_length;
-                // underCursor[y][x] = GetPixel(x + mouseX, y + mouseY);//*((uint32_t *)(fb->screen_base + location));
 }
-
 void OpenFramebuffer() {
     st = malloc(sizeof(struct stat));
     vinfo = malloc(sizeof(struct fb_var_screeninfo));
@@ -116,7 +114,6 @@ void OpenFramebuffer() {
     // top = (vinfo->yres - (480 * s)) / 2;
     // printf("Scale: %d left=%d top=%d\n", s, left, top);
 }
-
 int OpenKeyboard() {
     DIR *d;
     struct dirent *dir;
@@ -152,13 +149,11 @@ int OpenKeyboard() {
     perror("Error: Couldn't find keyboard device"); exit(6);
     return -1;
 }
-
 int OpenMouse() {
     int res = open("/dev/input/mice", O_RDONLY);
     if (res == -1) { perror("Error: Can't open /dev/input/mice"); exit(5); }
     return res;
 }
-
 void SaveUnderCursor() {
     unsigned int x, y, location;
     for (y = 0; y < CURSOR_SIZE; y++) {
@@ -206,11 +201,36 @@ void DrawCursor() {
         }
     }
 }
+void DrawText(uint32_t x, uint32_t y, char *str) {
+    unsigned int xCharPos, yCharPos, charIdx, len, j, w, h, x2, y2
+    len = strlen(str);
+    for (charIdx = 0; charIdx < len; charIdx++) {
+        if (str[charIdx] >= 32 && str[charIdx] < 128) { // Check if printable
+            // Find the character in the font sheet
+            for (glyphIdx = 0; glyphIdx < NUM_FONT_GLYPHS; glyphIdx++) {
+                if (font_glyph_encodings[glyphIdx] == str[charIdx]) { break; }
+            }
+            for (j = 0; j < 16; j++) { for (i = 0; i < 16; i++) {
+                x2 = x + i + (xCharPos * FONT_WIDTH_INCLUDING_PADDING);
+                y2 = y + j + (yCharPos * FONT_HEIGHT_INCLUDING_PADDING);
+                styleFlags = tempWindowRef->data->params.styleFlags;
+                drawFlags = tempWindowRef->drawFlags;
+                glyphRow = font_glyph_bitmaps[glyphIdx * 32 + (j * 2) + 1];
+                glyphRow |= (font_glyph_bitmaps[glyphIdx * 32 + (j * 2)] & 0xFF) << 8;
+                c = ((glyphRow >> (16 - i)) & 1) ? foregroundColor : backgroundColor;
+                DrawPixel(left + x2, top + y2, (c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
+            } }
+            xCharPos++;
+        } else if (str[charIdx] == '\n') {
+            xCharPos = 0;
+            yCharPos++;
+        }
+    }
+}
 void Cleanup() {
     munmap(fbp, screensize);
     close(fbfd);
 }
-
 int main(int argc, char *argv[]) {
     struct termios oldt, newt;
     struct pollfd *pfds;
@@ -222,26 +242,12 @@ int main(int argc, char *argv[]) {
     int8_t xdiff, ydiff;
     printf("argv0=%s\n", argv[0]);
     qKeycode = key_name_to_keycode("Q");
-    // mult = (argc > 1) ? atoi(argv[1]) : 2025;
-    // Tell parent process (zsh) to stop, so it'll stop drawing to the screen
-    // ppid = getppid();
-    // kill(ppid, SIGSTOP);
     buff = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
     OpenFramebuffer();
-    // exit(1);
-    // Pipe output to /dev/null so keyboard input isn't printed to screen
-    // stdoutfd = open("/dev/null", O_RDONLY);
-    // dup2(stdoutfd, STDOUT_FILENO);
-    // dup2(stdoutfd, STDIN_FILENO);
-    // close(stdoutfd);
     newt.c_lflag = 0;//&= ~(ICANON | ECHO);
-    // newt.c_cc[VMIN] = 1;
-    // newt.c_cc[VTIME] = 0;
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-    // printf("\033[D");
     printf("\f");
-    // DrawPixel(20, 20, 0xFF, 0x00, 0x00, vinfo);
     for (xx = 0; xx < vinfo->xres; xx++) { //, 
         for (yy = 0; yy < vinfo->yres; yy++) {
             DrawPixel(xx, yy, 0x00, 0xFF, 0xFF);
@@ -250,6 +256,7 @@ int main(int argc, char *argv[]) {
     for (i = 0; i < 600; i++) {
         DrawPixel(i, i, 0xFF, 0xFF, 0xFF);
     }
+    DrawText(0, 0, "Hello, there!");
     SaveUnderCursor();
     kbfd = OpenKeyboard();
     msfd = OpenMouse();
@@ -340,29 +347,6 @@ int main(int argc, char *argv[]) {
                         if (((int)mouseY - ydiff) < 0) { mouseY = 0; }
                         else if ((mouseY - ydiff) > vinfo->yres) { mouseY = vinfo->yres; }
                         else { mouseY -= ydiff; }
-                        // mouseX += xdiff;
-                        // mouseY += ydiff;
-                        // Mouse moved
-                        // if (xdiff > 0) {
-                        //     if (xdir) {
-                        //         if (mouseX < xdiff) { mouseX = 0; }
-                        //         else { mouseX -= (64 - xdiff); }
-                        //     } else {
-                        //         if (mouseX + xdiff > vinfo->xres) { mouseX = vinfo->xres; }
-                        //         else { mouseX += xdiff; }
-                        //     }
-                        // }
-                        // if (ydiff > 0) {
-                        //     if (ydir) {
-                        //         if (mouseY < ydiff) { mouseY = 0; }
-                        //         else { mouseY -= (64 - ydiff); }
-                        //     } else {
-                        //         if (mouseY + ydiff > vinfo->yres) { mouseY = vinfo->yres; }
-                        //         else { mouseY += ydiff; }
-                        //     }
-                        // }
-                        // TODO: Redraw mouse here
-                        // printf("->(%d, %d)\n", mouseX, mouseY);
                         RestoreUnderCursor();
                         SaveUnderCursor();
                         DrawCursor();
@@ -379,8 +363,6 @@ int main(int argc, char *argv[]) {
                     old_leftBtn = leftBtn;
                     old_rightBtn = rightBtn;
                     old_midBtn = midBtn;
-// xdiff, ydiff, xdir, ydir, leftBtn, rightBtn, midBtn;
-                    // printf("Read %d bytes from msfd\n", siz);
                 }
             }
         }

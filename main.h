@@ -1,0 +1,11 @@
+void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b);
+void DrawPixel32U(uint32_t x2, uint32_t y2, uint32_t c);
+uint32_t GetPixel(uint32_t x2, uint32_t y2);
+void OpenFramebuffer();
+int OpenKeyboard();
+int OpenMouse();
+void SaveUnderCursor();
+void RestoreUnderCursor();
+void DrawCursor();
+void Cleanup();
+int main(int argc, char *argv[]);
