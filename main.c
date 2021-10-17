@@ -1,9 +1,9 @@
 #include "main.h"
 
-int fbfd = 0, x = 0, y = 0, i = 0, j = 0, kbfd = 0, msfd = 0, stdoutfd;
+int fbfd = 0, kbfd = 0, msfd = 0;
 struct fb_var_screeninfo *vinfo;
 struct fb_fix_screeninfo *finfo;
-long int screensize = 0, rowsize = 0, temp = 0, top = 0, left = 0, w = 0, h = 0, s = 0, mmapsize = 0;
+long int screensize = 0, rowsize = 0, mmapsize = 0;
 char *fbp = 0, *keyboardDeviceName = 0;
 struct stat *st;
 const int PADDING = 4096;
@@ -169,14 +169,12 @@ void Cleanup() {
 int main(int argc, char *argv[]) {
     struct termios oldt, newt;
     struct pollfd *pfds;
+    struct input_event *evt;
     ssize_t siz;
     char *buff;
-    int ready, x, y, ppid, pid, i, qKeycode;
-    struct input_event *evt;
+    int ready, x, y, ppid, pid, i;
     uint8_t xdir, ydir, leftBtn, rightBtn, midBtn, temp;
     int8_t xdiff, ydiff;
-    printf("argv0=%s\n", argv[0]);
-    qKeycode = key_name_to_keycode("Q");
     buff = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
     OpenFramebuffer();
@@ -190,10 +188,8 @@ int main(int argc, char *argv[]) {
     SaveUnderCursor();
     kbfd = OpenKeyboard();
     msfd = OpenMouse();
-    pfds[0].fd = kbfd;
-    pfds[0].events = POLLIN;
-    pfds[1].fd = msfd;
-    pfds[1].events = POLLIN;
+    pfds[0].fd = kbfd; pfds[0].events = POLLIN;
+    pfds[1].fd = msfd; pfds[1].events = POLLIN;
     while (1) {
         ready = poll(pfds, 2, 30);
         if (ready == -1) { perror("poll() returned -1");exit(9); }
