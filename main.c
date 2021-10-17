@@ -210,7 +210,7 @@ void SetFGColor(uint8_t r, uint8_t g, uint8_t b) {
     foregroundColor = ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
 }
 void DrawText(uint32_t x, uint32_t y, char *str) {
-    unsigned long xCharPos, yCharPos, glyphIdx, glyphRow, charIdx, len, j, w, h, x2, y2, c;
+    unsigned long xCharPos = 0, yCharPos = 0, glyphIdx, glyphRow, charIdx, len, j, x2, y2, c;
     len = strlen(str);
     for (charIdx = 0; charIdx < len; charIdx++) {
         if (str[charIdx] >= 32 && str[charIdx] < 128) { // Check if printable
