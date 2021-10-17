@@ -236,8 +236,8 @@ int main(int argc, char *argv[]) {
     // dup2(stdoutfd, STDIN_FILENO);
     // close(stdoutfd);
     newt.c_lflag = 0;//&= ~(ICANON | ECHO);
-    info.c_cc[VMIN] = 1;
-    info.c_cc[VTIME] = 0;
+    newt.c_cc[VMIN] = 1;
+    newt.c_cc[VTIME] = 0;
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
     // DrawPixel(20, 20, 0xFF, 0x00, 0x00, vinfo);
     for (xx = 0; xx < vinfo->xres; xx++) { //, 
