@@ -238,7 +238,7 @@ void DrawArchLogo(uint32_t x, uint32_t y) {
     uint32_t i, j, offset;
     for (i = 0; i < 65; i++) {
         for (j = 0; j < 65; j++) {
-            offset = (((y + j) * 65) + x + i) * (vinfo->bits_per_pixel / 8);
+            offset = ((j * 65) + i) * (vinfo->bits_per_pixel / 8);
             DrawPixel32U(x + i, y + j, *(uint32_t *)(arch_logo[offset]));
         }
     }
