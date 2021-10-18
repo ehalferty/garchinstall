@@ -172,7 +172,7 @@ void DrawCloseBox() {
     uint32_t x, y;
     for (x = 0; x < 32; x++) { for (y = 0; y < 32; y++) {
         if (x == 0 || x == 31 || y == 0 || y == 31 || x == y || x == (32 - y)) { DrawPixel(x, y, 0xFF, 0xFF, 0xFF); }
-        else { DrawPixel(x, y, 0xFF, 0x00, 0x00); }
+        else { DrawPixel(vinfo->xres - 32 + x, vinfo->yres - 32 + y, 0xFF, 0x00, 0x00); }
     }}
 }
 void Cleanup() {
