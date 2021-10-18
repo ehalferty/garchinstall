@@ -32,6 +32,7 @@ void DrawText(uint32_t x, uint32_t y, char *str);
 uint32_t GetPixel(uint32_t x2, uint32_t y2);
 void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp);
 void DrawArchLogo(uint32_t x, uint32_t y);
+void DrawCloseBox();
 void ClearScreen();
 void OpenFramebuffer();
 int OpenKeyboard();
