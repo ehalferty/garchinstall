@@ -171,9 +171,6 @@ void DrawArchLogo(uint32_t x, uint32_t y) {
 }
 void DrawCloseBox(uint8_t pressed) {
     uint32_t x, y;
-    if (pressed) {
-        printf("hit!\n");exit(1);
-    }
     for (x = 0; x < 32; x++) { for (y = 0; y < 32; y++) {
         if (pressed) {
             if (x < 4 || x > 27 || y < 4 || y > 27 || x == y || x == (32 - y)) {
@@ -266,7 +263,7 @@ void DoPage() {
             break;
         }
     }
-    if (redraw) {
+    if (redraw) { // TODO: Finer-grained redraw flags. Don't need to redraw entire page to redraw the closebox...
         DrawCloseBox(mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY < 32);
         SaveUnderCursor();
     }
