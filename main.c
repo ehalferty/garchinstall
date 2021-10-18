@@ -229,7 +229,7 @@ void DoPage() {
             }
             break;
         }
-        case 2: {
+        case 3: {
             if (mouseWentUp) {
                 if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
                 else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
