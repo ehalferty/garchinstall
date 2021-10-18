@@ -172,7 +172,7 @@ void DrawCloseBox() {
     uint32_t x, y;
     for (x = 0; x < 32; x++) { for (y = 0; y < 32; y++) {
         if (x == 0 || x == 31 || y == 0 || y == 31 || x == y || x == (32 - y)) { DrawPixel(x, y, 0xFF, 0xFF, 0xFF); }
-        else { DrawPixel(vinfo->xres - 32 + x, vinfo->yres - 32 + y, 0xFF, 0x00, 0x00); }
+        else { DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0x00, 0x00); }
     }}
 }
 void Cleanup() {
@@ -190,6 +190,10 @@ void ExitNormally() {
 void DoPage() {
     uint32_t redraw = (prevPage != page);
     prevPage = page;
+    if (redraw) {
+        RestoreUnderCursor();
+        ClearScreen();
+    }
     switch (page) {
         case 0: {
             if (mouseWentUp) {
@@ -197,13 +201,9 @@ void DoPage() {
                 else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
             }
             if (redraw) {
-                RestoreUnderCursor();
-                ClearScreen();
-                sprintf(tmpStr, "Step 1 of %d - Choose Boot Drive", NUM_STEPS);
-                DrawArchLogo(0, 24);
-                DrawCloseBox();
+                sprintf(tmpStr, "Welcome", NUM_STEPS);
                 DrawText(0, 0, tmpStr);
-                SaveUnderCursor();
+                DrawArchLogo(0, 24);
             }
             break;
         }
@@ -213,12 +213,8 @@ void DoPage() {
                 else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
             }
             if (redraw) {
-                RestoreUnderCursor();
-                ClearScreen();
-                sprintf(tmpStr, "Step 2 of %d - Choose Keyboard Layout", NUM_STEPS);
-                DrawArchLogo(0, 24);
-                DrawCloseBox();
-                SaveUnderCursor();
+                sprintf(tmpStr, "Step 1 of %d - Choose Boot Drive", NUM_STEPS);
+                DrawText(0, 0, tmpStr);
             }
             break;
         }
@@ -228,12 +224,19 @@ void DoPage() {
                 else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
             }
             if (redraw) {
-                RestoreUnderCursor();
-                ClearScreen();
-                sprintf(tmpStr, "Step 2 of %d - Connect to Network", NUM_STEPS);
-                DrawArchLogo(0, 24);
-                DrawCloseBox();
-                SaveUnderCursor();
+                sprintf(tmpStr, "Step 2 of %d - Choose Keyboard Layout", NUM_STEPS);
+                DrawText(0, 0, tmpStr);
+            }
+            break;
+        }
+        case 2: {
+            if (mouseWentUp) {
+                if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
+                else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
+            }
+            if (redraw) {
+                sprintf(tmpStr, "Step 3 of %d - Connect to Network", NUM_STEPS);
+                DrawText(0, 0, tmpStr);
             }
             break;
         }
@@ -245,10 +248,15 @@ void DoPage() {
                 RestoreUnderCursor();
                 ClearScreen();
                 sprintf(tmpStr, "DONE!", NUM_STEPS);
+                DrawText(0, 0, tmpStr);
                 SaveUnderCursor();
             }
             break;
         }
+    }
+    if (redraw) {
+        DrawCloseBox();
+        SaveUnderCursor();
     }
 }
 int main(int argc, char *argv[]) {
