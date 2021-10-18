@@ -9,6 +9,7 @@ struct stat *st;
 uint8_t old_leftBtn, old_rightBtn, old_midBtn, shiftDown, ctrlDown;
 uint32_t mouseX = 0, mouseY = 0, mouseDownAtX = 0, mouseDownAtY = 0, mouseUpAtX = 0, mouseUpAtY = 0, mouseMoved = 0;
 uint32_t underCursorX = 0, underCursorY = 0, mouseWentDown = 0, mouseWentUp = 0, keyWentDown = 0, keyWentUp = 0;
+uint32_t mouseIsDown = 0;
 uint8_t keysDown[NUM_KEYS_CHECKED], prevKeysDown[NUM_KEYS_CHECKED];
 uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
 uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
@@ -168,11 +169,18 @@ void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
 void DrawArchLogo(uint32_t x, uint32_t y) {
     DrawBitmap(x, y, ARCH_LOGO_WIDTH, ARCH_LOGO_HEIGHT, arch_logo);
 }
-void DrawCloseBox() {
+void DrawCloseBox(uint8_t pressed) {
     uint32_t x, y;
     for (x = 0; x < 32; x++) { for (y = 0; y < 32; y++) {
-        if (x == 0 || x == 31 || y == 0 || y == 31 || x == y || x == (32 - y)) { DrawPixel(x, y, 0xFF, 0xFF, 0xFF); }
-        else { DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0x00, 0x00); }
+        if (pressed) {
+            if (x < 2 || x > 29 || y < 2 || y > 29 || x == y || x == (32 - y)) {
+                DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0xFF, 0xFF);
+            } else { DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0x00, 0x00); }
+        } else {
+            if (x == 0 || x == 31 || y == 0 || y == 31 || x == y || x == (32 - y)) {
+                DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0xFF, 0xFF);
+            } else { DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0x00, 0x00); }
+        }
     }}
 }
 void Cleanup() {
@@ -255,7 +263,7 @@ void DoPage() {
         }
     }
     if (redraw) {
-        DrawCloseBox();
+        DrawCloseBox(mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY < 32);
         SaveUnderCursor();
     }
 }
@@ -352,10 +360,12 @@ int main(int argc, char *argv[]) {
                         mouseDownAtX = mouseX;
                         mouseDownAtY = mouseY;
                         mouseWentDown = 1;
+                        mouseIsDown = 1;
                     } else { // Mouse up
                         mouseUpAtX = mouseX;
                         mouseUpAtY = mouseY;
                         mouseWentUp = 1;
+                        mouseIsDown = 0;
                     }
                 }
                 old_leftBtn = leftBtn;
