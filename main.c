@@ -174,11 +174,11 @@ void DrawCloseBox(uint8_t pressed) {
     for (x = 0; x < 32; x++) { for (y = 0; y < 32; y++) {
         if (pressed) {
             if (x < 2 || x > 29 || y < 2 || y > 29 || x == y || x == (32 - y)) {
-                DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0xFF, 0xFF);
+                DrawPixel(vinfo->xres - 32 + x, y, 0x80, 0x40, 0x40);
             } else { DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0x00, 0x00); }
         } else {
             if (x == 0 || x == 31 || y == 0 || y == 31 || x == y || x == (32 - y)) {
-                DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0xFF, 0xFF);
+                DrawPixel(vinfo->xres - 32 + x, y, 0x80, 0x40, 0x40);
             } else { DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0x00, 0x00); }
         }
     }}
