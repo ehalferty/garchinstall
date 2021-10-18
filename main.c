@@ -172,7 +172,7 @@ void DrawArchLogo(uint32_t x, uint32_t y) {
 void DrawCloseBox(uint8_t pressed) {
     uint32_t x, y;
     if (pressed) {
-        printf("hit!\n");die(1);
+        printf("hit!\n");exit(1);
     }
     for (x = 0; x < 32; x++) { for (y = 0; y < 32; y++) {
         if (pressed) {
@@ -200,7 +200,7 @@ void ExitNormally() {
     exit(0);
 }
 void DoPage() {
-    uint32_t redraw = (prevPage != page);
+    uint32_t redraw = (prevPage != page) || mouseWentDown;
     prevPage = page;
     if (redraw) {
         RestoreUnderCursor();
