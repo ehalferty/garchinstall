@@ -4,7 +4,7 @@ int fbfd = 0, kbfd = 0, msfd = 0, page = 0, prevPage = 1;
 struct fb_var_screeninfo *vinfo;
 struct fb_fix_screeninfo *finfo;
 long int screensize = 0, rowsize = 0, mmapsize = 0;
-char *fbp = 0, *keyboardDeviceName = 0;
+char *fbp = 0, *keyboardDeviceName = 0, *tmpStr;
 struct stat *st;
 uint8_t old_leftBtn, old_rightBtn, old_midBtn, shiftDown, ctrlDown;
 uint32_t mouseX = 0, mouseY = 0, mouseDownAtX = 0, mouseDownAtY = 0, mouseUpAtX = 0, mouseUpAtY = 0, mouseMoved = 0;
@@ -256,7 +256,7 @@ int main(int argc, char *argv[]) {
     struct pollfd *pfds;
     struct input_event *evt;
     ssize_t siz;
-    char *buff, *tmpStr;
+    char *buff;
     int ready, x, y, ppid, pid, i;
     uint8_t xdir, ydir, leftBtn, rightBtn, midBtn, temp;
     int8_t xdiff, ydiff;
