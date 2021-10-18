@@ -1,14 +1,15 @@
 #include "main.h"
 
-int fbfd = 0, kbfd = 0, msfd = 0;
+int fbfd = 0, kbfd = 0, msfd = 0, page = 0, prevPage = 1;
 struct fb_var_screeninfo *vinfo;
 struct fb_fix_screeninfo *finfo;
 long int screensize = 0, rowsize = 0, mmapsize = 0;
 char *fbp = 0, *keyboardDeviceName = 0;
 struct stat *st;
-const int PADDING = 4096;
 uint8_t old_leftBtn, old_rightBtn, old_midBtn, shiftDown, ctrlDown;
-uint32_t mouseX, mouseY, mouseClickedAtX, mouseClickedAtY, underCursorX, underCursorY;
+uint32_t mouseX = 0, mouseY = 0, mouseDownAtX = 0, mouseDownAtY = 0, mouseUpAtX = 0, mouseUpAtY = 0, mouseMoved = 0;
+uint32_t underCursorX = 0, underCursorY = 0, mouseWentDown = 0, mouseWentUp = 0, keyWentDown = 0, keyWentUp = 0;
+uint8_t keysDown[NUM_KEYS_CHECKED], prevKeysDown[NUM_KEYS_CHECKED];
 uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
 uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
@@ -167,6 +168,45 @@ void Cleanup() {
     munmap(fbp, screensize);
     close(fbfd);
 }
+void MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
+    return (mouseDownAtX >= x && mouseDownAtX < (x + w) && mouseDownAtY >= y && mouseDownAtY < (y + h));
+}
+void ExitNormally() {
+    while (getchar() != EOF) {}
+    Cleanup();
+    exit(0);
+}
+void DoPage() {
+    uint32_t redraw = (prevPage != page);
+    prevPage = page;
+    // Check what changed (keys/mouse went down/up), process, re-render stuff
+    switch (page) {
+        case 0: {
+            if (mouseWentUp) {
+                if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
+                else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
+                if (redraw) {
+                    RestoreUnderCursor();
+                    DrawText(0, 0, "This is page 1");
+                    SaveUnderCursor();
+                }
+            }
+            break;
+        }
+        case 1: {
+            if (mouseWentUp) {
+                if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
+                else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page--; }
+                if (redraw) {
+                    RestoreUnderCursor();
+                    DrawText(0, 0, "This is page 2");
+                    SaveUnderCursor();
+                }
+            }
+            break;
+        }
+    }
+}
 int main(int argc, char *argv[]) {
     struct termios oldt, newt;
     struct pollfd *pfds;
@@ -192,6 +232,11 @@ int main(int argc, char *argv[]) {
     pfds[0].fd = kbfd; pfds[0].events = POLLIN;
     pfds[1].fd = msfd; pfds[1].events = POLLIN;
     while (1) {
+        mouseWentDown = 0;
+        mouseWentUp = 0;
+        keyWentDown = 0;
+        keyWentUp = 0;
+        mouseMoved = 0;
         ready = poll(pfds, 2, 30);
         if (ready == -1) { perror("poll() returned -1");exit(9); }
         if (pfds[0].revents != 0) {
@@ -204,14 +249,17 @@ int main(int argc, char *argv[]) {
                         if (evt->code >= BTN_MOUSE && evt->code < BTN_JOYSTICK) {} // mouse click: ignore
                         else { // Keyboard key
                             if (evt->value == 1) {
+                                keyWentDown = 1;
                                 if (evt->code == 42 || evt->code == 54) { shiftDown = 1; }
                                 if (evt->code == 29 || evt->code == 97) { ctrlDown = 1; }
+                                for (i = 0; i < NUM_KEYS_CHECKED; i++) { prevKeysDown[i] = keysDown[i]; }
+                                keysDown[evt->value] = 1;
                             } else if (evt->value == 0) {
+                                keyWentUp = 1;
+                                for (i = 0; i < NUM_KEYS_CHECKED; i++) { prevKeysDown[i] = keysDown[i]; }
+                                keysDown[evt->value] = 0;
                                 temp = ctrlDown || (get_nsecs() < (ctrlUpTimeNanos + MOD_LINGER_NANOS));
-                                if (evt->code == 16 && temp) { // ctrl-q quits
-                                    while (getchar() != EOF) {} // TODO: Do this for all exit conditions
-                                    exit(20);
-                                }
+                                if (evt->code == 16 && temp) { ExitNormally(); } // ctrl-q quits
                                 if (evt->code == 42 || evt->code == 54) {
                                     shiftDown = 0;
                                     shiftUpTimeNanos = get_nsecs();
@@ -243,12 +291,17 @@ int main(int argc, char *argv[]) {
                     RestoreUnderCursor();
                     SaveUnderCursor();
                     DrawCursor();
+                    mouseMoved = 1;
                 }
                 if (old_leftBtn != leftBtn) {
                     if (leftBtn) { // Mouse down
-                        mouseClickedAtX = mouseX;
-                        mouseClickedAtY = mouseY;
+                        mouseDownAtX = mouseX;
+                        mouseDownAtY = mouseY;
+                        mouseWentDown = 1;
                     } else { // Mouse up
+                        mouseUpAtX = mouseX;
+                        mouseUpAtY = mouseY;
+                        mouseWentUp = 1;
                     }
                 }
                 old_leftBtn = leftBtn;
@@ -256,6 +309,7 @@ int main(int argc, char *argv[]) {
                 old_midBtn = midBtn;
             }
         }
+        DoPage();
         usleep(3000);
     }
     Cleanup();

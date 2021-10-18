@@ -1,6 +1,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <files.h>
 #include <poll.h>
 #include <signal.h>
 #include <stdint.h>
@@ -22,6 +23,7 @@
 
 #define MOD_LINGER_NANOS 100000000 // How many nanoseconds modifier keys remain down after the user lifts them
 #define CURSOR_SIZE 24
+#define NUM_KEYS_CHECKED 1024
 
 uint32_t GetFBOffset(uint32_t x, uint32_t y);
 void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b);
@@ -36,5 +38,8 @@ int OpenMouse();
 void SaveUnderCursor();
 void RestoreUnderCursor();
 void DrawCursor();
+void MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+void ExitNormally();
 void Cleanup();
+void DoPage();
 int main(int argc, char *argv[]);
