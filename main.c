@@ -204,9 +204,9 @@ void DoPage() {
         ClearScreen();
     }
     if (mouseWentUp) {
-        sprintf(tmpStr, "mouseDownAt (%d, %d) mouseUpAt (%d, %d)\n", mouseDownAtX, mouseDownAtY, mouseUpAtX, mouseUpAtY);
-        DrawText(0, 0, tmpStr);
-        while (1) {}
+        sprintf(tmpStr, "mouseDownAt (%d, %d) mouseUpAt (%d, %d)    \n", mouseDownAtX, mouseDownAtY, mouseUpAtX, mouseUpAtY);
+        DrawText(0, 100, tmpStr);
+        // while (1) {}
         // printf("mouseDownAt (%d, %d)\n", mouseDownAtX, mouseDownAtY);
         // printf("mouseUpAt (%d, %d)\n", mouseUpAtX, mouseUpAtY);
     }
