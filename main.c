@@ -360,11 +360,13 @@ int main(int argc, char *argv[]) {
                     if (leftBtn) { // Mouse down
                         mouseDownAtX = mouseX;
                         mouseDownAtY = mouseY;
+                        printf("mouseDownAt (%d, %d)\n", mouseDownAtX, mouseDownAtY);
                         mouseWentDown = 1;
                         mouseIsDown = 1;
                     } else { // Mouse up
                         mouseUpAtX = mouseX;
                         mouseUpAtY = mouseY;
+                        printf("mouseUpAt (%d, %d)\n", mouseUpAtX, mouseUpAtY);
                         mouseWentUp = 1;
                         mouseIsDown = 0;
                     }
