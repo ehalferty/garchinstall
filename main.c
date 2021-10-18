@@ -155,6 +155,7 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
     }
 }
 void ClearScreen() {
+    uint32_t x, y;
     for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
 }
 void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
