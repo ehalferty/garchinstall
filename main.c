@@ -203,6 +203,13 @@ void DoPage() {
         RestoreUnderCursor();
         ClearScreen();
     }
+    if (mouseWentUp) {
+        sprintf(tmpStr, "mouseDownAt (%d, %d) mouseUpAt (%d, %d)\n", mouseDownAtX, mouseDownAtY, mouseUpAtX, mouseUpAtY);
+        DrawText(0, 0, tmpStr);
+        while (1) {}
+        // printf("mouseDownAt (%d, %d)\n", mouseDownAtX, mouseDownAtY);
+        // printf("mouseUpAt (%d, %d)\n", mouseUpAtX, mouseUpAtY);
+    }
     switch (page) {
         case 0: {
             if (mouseWentUp) {
@@ -360,13 +367,11 @@ int main(int argc, char *argv[]) {
                     if (leftBtn) { // Mouse down
                         mouseDownAtX = mouseX;
                         mouseDownAtY = mouseY;
-                        printf("mouseDownAt (%d, %d)\n", mouseDownAtX, mouseDownAtY);
                         mouseWentDown = 1;
                         mouseIsDown = 1;
                     } else { // Mouse up
                         mouseUpAtX = mouseX;
                         mouseUpAtY = mouseY;
-                        printf("mouseUpAt (%d, %d)\n", mouseUpAtX, mouseUpAtY);
                         mouseWentUp = 1;
                         mouseIsDown = 0;
                     }
