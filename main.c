@@ -185,11 +185,11 @@ void DoPage() {
             if (mouseWentUp) {
                 if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
                 else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
-                if (redraw) {
-                    RestoreUnderCursor();
-                    DrawText(0, 0, "This is page 1");
-                    SaveUnderCursor();
-                }
+            }
+            if (redraw) {
+                RestoreUnderCursor();
+                DrawText(0, 0, "This is page 1");
+                SaveUnderCursor();
             }
             break;
         }
@@ -197,11 +197,11 @@ void DoPage() {
             if (mouseWentUp) {
                 if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
                 else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page--; }
-                if (redraw) {
-                    RestoreUnderCursor();
-                    DrawText(0, 0, "This is page 2");
-                    SaveUnderCursor();
-                }
+            }
+            if (redraw) {
+                RestoreUnderCursor();
+                DrawText(0, 0, "This is page 2");
+                SaveUnderCursor();
             }
             break;
         }
