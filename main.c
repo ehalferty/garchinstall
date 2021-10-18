@@ -154,6 +154,9 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
         }
     }
 }
+void ClearScreen() {
+    for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
+}
 void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
     uint32_t i, j, offset;
     for (i = 0; i < w; i++) { for (j = 0; j < h; j++) {
@@ -163,6 +166,13 @@ void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
 }
 void DrawArchLogo(uint32_t x, uint32_t y) {
     DrawBitmap(x, y, ARCH_LOGO_WIDTH, ARCH_LOGO_HEIGHT, arch_logo);
+}
+void DrawCloseBox() {
+    uint32_t x, y;
+    for (x = 0; x < 32; x++) { for (y = 0; y < 32; y++) {
+        if (x == 0 || x == 31 || y == 0 || y == 31 || x == y || x == (32 - y)) { DrawPixel(x, y, 0xFF, 0xFF, 0xFF); }
+        else { DrawPixel(x, y, 0xFF, 0x00, 0x00); }
+    }}
 }
 void Cleanup() {
     munmap(fbp, screensize);
@@ -179,7 +189,6 @@ void ExitNormally() {
 void DoPage() {
     uint32_t redraw = (prevPage != page);
     prevPage = page;
-    // Check what changed (keys/mouse went down/up), process, re-render stuff
     switch (page) {
         case 0: {
             if (mouseWentUp) {
@@ -188,7 +197,11 @@ void DoPage() {
             }
             if (redraw) {
                 RestoreUnderCursor();
-                DrawText(0, 0, "This is page 1");
+                ClearScreen();
+                sprintf(tmpStr, "Step 1 of %d - Choose Boot Drive", NUM_STEPS);
+                DrawArchLogo(0, 24);
+                DrawCloseBox();
+                DrawText(0, 0, tmpStr);
                 SaveUnderCursor();
             }
             break;
@@ -196,11 +209,41 @@ void DoPage() {
         case 1: {
             if (mouseWentUp) {
                 if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
-                else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page--; }
+                else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
             }
             if (redraw) {
                 RestoreUnderCursor();
-                DrawText(0, 0, "This is page 2");
+                ClearScreen();
+                sprintf(tmpStr, "Step 2 of %d - Choose Keyboard Layout", NUM_STEPS);
+                DrawArchLogo(0, 24);
+                DrawCloseBox();
+                SaveUnderCursor();
+            }
+            break;
+        }
+        case 2: {
+            if (mouseWentUp) {
+                if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
+                else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
+            }
+            if (redraw) {
+                RestoreUnderCursor();
+                ClearScreen();
+                sprintf(tmpStr, "Step 2 of %d - Connect to Network", NUM_STEPS);
+                DrawArchLogo(0, 24);
+                DrawCloseBox();
+                SaveUnderCursor();
+            }
+            break;
+        }
+        default: {
+            if (mouseWentUp) {
+                if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
+            }
+            if (redraw) {
+                RestoreUnderCursor();
+                ClearScreen();
+                sprintf(tmpStr, "DONE!", NUM_STEPS);
                 SaveUnderCursor();
             }
             break;
@@ -212,20 +255,22 @@ int main(int argc, char *argv[]) {
     struct pollfd *pfds;
     struct input_event *evt;
     ssize_t siz;
-    char *buff;
+    char *buff, *tmpStr;
     int ready, x, y, ppid, pid, i;
     uint8_t xdir, ydir, leftBtn, rightBtn, midBtn, temp;
     int8_t xdiff, ydiff;
     buff = malloc(65536);
+    tmpStr = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
     OpenFramebuffer();
     newt.c_lflag = 0;//&= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
     printf("\f");
     for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
-    for (i = 0; i < 600; i++) { DrawPixel(i, i, 0xFF, 0xFF, 0xFF); }
-    DrawText(0, 0, "Hello, there!");
-    DrawArchLogo(200, 200);
+    // for (i = 0; i < 600; i++) { DrawPixel(i, i, 0xFF, 0xFF, 0xFF); }
+    // DrawText(0, 0, "Hello, there!");
+    // DrawArchLogo(200, 200);
+    ClearScreen();
     SaveUnderCursor();
     kbfd = OpenKeyboard();
     msfd = OpenMouse();
