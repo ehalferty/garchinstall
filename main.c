@@ -168,7 +168,7 @@ void Cleanup() {
     munmap(fbp, screensize);
     close(fbfd);
 }
-void MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
+uint32_t MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
     return (mouseDownAtX >= x && mouseDownAtX < (x + w) && mouseDownAtY >= y && mouseDownAtY < (y + h));
 }
 void ExitNormally() {

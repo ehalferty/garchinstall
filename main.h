@@ -37,7 +37,7 @@ int OpenMouse();
 void SaveUnderCursor();
 void RestoreUnderCursor();
 void DrawCursor();
-void MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+uint32_t MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
 void ExitNormally();
 void Cleanup();
 void DoPage();
