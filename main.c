@@ -173,9 +173,9 @@ void DrawCloseBox(uint8_t pressed) {
     uint32_t x, y;
     for (x = 0; x < 32; x++) { for (y = 0; y < 32; y++) {
         if (pressed) {
-            if (x < 4 || x > 27 || y < 4 || y > 27 || x == y || x == (32 - y)) {
-                DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0xFF, 0xFF);
-            } else { DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0x00, 0x00); }
+            if (x == 0 || x == 31 || y == 0 || y == 31 || x == y || x == (32 - y)) {
+                DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0x00, 0x00);
+            } else { DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0xFF, 0xFF); }
         } else {
             if (x == 0 || x == 31 || y == 0 || y == 31 || x == y || x == (32 - y)) {
                 DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0xFF, 0xFF);
@@ -197,7 +197,7 @@ void ExitNormally() {
     exit(0);
 }
 void DoPage() {
-    uint32_t redraw = (prevPage != page) || mouseWentDown;
+    uint32_t redraw = (prevPage != page) || mouseWentDown || mouseWentUp;
     prevPage = page;
     if (redraw) {
         RestoreUnderCursor();
