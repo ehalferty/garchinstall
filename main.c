@@ -188,7 +188,8 @@ void Cleanup() {
     close(fbfd);
 }
 uint32_t MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
-    return (mouseDownAtX >= x && mouseDownAtX < (x + w) && mouseDownAtY >= y && mouseDownAtY < (y + h));
+    return (mouseDownAtX >= x && mouseDownAtX < (x + w) && mouseDownAtY >= y && mouseDownAtY < (y + h) &&
+        mouseUpAtX >= x && mouseUpAtX < (x + w) && mouseUpAtY >= y && mouseUpAtY < (y + h));
 }
 void ExitNormally() {
     while (getchar() != EOF) {}
