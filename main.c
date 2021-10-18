@@ -264,7 +264,7 @@ void DoPage() {
         }
     }
     if (redraw) {
-        DrawCloseBox(mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY < 32);
+        DrawCloseBox(1);//mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY < 32);
         SaveUnderCursor();
     }
 }
