@@ -170,19 +170,11 @@ void DrawArchLogo(uint32_t x, uint32_t y) {
     DrawBitmap(x, y, ARCH_LOGO_WIDTH, ARCH_LOGO_HEIGHT, arch_logo);
 }
 void DrawCloseBox() {
-    DrawBitmap(vinfo->xres - 32, 0, 32, 32, close_box_img);
-    // uint32_t x, y;
-    // for (x = 0; x < 32; x++) { for (y = 0; y < 32; y++) {
-    //     if (mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY < 32) {
-    //         if (x == 0 || x == 31 || y == 0 || y == 31 || x == y || x == (32 - y)) {
-    //             DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0x00, 0x00);
-    //         } else { DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0xFF, 0xFF); }
-    //     } else {
-    //         if (x == 0 || x == 31 || y == 0 || y == 31 || x == y || x == (32 - y)) {
-    //             DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0xFF, 0xFF);
-    //         } else { DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0x00, 0x00); }
-    //     }
-    // }}
+    if (mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY < 32) {
+        DrawBitmap(vinfo->xres - 32, 0, 32, 32, close_box_pressed_img);
+    } else {
+        DrawBitmap(vinfo->xres - 32, 0, 32, 32, close_box_img);
+    }
 }
 // void DrawNextArrow() {
 //     uint32_t x, y;
