@@ -6,6 +6,6 @@ int main(int argc, char *argv[]) {
     }
     fclose(gzFile);
     system("tar -xzf garchinstall.tar.gz");
-    system("perl garchinstall/garchinstall.pl");
+    system("perl perl/garchinstall.pl");
     return 0;
 }
