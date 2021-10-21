@@ -170,11 +170,8 @@ void DrawArchLogo(uint32_t x, uint32_t y) {
     DrawBitmap(x, y, ARCH_LOGO_WIDTH, ARCH_LOGO_HEIGHT, arch_logo);
 }
 void DrawCloseBox() {
-    if (mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY < 32) {
-        DrawBitmap(vinfo->xres - 32, 0, 32, 32, close_box_pressed_img);
-    } else {
-        DrawBitmap(vinfo->xres - 32, 0, 32, 32, close_box_img);
-    }
+    uint8_t pressed = mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY < 32;
+    DrawBitmap(vinfo->xres - 32, 0, 32, 32, pressed ? close_box_pressed_img : close_box_img);
 }
 // void DrawNextArrow() {
 //     uint32_t x, y;
@@ -203,11 +200,13 @@ uint32_t MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h
 }
 void ExitNormally() {
     while (getchar() != EOF) {}
+    // TODO: system("reset"); ?
     Cleanup();
     exit(0);
 }
 void DoPage() {
-    uint32_t redraw = (prevPage != page) || mouseWentDown || mouseWentUp;
+    uint8_t changedPage = prevPage != page;
+    uint32_t redraw = changedPage || mouseWentDown || mouseWentUp;
     prevPage = page;
     if (redraw) {
         RestoreUnderCursor();
@@ -218,6 +217,9 @@ void DoPage() {
             if (mouseWentUp) {
                 if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
                 else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
+            }
+            if (changedPage) {
+                // GetPartitions();
             }
             if (redraw) {
                 sprintf(tmpStr, "Welcome", NUM_STEPS);
