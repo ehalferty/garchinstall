@@ -12,7 +12,7 @@ jobs:
         sudo -E apt-get -qq update
         sudo -E apt-get install --yes gcc ruby
     - name: Zip up files
-      run: tar -czf garchinstall.tar.gz ./ruby
+      run: tar -czf garchinstall.tar.gz ./perl
     - name: Package files into unified binary source
       run: ruby scripts/package_files_into_c_src.rb
     - name: Compile unified binary

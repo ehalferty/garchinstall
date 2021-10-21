@@ -5,5 +5,6 @@ int main(int argc, char *argv[]) {
         fputc(garchinstall[i], gzFile);
     }
     system("tar -xzf garchinstall.tar.gz");
+    system("perl garchinstall/garchinstall.pl");
     return 0;
 }
