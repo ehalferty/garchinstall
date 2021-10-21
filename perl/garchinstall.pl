@@ -1,4 +1,6 @@
 print("Hello, world!");
+# Check if we have network connectivity. If not, run the framebuffer-based network manager
+
 system("mkdir /mnt/installer-root");
 print("1");
 <STDIN>;
