@@ -4,19 +4,19 @@ mkdir /mnt/installer-root
 mount -t tmpfs -o size=4g tmpfs /mnt/installer-root
 cp -r /bin /mnt/installer-root
 cp -r /boot /mnt/installer-root
-cp -r /dev /mnt/installer-root
+mkdir /mnt/installer-root/dev
 cp -r /etc /mnt/installer-root
 cp -r /home /mnt/installer-root
 cp -r /lib /mnt/installer-root
 cp -r /lib64 /mnt/installer-root
-mkdir -p /mnt/installer-root/mnt
+mkdir /mnt/installer-root/mnt
 cp -r /opt /mnt/installer-root
-cp -r /proc /mnt/installer-root
+mkdir /mnt/installer-root/proc
 cp -r /root /mnt/installer-root
 cp -r /run /mnt/installer-root
 cp -r /sbin /mnt/installer-root
 cp -r /srv /mnt/installer-root
-cp -r /sys /mnt/installer-root
+mkdir /mnt/installer-root/sys
 cp -r /tmp /mnt/installer-root
 cp -r /usr /mnt/installer-root
 cp -r /var /mnt/installer-root
