@@ -10,9 +10,13 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo -E apt-get -qq update
-        sudo -E apt-get install --yes gcc
-    - name: Compile
-      run: gcc cursor.c font.c arch_logo.c close_box_img.c keycode_names.c main.c
+        sudo -E apt-get install --yes gcc ruby
+    - name: Zip up files
+      run: tar -czf garchinstall.tar.gz ./ruby
+    - name: Package files into unified binary source
+      run: ruby scripts/package_files_into_c_src.rb
+    - name: Compile unified binary
+      run: gcc garchinstall.c main.c
     - name: Upload binary
       run: |
         aws s3 cp a.out s3://garchinstall/${{ github.sha }} --endpoint=https://garchinstall.sfo3.digitaloceanspaces.com
