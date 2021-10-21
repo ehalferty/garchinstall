@@ -7,10 +7,10 @@ File.open("garchinstall.c", "w+") do |c_file|
             buffer = gz_file.read(1)
             if buffer
                 if i == 20
-                    c_file.write("\"\n\"\\x#{sprintf("%02X", buffer.to_i)}")
+                    c_file.write("\"\n\"\\x#{sprintf("%02X", buffer.codepoints.first)}")
                     i = 0
                 else
-                    c_file.write("\\x#{sprintf("%02X", buffer.to_i)}")
+                    c_file.write("\\x#{sprintf("%02X", buffer.codepoints.first)}")
                     i += 1
                 end
             end
