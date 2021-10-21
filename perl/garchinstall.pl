@@ -20,7 +20,7 @@ print("6");
 system("arch-chroot /mnt/installer-root pacman -Sy xf86-video-fbdev xf86-input-evdev xf86-input-synaptics weston lightdm --noconfirm");
 print("7");
 <STDIN>;
-system("arch-chroot /mnt/installer-root unset DBUS_SESSION_BUS_ADDRESS");
+system("unset DBUS_SESSION_BUS_ADDRESS");
 print("8");
 <STDIN>;
 system("arch-chroot /mnt/installer-root systemctl enable lightdm");
