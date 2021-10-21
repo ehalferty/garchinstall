@@ -22,5 +22,5 @@ gz_file_size = File.size("garchinstall.tar.gz")
 File.open("garchinstall.h", "w+") do |h_file|
     h_file.write("#include <stdint.h>\n")
     h_file.write("#define GZ_FILE_SIZE #{gz_file_size}\n")
-    h_file.write("extern uint8_t garchinstall[];\n");
+    h_file.write("extern const uint8_t garchinstall[];\n");
 end
