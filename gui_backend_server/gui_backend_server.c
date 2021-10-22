@@ -201,9 +201,7 @@ uint32_t MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h
 }
 void ExitNormally() {
     while (getchar() != EOF) {}
-    // TODO: system("reset"); ?
     ioctl(tty0_fd, KDSETMODE, KD_TEXT);
-    system("reset");
     Cleanup();
     exit(0);
 }
