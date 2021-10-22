@@ -13,7 +13,7 @@ jobs:
         sudo -E apt-get install --yes gcc ruby
 
     - name: Compile GUI Backend Server
-      run: cd gui_backend_server && gcc gui_backend_server.c -o ../bundle/gui_backend_server
+      run: cd gui_backend_server && gcc arch_logo.c close_box_img.c cursor.c font.c gui_backend_server.c keycode_names.c -o ../bundle/gui_backend_server
 
     - name: Zip up files
       run: tar -czf bundle.tar.gz ./bundle
