@@ -11,5 +11,5 @@ print("Welcome to garchinstaller!");
 print("Starting gui_backend_server...");
 system("pwd");
 system("ls -la");
-# system("chmod +x ../gui_backend_server");
-# system("../gui_backend_server &");
+system("chmod +x ./bundle/gui_backend_server");
+system("./bundle/gui_backend_server &");
