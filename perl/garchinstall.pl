@@ -10,7 +10,7 @@ system("unset DBUS_SESSION_BUS_ADDRESS");
 system("arch-chroot /mnt/installer-root systemctl enable lightdm >/dev/null 2>&1");
 # TODO: Remove splash screen before starting XFCE
 system("arch-chroot /mnt/installer-root startxfce4 >/dev/null 2>&1");
-system("/usr/bin/perl", "perl/garchinstall2.pl");
+# system("/usr/bin/perl", "perl/garchinstall2.pl");
 
 # mount -t tmpfs -o size=512m tmpfs /mnt/root1
 # pacstrap /mnt/root1 base linux
