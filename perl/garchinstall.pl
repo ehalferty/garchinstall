@@ -9,7 +9,8 @@ system("arch-chroot /mnt/installer-root pacman -Sy xorg xfce4 xorg-xinit xorg-xe
 system("arch-chroot /mnt/installer-root pacman -Sy xf86-video-fbdev xf86-input-evdev xf86-input-synaptics weston lightdm --noconfirm");
 system("unset DBUS_SESSION_BUS_ADDRESS");
 system("arch-chroot /mnt/installer-root systemctl enable lightdm");
-system("arch-chroot /mnt/installer-root startxfce4");
+# system("arch-chroot /mnt/installer-root startxfce4");
+# system("/usr/bin/perl", "perl/garchinstall2.pl");
 
 # mount -t tmpfs -o size=512m tmpfs /mnt/root1
 # pacstrap /mnt/root1 base linux
