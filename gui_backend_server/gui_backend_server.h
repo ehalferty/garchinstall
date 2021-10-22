@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <linux/fb.h>
 #include <linux/input.h>
+#include <linux/kd.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
