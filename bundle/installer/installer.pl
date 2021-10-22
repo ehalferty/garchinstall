@@ -8,6 +8,7 @@ print("Welcome to garchinstaller!");
 # system("arch-chroot /mnt/installer-root pacman -Sy glib2 pango gdk-pixbuf2 gtk2 gtk3 perl gtk2-perl perl-gtk3 weston --noconfirm");
 # system("arch-chroot /mnt/installer-root perl /root/garchinstall2.pl");
 
+system("stty -echo");
 print("Starting gui_backend_server...");
 system("pwd");
 system("ls -la");

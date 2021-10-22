@@ -297,6 +297,8 @@ int main(int argc, char *argv[]) {
     newt.c_lflag = 0;//&= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
     printf("\f");
+    int tty0_fd = open("/dev/tty0", O_WRONLY, 0);
+    ioctl(tty0_fd, VT_OPENQRY, &t);
     for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
     // for (i = 0; i < 600; i++) { DrawPixel(i, i, 0xFF, 0xFF, 0xFF); }
     // DrawText(0, 0, "Hello, there!");
