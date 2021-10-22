@@ -1,7 +1,7 @@
 print("Downloading packages for garchinstaller... (This may take awhile)");
 # TODO: Check if we have network connectivity. If not, run the framebuffer-based network manager
 # TODO: Throw up a splash screen to tell the user that we're downloading dependencies...
-$tmpRt = "/mnt/installer-root"
+$tmpRt = "/mnt/installer-root";
 $chrt = "arch-chroot ${tmpRt}";
 $pcmn = "pacman -Sy";
 $dependencies = "xorg xfce4 xorg-xinit xorg-xeyes xf86-video-fbdev xorg-server xf86-video-vmware xf86-video-fbdev
