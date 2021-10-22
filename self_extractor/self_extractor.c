@@ -1,4 +1,4 @@
-#include "main.h"
+#include "self_extractor.h"
 int main(int argc, char *argv[]) {
     FILE *gzFile = fopen("bundle.tar.gz", "w");
     for (int i = 0; i < GZ_FILE_SIZE; i++) {
