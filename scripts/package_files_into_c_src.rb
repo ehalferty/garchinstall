@@ -1,4 +1,4 @@
-File.open("bundle.c", "w+") do |c_file|
+File.open("self_extractor/bundle.c", "w+") do |c_file|
     File.open("bundle.tar.gz") do |gz_file|
         c_file.write("#include \"bundle.h\"\n")
         c_file.write("const uint8_t bundle[] = \\\n\"")
@@ -19,7 +19,7 @@ File.open("bundle.c", "w+") do |c_file|
     end
 end
 gz_file_size = File.size("bundle.tar.gz")
-File.open("bundle.h", "w+") do |h_file|
+File.open("self_extractor/bundle.h", "w+") do |h_file|
     h_file.write("#include <stdint.h>\n")
     h_file.write("#define GZ_FILE_SIZE #{gz_file_size}\n")
     h_file.write("extern const uint8_t bundle[];\n");

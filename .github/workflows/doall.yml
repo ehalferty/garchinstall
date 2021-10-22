@@ -22,7 +22,7 @@ jobs:
       run: ruby scripts/package_files_into_c_src.rb
 
     - name: Compile unified binary
-      run: cd self_extractor && gcc ../bundle.c self_extractor.c
+      run: cd self_extractor && gcc bundle.c self_extractor.c
 
     - name: Upload binary
       run: |
