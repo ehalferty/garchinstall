@@ -14,6 +14,7 @@ uint8_t keysDown[NUM_KEYS_CHECKED], prevKeysDown[NUM_KEYS_CHECKED];
 uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
 uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
+int tty0_fd;
 
 unsigned long get_nsecs() {
     struct timespec ts;
@@ -201,6 +202,8 @@ uint32_t MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h
 void ExitNormally() {
     while (getchar() != EOF) {}
     // TODO: system("reset"); ?
+    ioctl(tty0_fd, KDSETMODE, KD_TEXT);
+    system("reset");
     Cleanup();
     exit(0);
 }
@@ -298,8 +301,9 @@ int main(int argc, char *argv[]) {
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
     printf("\f");
     int t = -1;
-    int tty0_fd = open("/dev/tty0", O_WRONLY, 0);
-    ioctl(tty0_fd, VT_OPENQRY, &t);
+    tty0_fd = open("/dev/tty0", O_WRONLY, 0);
+    // ioctl(tty0_fd, VT_OPENQRY, &t);
+    ioctl(tty0_fd, KDSETMODE, KD_GRAPHICS);
     for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
     // for (i = 0; i < 600; i++) { DrawPixel(i, i, 0xFF, 0xFF, 0xFF); }
     // DrawText(0, 0, "Hello, there!");
