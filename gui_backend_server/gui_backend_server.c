@@ -16,6 +16,7 @@ uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
 int tty0_fd;
 int listenSocket;
+struct sockaddr_un socketAddr;
 
 unsigned long get_nsecs() {
     struct timespec ts;
@@ -304,6 +305,14 @@ int main(int argc, char *argv[]) {
     // ioctl(tty0_fd, VT_OPENQRY, &t);
     ioctl(tty0_fd, KDSETMODE, KD_GRAPHICS);
     listenSocket = socket(AF_UNIX, SOCK_STREAM, 0);
+    if (listenSocket == -1) { perror("Problem creating socket. OOM?"); exit(8); }
+    memset(&socketAddr, 0, sizeof(struct sockaddr_un));
+    socketAddr.sun_family = AF_UNIX;
+    strncpy(socketAddr.sun_path, SOCKET_PATH, sizeof(socketAddr.sun_path) - 1);
+    int bindRes = bind(listenSocket, (struct sockaddr *)&socketAddr, sizeof(struct sockaddr_un));
+    if (bindRes == -1) { perror("Problem binding socket to /tmp/gui_socket"); exit(8); }
+    if (listen(listenSocket, BACKLOG) == -1) { perror("Problem starting to listen to socket"); exit(8); }
+    // socketAddr
     // int socket(int domain, int type, int protocol);
     // int acceptRes = accept(listenSocket)
     // int accept(int sockfd, struct sockaddr *restrict addr, socklen_t *restrict addrlen);
