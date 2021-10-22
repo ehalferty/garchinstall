@@ -15,6 +15,7 @@
 #include <linux/kd.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <sys/socket.h>
 #include <sys/stat.h>
 #include "keycode_names.h"
 #include "cursor.h"
@@ -46,5 +47,5 @@ void DrawCursor();
 uint32_t MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
 void ExitNormally();
 void Cleanup();
-void DoPage();
+// void DoPage();
 int main(int argc, char *argv[]);
