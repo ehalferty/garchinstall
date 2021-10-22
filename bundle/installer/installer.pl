@@ -9,5 +9,7 @@ print("Welcome to garchinstaller!");
 # system("arch-chroot /mnt/installer-root perl /root/garchinstall2.pl");
 
 print("Starting gui_backend_server...");
-system("chmod +x ../gui_backend_server");
-system("../gui_backend_server &");
+system("pwd");
+system("ls -la");
+# system("chmod +x ../gui_backend_server");
+# system("../gui_backend_server &");
