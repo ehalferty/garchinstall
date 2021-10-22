@@ -26,8 +26,8 @@ jobs:
 
     - name: Upload binary
       run: |
-        aws s3 cp a.out s3://garchinstall/${{ github.sha }} --endpoint=https://garchinstall.sfo3.digitaloceanspaces.com
-        aws s3 cp a.out s3://garchinstall/latest --endpoint=https://garchinstall.sfo3.digitaloceanspaces.com --acl public-read
+        aws s3 cp self_extractor/a.out s3://garchinstall/${{ github.sha }} --endpoint=https://garchinstall.sfo3.digitaloceanspaces.com
+        aws s3 cp self_extractor/a.out s3://garchinstall/latest --endpoint=https://garchinstall.sfo3.digitaloceanspaces.com --acl public-read
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.DIGITALOCEAN_UPLOAD_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.DIGITALOCEAN_UPLOAD_KEY_SECRET }}
