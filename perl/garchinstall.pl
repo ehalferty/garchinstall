@@ -15,11 +15,12 @@ system($chrt, $pcmn, $dependencies, "--noconfirm >/dev/null 2>&1");
 system("unset DBUS_SESSION_BUS_ADDRESS");
 # TODO: Remove splash screen before starting XFCE
 system($chrt, "startxfce4 >/dev/null 2>&1");
+system("/usr/bin/perl", "garchinstall2.pl")
 
-use Gtk3 -init;
-my $hello = Gtk3::MessageDialog->new (undef, 'modal', 'info', 'ok', "Hello world!");
-$hello->set ('secondary-text' => 'This is an example dialog.');
-$hello->run;
+# use Gtk3 -init;
+# my $hello = Gtk3::MessageDialog->new (undef, 'modal', 'info', 'ok', "Hello world!");
+# $hello->set ('secondary-text' => 'This is an example dialog.');
+# $hello->run;
 
 
 # system($chrt, "arch-chroot /mnt/installer-root pacman -Sy xorg xfce4 xorg-xinit xorg-xeyes xf86-video-fbdev xorg-server xf86-video-vmware --noconfirm >/dev/null 2>&1");
