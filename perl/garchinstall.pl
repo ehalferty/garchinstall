@@ -3,7 +3,7 @@ system("mkdir /mnt/installer-root");
 system("mount -t tmpfs -o size=4g tmpfs /mnt/installer-root");
 system("pacstrap /mnt/installer-root base linux");
 system("arch-chroot /mnt/installer-root pacman -Syu");
-system("arch-chroot /mnt/installer-root pacman -Sy glib2 pango --noconfirm");
+system("arch-chroot /mnt/installer-root pacman -Sy glib2 pango gdk-pixbuf2 gtk3 --noconfirm");
 
 # TODO: Check if we have network connectivity. If not, run the framebuffer-based network manager
 # TODO: Throw up a splash screen to tell the user that we're downloading dependencies...
