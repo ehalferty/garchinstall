@@ -2,9 +2,9 @@ print("Hello, world!");
 system("mkdir /mnt/installer-root");
 system("mount -t tmpfs -o size=4g tmpfs /mnt/installer-root");
 system("pacstrap /mnt/installer-root base linux");
-system("cp ./perl/garchinstall2.pl /mnt/installer-root/");
+system("cp ./perl/garchinstall2.pl /mnt/installer-root/root/");
 system("arch-chroot /mnt/installer-root pacman -Syu");
-system("arch-chroot /mnt/installer-root pacman -Sy glib2 pango gdk-pixbuf2 gtk3 perl-gtk3 --noconfirm");
+system("arch-chroot /mnt/installer-root pacman -Sy glib2 pango gdk-pixbuf2 gtk2 perl-gtk3 --noconfirm");
 system("arch-chroot /mnt/installer-root /usr/bin/perl /root/garchinstall2.pl");
 # TODO: Check if we have network connectivity. If not, run the framebuffer-based network manager
 # TODO: Throw up a splash screen to tell the user that we're downloading dependencies...
