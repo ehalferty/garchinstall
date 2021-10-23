@@ -23,6 +23,13 @@ unsigned long get_nsecs() {
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return ts.tv_sec * 1000000000UL + ts.tv_nsec;
 };
+void ExitWithError(char *msg) {
+    while (getchar() != EOF) {}
+    ioctl(tty0_fd, KDSETMODE, KD_TEXT);
+    Cleanup();
+    printf(msg);
+    exit(2);
+}
 uint32_t PixelColor(uint8_t r, uint8_t g, uint8_t b) {
     return (r<<vinfo->red.offset) | (g<<vinfo->green.offset) | (b<<vinfo->blue.offset);
 }
@@ -48,15 +55,15 @@ void OpenFramebuffer() {
     vinfo = malloc(sizeof(struct fb_var_screeninfo));
     finfo = malloc(sizeof(struct fb_fix_screeninfo));
     fbfd = open("/dev/fb0", O_RDWR);
-    if (fbfd == -1) { perror("Error: cannot open framebuffer device"); exit(1); }
+    if (fbfd == -1) { ExitWithError("Error: cannot open framebuffer device"); }
     fstat(fbfd, st);
-    if (ioctl(fbfd, FBIOGET_FSCREENINFO, finfo) == -1) { perror("Error reading fixed information"); exit(2); }
-    if (ioctl(fbfd, FBIOGET_VSCREENINFO, vinfo) == -1) { perror("Error reading variable information"); exit(3); }
+    if (ioctl(fbfd, FBIOGET_FSCREENINFO, finfo) == -1) { ExitWithError("Error reading fixed information"); }
+    if (ioctl(fbfd, FBIOGET_VSCREENINFO, vinfo) == -1) { ExitWithError("Error reading variable information"); }
     mouseX = vinfo->xres / 2;
     mouseY = vinfo->yres / 2;
     screensize = vinfo->xres * vinfo->yres * (vinfo->bits_per_pixel / 8);
     for (i = 8; i >= 0; i--) {
-        if (i == 0) { perror("Error: failed to map framebuffer device to memory"); exit(4); }
+        if (i == 0) { ExitWithError("Error: failed to map framebuffer device to memory"); }
         mmapsize = screensize * i;
         fbp = (char *)mmap(0, mmapsize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
         if (fbp != -1) { break; }
@@ -75,12 +82,11 @@ int OpenKeyboard() {
                 kbPath = malloc(256);
                 sprintf(kbLink, "/dev/input/by-path/%s", dir->d_name);
                 res = realpath(kbLink, kbPath);
-                if (res == 0) { perror("ERror getting realpath of kbd device symlink"); exit(10); }
+                if (res == 0) { ExitWithError("ERror getting realpath of kbd device symlink"); }
                 res = open(kbPath, O_RDONLY);
                 if (res == -1) {
                     sprintf(kbPath, "Error: Can't open %s", kbPath);
-                    perror(kbPath);
-                    exit(7);
+                    ExitWithError(kbPath);
                 }
                 closedir(d);
                 return res;
@@ -88,12 +94,12 @@ int OpenKeyboard() {
         }
     }
     closedir(d);
-    perror("Error: Couldn't find keyboard device"); exit(6);
+    ExitWithError("Error: Couldn't find keyboard device");
     return -1;
 }
 int OpenMouse() {
     int res = open("/dev/input/mice", O_RDONLY);
-    if (res == -1) { perror("Error: Can't open /dev/input/mice"); exit(5); }
+    if (res == -1) { ExitWithError("Error: Can't open /dev/input/mice"); }
     return res;
 }
 void SaveUnderCursor() {
@@ -308,13 +314,13 @@ int main(int argc, char *argv[]) {
     // ioctl(tty0_fd, VT_OPENQRY, &t);
     ioctl(tty0_fd, KDSETMODE, KD_GRAPHICS);
     listenSocket = socket(AF_UNIX, SOCK_STREAM, 0);
-    if (listenSocket == -1) { perror("Problem creating socket. OOM?"); exit(8); }
+    if (listenSocket == -1) { ExitWithError("Problem creating socket. OOM?"); }
     memset(&socketAddr, 0, sizeof(struct sockaddr_un));
     socketAddr.sun_family = AF_UNIX;
     strncpy(socketAddr.sun_path, SOCKET_PATH, sizeof(socketAddr.sun_path) - 1);
     int bindRes = bind(listenSocket, (struct sockaddr *)&socketAddr, sizeof(struct sockaddr_un));
-    if (bindRes == -1) { perror("Problem binding socket to /tmp/gui_socket"); exit(8); }
-    if (listen(listenSocket, BACKLOG) == -1) { perror("Problem starting to listen to socket"); exit(8); }
+    if (bindRes == -1) { ExitWithError("Problem binding socket to /tmp/gui_socket"); }
+    if (listen(listenSocket, BACKLOG) == -1) { ExitWithError("Problem starting to listen to socket"); }
     // socketAddr
     // int socket(int domain, int type, int protocol);
     // int acceptRes = accept(listenSocket)
@@ -338,11 +344,11 @@ int main(int argc, char *argv[]) {
         keyWentUp = 0;
         mouseMoved = 0;
         ready = poll(pfds, 2, 30);
-        if (ready == -1) { perror("poll() returned -1");exit(9); }
+        if (ready == -1) { ExitWithError("poll() returned -1"); }
         if (pfds[0].revents != 0) {
             if (pfds[0].revents & POLLIN) {
                 siz = read(pfds[0].fd, buff, 65536);
-                if (siz == -1) { perror("Problem reading from kbfd"); exit(8); }
+                if (siz == -1) { ExitWithError("Problem reading from kbfd"); }
                 evt = (struct input_event *)buff;
                 for (i = 0, evt = (struct input_event *)buff; i < siz; i += sizeof(struct input_event), evt++) {
                     if (evt->type == EV_KEY) {
@@ -378,7 +384,7 @@ int main(int argc, char *argv[]) {
             // There's a mouse event
             if (pfds[1].revents & POLLIN) {
                 siz = read(pfds[1].fd, buff, 65536);
-                if (siz == -1) { perror("Problem reading from msfd"); exit(8); }
+                if (siz == -1) { ExitWithError("Problem reading from msfd"); }
                 leftBtn = buff[0] & 1; rightBtn = (buff[0] >> 1) & 1; midBtn = (buff[0] >> 1) & 1;
                 xdiff = (int8_t)buff[1]; ydiff = (int8_t)buff[2];
                 if (xdiff != 0 || ydiff != 0) {
@@ -415,7 +421,7 @@ int main(int argc, char *argv[]) {
         int acceptRes = accept4(listenSocket, NULL, NULL, SOCK_NONBLOCK);
         if (acceptRes == -1) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {}
-            else { perror("Problem accepting connection on socket"); exit(8); }
+            else { ExitWithError("Problem accepting connection on socket"); }
         }
         // if (acceptRes == EAGAIN || acceptRes == EWOULDBLOCK) {
         //     usleep(3000); // Nothing trying to connect, just waste some time before looping again
@@ -427,7 +433,7 @@ int main(int argc, char *argv[]) {
         //         i += 20;
         //     }
         // }
-        if (close(acceptRes) == -1) { perror("Problem closing socket"); exit(8); }
+        if (close(acceptRes) == -1) { ExitWithError("Problem closing socket"); }
         usleep(3000);
     }
     Cleanup();
