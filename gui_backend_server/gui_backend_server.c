@@ -35,9 +35,8 @@ void ExitWithError(char *msg) {
     ioctl(tty0_fd, KDSETMODE, KD_TEXT);
     Cleanup();
     perror("Error");
-    printf(" ");
     printf(msg);
-    printf("\n");
+    printf(" (errno=%d)\n", errno);
     exit(2);
 }
 void EnableGraphicsMode() {
