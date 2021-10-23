@@ -39,6 +39,15 @@ void ExitWithError(char *msg) {
     printf("\n");
     exit(2);
 }
+void EnableGraphicsMode() {
+    struct termios newt;
+    newt.c_lflag = 0;//&= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    printf("\f");
+    int t = -1;
+    tty0_fd = open("/dev/tty0", O_WRONLY, 0);
+    ioctl(tty0_fd, KDSETMODE, KD_GRAPHICS);
+}
 uint32_t PixelColor(uint8_t r, uint8_t g, uint8_t b) {
     return (r<<vinfo->red.offset) | (g<<vinfo->green.offset) | (b<<vinfo->blue.offset);
 }
@@ -297,7 +306,6 @@ void DoPage() {
     }
 }
 int main(int argc, char *argv[]) {
-    struct termios oldt, newt;
     struct pollfd *pfds;
     struct input_event *evt;
     ssize_t siz;
@@ -309,13 +317,7 @@ int main(int argc, char *argv[]) {
     tmpStr = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
     OpenFramebuffer();
-    newt.c_lflag = 0;//&= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-    printf("\f");
-    int t = -1;
-    tty0_fd = open("/dev/tty0", O_WRONLY, 0);
-    // ioctl(tty0_fd, VT_OPENQRY, &t);
-    ioctl(tty0_fd, KDSETMODE, KD_GRAPHICS);
+    // EnableGraphicsMode();
     listenSocket = socket(AF_UNIX, SOCK_STREAM, 0);
     if (listenSocket == -1) { ExitWithError("Problem creating socket. OOM?"); }
     memset(&socketAddr, 0, sizeof(struct sockaddr_un));
@@ -420,7 +422,7 @@ int main(int argc, char *argv[]) {
                 old_midBtn = midBtn;
             }
         }
-        DoPage();
+        // DoPage();
         int acceptRes = accept4(listenSocket, NULL, NULL, SOCK_NONBLOCK);
         if (acceptRes == -1) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {}
