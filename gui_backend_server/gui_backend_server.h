@@ -17,6 +17,7 @@
 #include <sys/mman.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
+#include <sys/un.h>
 #include "keycode_names.h"
 #include "cursor.h"
 #include "font.h"

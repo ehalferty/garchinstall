@@ -406,7 +406,7 @@ int main(int argc, char *argv[]) {
                 old_midBtn = midBtn;
             }
         }
-        // DoPage();
+        int acceptRes = accept4(listenSocket, NULL, NULL, SOCK_NONBLOCK);
         usleep(3000);
     }
     Cleanup();
