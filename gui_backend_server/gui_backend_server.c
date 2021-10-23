@@ -207,14 +207,14 @@ void ExitNormally() {
     Cleanup();
     exit(0);
 }
-// void DoPage() {
-//     uint8_t changedPage = prevPage != page;
-//     uint32_t redraw = changedPage || mouseWentDown || mouseWentUp;
-//     prevPage = page;
-//     if (redraw) {
-//         RestoreUnderCursor();
-//         ClearScreen();
-//     }
+void DoPage() {
+    uint8_t changedPage = prevPage != page;
+    uint32_t redraw = changedPage || mouseWentDown || mouseWentUp;
+    prevPage = page;
+    if (redraw) {
+        RestoreUnderCursor();
+        ClearScreen();
+    }
 //     switch (page) {
 //         case 0: {
 //             if (mouseWentUp) {
@@ -278,12 +278,12 @@ void ExitNormally() {
 //             break;
 //         }
 //     }
-//     if (redraw) { // TODO: Finer-grained redraw flags. Don't need to redraw entire page to redraw the closebox...
-//         DrawCloseBox();
-//         // DrawNextArrow();
-//         SaveUnderCursor();
-//     }
-// }
+    if (redraw) { // TODO: Finer-grained redraw flags. Don't need to redraw entire page to redraw the closebox...
+        DrawCloseBox();
+        // DrawNextArrow();
+        SaveUnderCursor();
+    }
+}
 int main(int argc, char *argv[]) {
     struct termios oldt, newt;
     struct pollfd *pfds;
@@ -326,6 +326,8 @@ int main(int argc, char *argv[]) {
     msfd = OpenMouse();
     pfds[0].fd = kbfd; pfds[0].events = POLLIN;
     pfds[1].fd = msfd; pfds[1].events = POLLIN;
+    ssize_t numBytesReadFromSocket;
+    char socketReadBuff[SOCKET_READ_BUFF_SIZE];
     while (1) {
         mouseWentDown = 0;
         mouseWentUp = 0;
@@ -406,8 +408,20 @@ int main(int argc, char *argv[]) {
                 old_midBtn = midBtn;
             }
         }
+        DoPage();
         int acceptRes = accept4(listenSocket, NULL, NULL, SOCK_NONBLOCK);
-        usleep(3000);
+        if (acceptRes == EAGAIN || acceptRes == EWOULDBLOCK) {
+            usleep(3000); // Nothing trying to connect, just waste some time before looping again
+        } else {
+            int i = 0;
+            while ((numBytesReadFromSocket = read(acceptRes, socketReadBuff, SOCKET_READ_BUFF_SIZE)) > 0) {
+                sprintf(tmpStr, "Read: %s", NUM_STEPS);
+                DrawText(0, i, tmpStr);
+                i += 20;
+            }
+        }
+        if (close(acceptRes) == -1) { perror("Problem closing socket"); exit(8); }
+        // usleep(3000);
     }
     Cleanup();
     return 0;

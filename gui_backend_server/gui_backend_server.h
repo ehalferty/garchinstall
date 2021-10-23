@@ -30,6 +30,7 @@
 #define NUM_STEPS 5
 #define SOCKET_PATH "/tmp/gui_socket"
 #define BACKLOG 5
+#define SOCKET_READ_BUFF_SIZE 0x10000
 
 uint32_t GetFBOffset(uint32_t x, uint32_t y);
 void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b);
@@ -50,5 +51,5 @@ void DrawCursor();
 uint32_t MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
 void ExitNormally();
 void Cleanup();
-// void DoPage();
+void DoPage();
 int main(int argc, char *argv[]);
