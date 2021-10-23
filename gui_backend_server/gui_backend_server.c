@@ -326,6 +326,7 @@ int main(int argc, char *argv[]) {
     strncpy(socketAddr.sun_path, SOCKET_PATH, sizeof(socketAddr.sun_path) - 1);
     int bindRes = bind(listenSocket, (struct sockaddr *)&socketAddr, sizeof(struct sockaddr_un));
     if (bindRes == -1) {
+        printf("!!!\n");
         sprintf(tmpStr, "Problem binding socket to %s", socketAddr.sun_path);
         ExitWithError(tmpStr);
     }
