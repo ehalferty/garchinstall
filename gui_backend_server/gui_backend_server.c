@@ -437,7 +437,7 @@ int main(int argc, char *argv[]) {
             FILE *f = fopen("/tmp/asdf", "a");
             while ((numBytesReadFromSocket = read(acceptRes, socketReadBuff, SOCKET_READ_BUFF_SIZE)) > 0) {
                 // sprintf(tmpStr, "Read: %s", NUM_STEPS);
-                fwrite(f, socketReadBuff);
+                fprintf(f, socketReadBuff);
             }
             fwrite("============\n");
             fclose(f);
