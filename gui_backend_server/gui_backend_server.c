@@ -230,8 +230,8 @@ void DoPage() {
     uint32_t redraw = changedPage || mouseWentDown || mouseWentUp;
     prevPage = page;
     if (redraw) {
-        RestoreUnderCursor();
-        ClearScreen();
+        // RestoreUnderCursor();
+        // ClearScreen();
     }
     if (mouseWentUp) {
         if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
