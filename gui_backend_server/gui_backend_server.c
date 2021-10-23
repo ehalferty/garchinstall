@@ -439,7 +439,7 @@ int main(int argc, char *argv[]) {
                 // sprintf(tmpStr, "Read: %s", NUM_STEPS);
                 fprintf(f, socketReadBuff);
             }
-            fwrite("============\n");
+            fprintf(f, "============\n");
             fclose(f);
         }
         // if (acceptRes == EAGAIN || acceptRes == EWOULDBLOCK) {
