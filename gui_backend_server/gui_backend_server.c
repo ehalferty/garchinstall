@@ -312,6 +312,7 @@ int main(int argc, char *argv[]) {
     struct sockaddr_in serv_addr, cli_addr;
     int n;
     char *fileBuff = malloc(0x10000);
+    
 
     struct pollfd *pfds;
     struct input_event *evt;
@@ -325,6 +326,7 @@ int main(int argc, char *argv[]) {
     pfds = calloc(2, sizeof(struct pollfd));
     OpenFramebuffer();
     // EnableGraphicsMode();
+    printf("I have begun\n");
     sockfd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     memset(&serv_addr, 0, sizeof(serv_addr));
     portno = 666;
@@ -446,12 +448,14 @@ int main(int argc, char *argv[]) {
             }
         }
         // DoPage();
+        printf("I'm listening\n");
         clilen = sizeof(cli_addr);
         newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, &clilen);
         if (newsockfd == -1) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {}
             else { ExitWithError("Problem accepting connection on socket"); }
         } else {
+            printf("I hear you\n");
             int i = 0, numRead = 0;
             FILE *f = fopen("/tmp/asdf", "a");
             while ((numRead = read(newsockfd, fileBuff, 1024)) > 0) {
