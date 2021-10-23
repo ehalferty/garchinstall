@@ -34,7 +34,8 @@ void ExitWithError(char *msg) {
     while (getchar() != EOF) {}
     ioctl(tty0_fd, KDSETMODE, KD_TEXT);
     Cleanup();
-    printf("Exiting with error: ");
+    perror("Error");
+    printf(" ");
     printf(msg);
     printf("\n");
     exit(2);
