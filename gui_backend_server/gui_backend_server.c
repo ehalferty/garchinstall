@@ -327,7 +327,7 @@ int main(int argc, char *argv[]) {
     OpenFramebuffer();
     // EnableGraphicsMode();
     printf("I have begun\n");
-    sockfd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
+    sockfd = socket(AF_INET, SOCK_DGRAM | SOCK_NONBLOCK, 0);
     memset(&serv_addr, 0, sizeof(serv_addr));
     portno = 666;
     serv_addr.sin_family = AF_INET;
@@ -336,7 +336,7 @@ int main(int argc, char *argv[]) {
     if (bind(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
         ExitWithError("Problem binding socket.");
     }
-    listen(sockfd,5);
+    // listen(sockfd,5);
     // listenSocket = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     // if (listenSocket == -1) { ExitWithError("Problem creating socket. OOM?"); }
     // memset(&serverAddr, 0, sizeof(serverAddr));
@@ -450,17 +450,20 @@ int main(int argc, char *argv[]) {
         // DoPage();
         // printf("I'm listening\n");
         clilen = sizeof(cli_addr);
-        newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, &clilen);
-        if (newsockfd == -1) {
+        int res = recv(sockfd, fileBuff, 1024, MSG_DONTWAIT);
+        // if (res == -1)
+        // newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, &clilen);
+        if (res == -1) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {}
             else { ExitWithError("Problem accepting connection on socket"); }
         } else {
             printf("I hear you\n");
             int i = 0, numRead = 0;
             FILE *f = fopen("/tmp/asdf", "a");
-            while ((numRead = read(newsockfd, fileBuff, 1024)) > 0) {
-                fprintf(f, socketReadBuff);
-            }
+            // while ((numRead = read(newsockfd, fileBuff, 1024)) > 0) {
+                
+            // }
+            fprintf(f, fileBuff);
             fprintf(f, "============\n");
             fclose(f);
         }
