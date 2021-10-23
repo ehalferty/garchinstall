@@ -342,10 +342,10 @@ int main(int argc, char *argv[]) {
     // serverAddr.sin_port = htons(666);
     // strncpy(serverAddr.sun_path, SOCKET_PATH, sizeof(serverAddr.sun_path) - 1);
     // printf("About to try to bind to port %s listenSocket=%08llx\n", serverAddr.sin_port, listenSocket);
-    int bindRes = bind(listenSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
-    if (bindRes < 0) {
-        ExitWithError("error binding to port 666");
-    }
+    // int bindRes = bind(listenSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
+    // if (bindRes < 0) {
+    //     ExitWithError("error binding to port 666");
+    // }
     // printf("???\n");
     // if (listen(listenSocket, BACKLOG) == -1) { ExitWithError("Problem starting to listen to socket"); }
     // socketAddr
