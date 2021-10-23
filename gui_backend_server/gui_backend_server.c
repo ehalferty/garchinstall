@@ -448,7 +448,7 @@ int main(int argc, char *argv[]) {
             }
         }
         // DoPage();
-        printf("I'm listening\n");
+        // printf("I'm listening\n");
         clilen = sizeof(cli_addr);
         newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, &clilen);
         if (newsockfd == -1) {
