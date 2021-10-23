@@ -13,6 +13,7 @@
 #include <linux/fb.h>
 #include <linux/input.h>
 #include <linux/kd.h>
+#include <netinet/in.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <sys/socket.h>
