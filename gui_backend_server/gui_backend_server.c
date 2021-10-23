@@ -35,7 +35,7 @@ void ExitWithError(char *msg) {
     while (getchar() != EOF) {}
     ioctl(tty0_fd, KDSETMODE, KD_TEXT);
     Cleanup();
-    printf("Exiting with error: %d\n", oldErrno);
+    printf("Exiting with error: %d (%s)\n", oldErrno, strerror(oldErrno));
     exit(2);
 }
 void EnableGraphicsMode() {
@@ -325,9 +325,10 @@ int main(int argc, char *argv[]) {
     printf("About to try to bind to %s listenSocket=%d\n", socketAddr.sun_path, listenSocket);
     int bindRes = bind(listenSocket, (struct sockaddr *)&socketAddr, sizeof(struct sockaddr_un));
     if (bindRes == -1) {
-        printf("!!!\n");
-        sprintf(tmpStr, "Problem binding socket to %s", socketAddr.sun_path);
-        ExitWithError(tmpStr);
+        ExitWithError("error binding");
+        // printf("!!!\n");
+        // sprintf(tmpStr, "Problem binding socket to %s", socketAddr.sun_path);
+        // ExitWithError(tmpStr);
     }
     printf("???\n");
     if (listen(listenSocket, BACKLOG) == -1) { ExitWithError("Problem starting to listen to socket"); }
