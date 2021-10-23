@@ -14,5 +14,6 @@ system("pwd");
 system("ls -la");
 system("chmod +x ./bundle/gui_backend_server");
 system("./bundle/gui_backend_server &> /tmp/serverlog.txt &");
+# system("perl ./bundle/")
 # TODO: gui_backend_server should listen on a socket
 # TODO: Should start sending it messages here, polling for messages here. Polled messages like.

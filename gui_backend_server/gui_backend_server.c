@@ -457,9 +457,10 @@ int main(int argc, char *argv[]) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {}
             else { ExitWithError("Problem accepting connection on socket"); }
         } else {
-            printf("I hear you\n");
+            // printf("I hear you\n");
             int i = 0, numRead = 0;
             FILE *f = fopen("/tmp/asdf", "a");
+            int sendRes = send(sockfd, "OKAY", 4, NULL);
             // while ((numRead = read(newsockfd, fileBuff, 1024)) > 0) {
                 
             // }
