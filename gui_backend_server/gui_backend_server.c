@@ -334,6 +334,7 @@ int main(int argc, char *argv[]) {
     if (bind(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
         ExitWithError("Problem binding socket.");
     }
+    listen(sockfd,5);
     // listenSocket = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     // if (listenSocket == -1) { ExitWithError("Problem creating socket. OOM?"); }
     // memset(&serverAddr, 0, sizeof(serverAddr));
