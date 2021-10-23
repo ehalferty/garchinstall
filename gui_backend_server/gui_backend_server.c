@@ -324,7 +324,7 @@ int main(int argc, char *argv[]) {
     socketAddr.sun_family = AF_UNIX;
     strncpy(socketAddr.sun_path, SOCKET_PATH, sizeof(socketAddr.sun_path) - 1);
     int bindRes = bind(listenSocket, (struct sockaddr *)&socketAddr, sizeof(struct sockaddr_un));
-    if (bindRes == -1) { ExitWithError("Problem binding socket to /tmp/gui_socket"); }
+    if (bindRes == -1) { sprintf(tmpStr, "Problem binding socket to %s", socketAddr); ExitWithError(tmpStr); }
     if (listen(listenSocket, BACKLOG) == -1) { ExitWithError("Problem starting to listen to socket"); }
     // socketAddr
     // int socket(int domain, int type, int protocol);
