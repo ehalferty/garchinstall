@@ -323,7 +323,7 @@ int main(int argc, char *argv[]) {
     memset(&socketAddr, 0, sizeof(struct sockaddr_un));
     socketAddr.sun_family = AF_UNIX;
     strncpy(socketAddr.sun_path, SOCKET_PATH, sizeof(socketAddr.sun_path) - 1);
-    printf("About to try to bind to %s\n", listenSocket.sun_path);
+    printf("About to try to bind to %s listenSocket=%d\n", socketAddr.sun_path, listenSocket);
     int bindRes = bind(listenSocket, (struct sockaddr *)&socketAddr, sizeof(struct sockaddr_un));
     if (bindRes == -1) {
         printf("!!!\n");
