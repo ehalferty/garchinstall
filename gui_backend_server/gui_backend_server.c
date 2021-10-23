@@ -324,15 +324,12 @@ int main(int argc, char *argv[]) {
     serverAddr.sin_addr.s_addr = INADDR_ANY;
     serverAddr.sin_port = htons(666);
     // strncpy(serverAddr.sun_path, SOCKET_PATH, sizeof(serverAddr.sun_path) - 1);
-    printf("About to try to bind to port %s listenSocket=%08llx\n", serverAddr.sin_port, listenSocket);
+    // printf("About to try to bind to port %s listenSocket=%08llx\n", serverAddr.sin_port, listenSocket);
     int bindRes = bind(listenSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
     if (bindRes < 0) {
-        ExitWithError("error binding");
-        // printf("!!!\n");
-        // sprintf(tmpStr, "Problem binding socket to %s", socketAddr.sun_path);
-        // ExitWithError(tmpStr);
+        ExitWithError("error binding to port 666");
     }
-    printf("???\n");
+    // printf("???\n");
     // if (listen(listenSocket, BACKLOG) == -1) { ExitWithError("Problem starting to listen to socket"); }
     // socketAddr
     // int socket(int domain, int type, int protocol);
@@ -435,6 +432,15 @@ int main(int argc, char *argv[]) {
         if (acceptRes == -1) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {}
             else { ExitWithError("Problem accepting connection on socket"); }
+        } else {
+            int i = 0;
+            File *f = fopen("/tmp/asdf", "a");
+            while ((numBytesReadFromSocket = read(acceptRes, socketReadBuff, SOCKET_READ_BUFF_SIZE)) > 0) {
+                // sprintf(tmpStr, "Read: %s", NUM_STEPS);
+                fwrite(f, socketReadBuff);
+            }
+            fwrite("============\n");
+            fclose(f);
         }
         // if (acceptRes == EAGAIN || acceptRes == EWOULDBLOCK) {
         //     usleep(3000); // Nothing trying to connect, just waste some time before looping again
