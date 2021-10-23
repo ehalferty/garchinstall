@@ -215,6 +215,9 @@ void DoPage() {
         RestoreUnderCursor();
         ClearScreen();
     }
+    if (mouseWentUp) {
+        if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
+    }
 //     switch (page) {
 //         case 0: {
 //             if (mouseWentUp) {
@@ -409,7 +412,7 @@ int main(int argc, char *argv[]) {
             }
         }
         DoPage();
-        // int acceptRes = accept4(listenSocket, NULL, NULL, SOCK_NONBLOCK);
+        int acceptRes = accept4(listenSocket, NULL, NULL, SOCK_NONBLOCK);
         // if (acceptRes == EAGAIN || acceptRes == EWOULDBLOCK) {
         //     usleep(3000); // Nothing trying to connect, just waste some time before looping again
         // } else {
@@ -420,7 +423,7 @@ int main(int argc, char *argv[]) {
         //         i += 20;
         //     }
         // }
-        // if (close(acceptRes) == -1) { perror("Problem closing socket"); exit(8); }
+        if (close(acceptRes) == -1) { perror("Problem closing socket"); exit(8); }
         usleep(3000);
     }
     Cleanup();
