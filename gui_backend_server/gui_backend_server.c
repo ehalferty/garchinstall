@@ -323,7 +323,7 @@ int main(int argc, char *argv[]) {
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = INADDR_ANY;
     serverAddr.sin_port = htons(666);
-    strncpy(socketAddr.sun_path, SOCKET_PATH, sizeof(socketAddr.sun_path) - 1);
+    // strncpy(serverAddr.sun_path, SOCKET_PATH, sizeof(serverAddr.sun_path) - 1);
     printf("About to try to bind to port %s listenSocket=%08llx\n", serverAddr.sin_port, listenSocket);
     int bindRes = bind(listenSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
     if (bindRes < 0) {
