@@ -31,12 +31,11 @@ void ExitNormally() {
     exit(0);
 }
 void ExitWithError(char *msg) {
+    int oldErrno = errno;
     while (getchar() != EOF) {}
     ioctl(tty0_fd, KDSETMODE, KD_TEXT);
     Cleanup();
-    perror("Error");
-    printf(msg);
-    printf(" (errno=%d)\n", errno);
+    perror("Exiting with error: %d\n", oldErrno);
     exit(2);
 }
 void EnableGraphicsMode() {
