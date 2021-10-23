@@ -330,7 +330,7 @@ int main(int argc, char *argv[]) {
     // int socket(int domain, int type, int protocol);
     // int acceptRes = accept(listenSocket)
     // int accept(int sockfd, struct sockaddr *restrict addr, socklen_t *restrict addrlen);
-    for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
+    // for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
     // for (i = 0; i < 600; i++) { DrawPixel(i, i, 0xFF, 0xFF, 0xFF); }
     // DrawText(0, 0, "Hello, there!");
     // DrawArchLogo(200, 200);
@@ -399,9 +399,9 @@ int main(int argc, char *argv[]) {
                     if (((int)mouseY - ydiff) < 0) { mouseY = 0; }
                     else if ((mouseY - ydiff) > vinfo->yres) { mouseY = vinfo->yres; }
                     else { mouseY -= ydiff; }
-                    RestoreUnderCursor();
-                    SaveUnderCursor();
-                    DrawCursor();
+                    // RestoreUnderCursor();
+                    // SaveUnderCursor();
+                    // DrawCursor();
                     mouseMoved = 1;
                 }
                 if (old_leftBtn != leftBtn) {
