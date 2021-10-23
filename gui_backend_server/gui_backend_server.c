@@ -460,7 +460,7 @@ int main(int argc, char *argv[]) {
             // printf("I hear you\n");
             int i = 0, numRead = 0;
             FILE *f = fopen("/tmp/asdf", "a");
-            int sendRes = send(sockfd, "OKAY", 4, NULL);
+            int sendRes = send(sockfd, "OKAY", 5, NULL);
             // while ((numRead = read(newsockfd, fileBuff, 1024)) > 0) {
                 
             // }
