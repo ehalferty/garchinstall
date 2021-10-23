@@ -16,7 +16,7 @@ uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
 int tty0_fd;
 int listenSocket;
-struct sockaddr_un socketAddr;
+struct sockaddr_in serverAddr;
 
 unsigned long get_nsecs() {
     struct timespec ts;
@@ -317,21 +317,23 @@ int main(int argc, char *argv[]) {
     pfds = calloc(2, sizeof(struct pollfd));
     OpenFramebuffer();
     // EnableGraphicsMode();
-    listenSocket = socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0);
+    listenSocket = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     if (listenSocket == -1) { ExitWithError("Problem creating socket. OOM?"); }
-    memset(&socketAddr, 0, sizeof(struct sockaddr_un));
-    socketAddr.sun_family = AF_UNIX;
+    memset(&serverAddr, 0, sizeof(serverAddr));
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = INADDR_ANY;
+    serverAddr.sin_port = htons(666);
     strncpy(socketAddr.sun_path, SOCKET_PATH, sizeof(socketAddr.sun_path) - 1);
     printf("About to try to bind to %s listenSocket=%d\n", socketAddr.sun_path, listenSocket);
-    int bindRes = bind(listenSocket, (struct sockaddr *)&socketAddr, sizeof(struct sockaddr_un));
-    if (bindRes == -1) {
+    int bindRes = bind(listenSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
+    if (bindRes < 0) {
         ExitWithError("error binding");
         // printf("!!!\n");
         // sprintf(tmpStr, "Problem binding socket to %s", socketAddr.sun_path);
         // ExitWithError(tmpStr);
     }
     printf("???\n");
-    if (listen(listenSocket, BACKLOG) == -1) { ExitWithError("Problem starting to listen to socket"); }
+    // if (listen(listenSocket, BACKLOG) == -1) { ExitWithError("Problem starting to listen to socket"); }
     // socketAddr
     // int socket(int domain, int type, int protocol);
     // int acceptRes = accept(listenSocket)
