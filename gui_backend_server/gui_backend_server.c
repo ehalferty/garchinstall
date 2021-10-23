@@ -339,8 +339,8 @@ int main(int argc, char *argv[]) {
     // for (i = 0; i < 600; i++) { DrawPixel(i, i, 0xFF, 0xFF, 0xFF); }
     // DrawText(0, 0, "Hello, there!");
     // DrawArchLogo(200, 200);
-    ClearScreen();
-    SaveUnderCursor();
+    // ClearScreen();
+    // SaveUnderCursor();
     kbfd = OpenKeyboard();
     msfd = OpenMouse();
     pfds[0].fd = kbfd; pfds[0].events = POLLIN;
