@@ -330,6 +330,7 @@ int main(int argc, char *argv[]) {
         sprintf(tmpStr, "Problem binding socket to %s", socketAddr.sun_path);
         ExitWithError(tmpStr);
     }
+    printf("???\n");
     if (listen(listenSocket, BACKLOG) == -1) { ExitWithError("Problem starting to listen to socket"); }
     // socketAddr
     // int socket(int domain, int type, int protocol);
