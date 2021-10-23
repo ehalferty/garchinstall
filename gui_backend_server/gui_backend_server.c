@@ -428,7 +428,7 @@ int main(int argc, char *argv[]) {
             }
         }
         // DoPage();
-        size_t connectionLen = sizeof(connectionAddr);
+        int connectionLen = sizeof(connectionAddr);
         int acceptRes = accept(listenSocket, (struct sockaddr *)&connectionAddr, &connectionLen);
         if (acceptRes == -1) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {}
