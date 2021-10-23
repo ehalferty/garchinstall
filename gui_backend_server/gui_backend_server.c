@@ -325,7 +325,7 @@ int main(int argc, char *argv[]) {
     pfds = calloc(2, sizeof(struct pollfd));
     OpenFramebuffer();
     // EnableGraphicsMode();
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    sockfd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     memset(&serv_addr, 0, sizeof(serv_addr));
     portno = 666;
     serv_addr.sin_family = AF_INET;
