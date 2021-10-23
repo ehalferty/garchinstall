@@ -409,19 +409,19 @@ int main(int argc, char *argv[]) {
             }
         }
         DoPage();
-        int acceptRes = accept4(listenSocket, NULL, NULL, SOCK_NONBLOCK);
-        if (acceptRes == EAGAIN || acceptRes == EWOULDBLOCK) {
-            usleep(3000); // Nothing trying to connect, just waste some time before looping again
-        } else {
-            int i = 0;
-            while ((numBytesReadFromSocket = read(acceptRes, socketReadBuff, SOCKET_READ_BUFF_SIZE)) > 0) {
-                sprintf(tmpStr, "Read: %s", NUM_STEPS);
-                DrawText(0, i, tmpStr);
-                i += 20;
-            }
-        }
-        if (close(acceptRes) == -1) { perror("Problem closing socket"); exit(8); }
-        // usleep(3000);
+        // int acceptRes = accept4(listenSocket, NULL, NULL, SOCK_NONBLOCK);
+        // if (acceptRes == EAGAIN || acceptRes == EWOULDBLOCK) {
+        //     usleep(3000); // Nothing trying to connect, just waste some time before looping again
+        // } else {
+        //     int i = 0;
+        //     while ((numBytesReadFromSocket = read(acceptRes, socketReadBuff, SOCKET_READ_BUFF_SIZE)) > 0) {
+        //         sprintf(tmpStr, "Read: %s", NUM_STEPS);
+        //         DrawText(0, i, tmpStr);
+        //         i += 20;
+        //     }
+        // }
+        // if (close(acceptRes) == -1) { perror("Problem closing socket"); exit(8); }
+        usleep(3000);
     }
     Cleanup();
     return 0;
