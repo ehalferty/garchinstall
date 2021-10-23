@@ -23,11 +23,20 @@ unsigned long get_nsecs() {
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return ts.tv_sec * 1000000000UL + ts.tv_nsec;
 };
+void ExitNormally() {
+    while (getchar() != EOF) {}
+    ioctl(tty0_fd, KDSETMODE, KD_TEXT);
+    Cleanup();
+    printf("Exiting normally\n");
+    exit(0);
+}
 void ExitWithError(char *msg) {
     while (getchar() != EOF) {}
     ioctl(tty0_fd, KDSETMODE, KD_TEXT);
     Cleanup();
+    printf("Exiting with error: ");
     printf(msg);
+    printf("\n");
     exit(2);
 }
 uint32_t PixelColor(uint8_t r, uint8_t g, uint8_t b) {
@@ -206,12 +215,6 @@ void Cleanup() {
 uint32_t MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
     return (mouseDownAtX >= x && mouseDownAtX < (x + w) && mouseDownAtY >= y && mouseDownAtY < (y + h) &&
         mouseUpAtX >= x && mouseUpAtX < (x + w) && mouseUpAtY >= y && mouseUpAtY < (y + h));
-}
-void ExitNormally() {
-    while (getchar() != EOF) {}
-    ioctl(tty0_fd, KDSETMODE, KD_TEXT);
-    Cleanup();
-    exit(0);
 }
 void DoPage() {
     uint8_t changedPage = prevPage != page;
