@@ -18,6 +18,7 @@ int tty0_fd;
 int listenSocket;
 struct sockaddr_in serverAddr, connectionAddr;
 
+
 unsigned long get_nsecs() {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -305,6 +306,13 @@ void DoPage() {
     }
 }
 int main(int argc, char *argv[]) {
+    int sockfd, newsockfd, portno;
+    socklen_t clilen;
+    char buffer[256];
+    struct sockaddr_in serv_addr, cli_addr;
+    int n;
+    char *fileBuff = malloc(0x10000);
+
     struct pollfd *pfds;
     struct input_event *evt;
     ssize_t siz;
@@ -317,12 +325,21 @@ int main(int argc, char *argv[]) {
     pfds = calloc(2, sizeof(struct pollfd));
     OpenFramebuffer();
     // EnableGraphicsMode();
-    listenSocket = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
-    if (listenSocket == -1) { ExitWithError("Problem creating socket. OOM?"); }
-    memset(&serverAddr, 0, sizeof(serverAddr));
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
-    serverAddr.sin_port = htons(666);
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    memset(&serv_addr, 0, sizeof(serv_addr));
+    portno = 666;
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = INADDR_ANY;
+    serv_addr.sin_port = htons(portno);
+    if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
+        ExitWithError("Problem binding socket.");
+    }
+    // listenSocket = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
+    // if (listenSocket == -1) { ExitWithError("Problem creating socket. OOM?"); }
+    // memset(&serverAddr, 0, sizeof(serverAddr));
+    // serverAddr.sin_family = AF_INET;
+    // serverAddr.sin_addr.s_addr = INADDR_ANY;
+    // serverAddr.sin_port = htons(666);
     // strncpy(serverAddr.sun_path, SOCKET_PATH, sizeof(serverAddr.sun_path) - 1);
     // printf("About to try to bind to port %s listenSocket=%08llx\n", serverAddr.sin_port, listenSocket);
     int bindRes = bind(listenSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
@@ -428,34 +445,51 @@ int main(int argc, char *argv[]) {
             }
         }
         // DoPage();
-        int connectionLen = sizeof(connectionAddr);
-        int acceptRes = accept(listenSocket, (struct sockaddr *)&connectionAddr, &connectionLen);
-        if (acceptRes == -1) {
+        clilen = sizeof(cli_addr);
+        newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+        if (newsockfd == -1) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {}
             else { ExitWithError("Problem accepting connection on socket"); }
         } else {
-            int i = 0;
+            int i = 0, numRead = 0;
             FILE *f = fopen("/tmp/asdf", "a");
-            while ((numBytesReadFromSocket = read(acceptRes, socketReadBuff, SOCKET_READ_BUFF_SIZE)) > 0) {
-                // sprintf(tmpStr, "Read: %s", NUM_STEPS);
+            while ((numRead = read(newsockfd, fileBuff, 1024)) > 0) {
                 fprintf(f, socketReadBuff);
             }
             fprintf(f, "============\n");
             fclose(f);
         }
-        // if (acceptRes == EAGAIN || acceptRes == EWOULDBLOCK) {
-        //     usleep(3000); // Nothing trying to connect, just waste some time before looping again
+
+
+        // int connectionLen = sizeof(connectionAddr);
+        // int acceptRes = accept(listenSocket, (struct sockaddr *)&connectionAddr, &connectionLen);
+        // if (acceptRes == -1) {
+        //     if (errno == EAGAIN || errno == EWOULDBLOCK) {}
+        //     else { ExitWithError("Problem accepting connection on socket"); }
         // } else {
         //     int i = 0;
+        //     FILE *f = fopen("/tmp/asdf", "a");
         //     while ((numBytesReadFromSocket = read(acceptRes, socketReadBuff, SOCKET_READ_BUFF_SIZE)) > 0) {
-        //         sprintf(tmpStr, "Read: %s", NUM_STEPS);
-        //         DrawText(0, i, tmpStr);
-        //         i += 20;
+        //         // sprintf(tmpStr, "Read: %s", NUM_STEPS);
+        //         fprintf(f, socketReadBuff);
         //     }
+        //     fprintf(f, "============\n");
+        //     fclose(f);
         // }
-        if (close(acceptRes) == -1) { ExitWithError("Problem closing socket"); }
+        // // if (acceptRes == EAGAIN || acceptRes == EWOULDBLOCK) {
+        // //     usleep(3000); // Nothing trying to connect, just waste some time before looping again
+        // // } else {
+        // //     int i = 0;
+        // //     while ((numBytesReadFromSocket = read(acceptRes, socketReadBuff, SOCKET_READ_BUFF_SIZE)) > 0) {
+        // //         sprintf(tmpStr, "Read: %s", NUM_STEPS);
+        // //         DrawText(0, i, tmpStr);
+        // //         i += 20;
+        // //     }
+        // // }
+        // if (close(acceptRes) == -1) { ExitWithError("Problem closing socket"); }
         usleep(3000);
     }
+    close(sockfd);
     Cleanup();
     return 0;
 }
