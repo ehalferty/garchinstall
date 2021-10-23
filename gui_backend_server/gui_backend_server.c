@@ -434,7 +434,7 @@ int main(int argc, char *argv[]) {
             else { ExitWithError("Problem accepting connection on socket"); }
         } else {
             int i = 0;
-            File *f = fopen("/tmp/asdf", "a");
+            FILE *f = fopen("/tmp/asdf", "a");
             while ((numBytesReadFromSocket = read(acceptRes, socketReadBuff, SOCKET_READ_BUFF_SIZE)) > 0) {
                 // sprintf(tmpStr, "Read: %s", NUM_STEPS);
                 fwrite(f, socketReadBuff);
