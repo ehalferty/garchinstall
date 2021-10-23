@@ -318,7 +318,7 @@ int main(int argc, char *argv[]) {
     pfds = calloc(2, sizeof(struct pollfd));
     OpenFramebuffer();
     // EnableGraphicsMode();
-    listenSocket = socket(AF_UNIX, SOCK_STREAM, 0);
+    listenSocket = socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0);
     if (listenSocket == -1) { ExitWithError("Problem creating socket. OOM?"); }
     memset(&socketAddr, 0, sizeof(struct sockaddr_un));
     socketAddr.sun_family = AF_UNIX;
@@ -428,7 +428,7 @@ int main(int argc, char *argv[]) {
             }
         }
         // DoPage();
-        int acceptRes = accept4(listenSocket, NULL, NULL, SOCK_NONBLOCK);
+        int acceptRes = accept(listenSocket, NULL, NULL);
         if (acceptRes == -1) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {}
             else { ExitWithError("Problem accepting connection on socket"); }
