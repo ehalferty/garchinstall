@@ -16,7 +16,7 @@ uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
 int tty0_fd;
 int listenSocket;
-struct sockaddr_in serverAddr;
+struct sockaddr_in serverAddr, connectionAddr;
 
 unsigned long get_nsecs() {
     struct timespec ts;
@@ -428,7 +428,8 @@ int main(int argc, char *argv[]) {
             }
         }
         // DoPage();
-        int acceptRes = accept(listenSocket, NULL, NULL);
+        size_t connectionLen = sizeof(connectionAddr);
+        int acceptRes = accept(listenSocket, (struct sockaddr *)&connectionAddr, &connectionLen);
         if (acceptRes == -1) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {}
             else { ExitWithError("Problem accepting connection on socket"); }
