@@ -412,7 +412,11 @@ int main(int argc, char *argv[]) {
             }
         }
         DoPage();
-        // int acceptRes = accept4(listenSocket, NULL, NULL, SOCK_NONBLOCK);
+        int acceptRes = accept4(listenSocket, NULL, NULL, SOCK_NONBLOCK);
+        if (acceptRes == -1) {
+            if (errno == EAGAIN || errno == EWOULDBLOCK) {}
+            else { perror("Problem accepting connection on socket"); exit(8); }
+        }
         // if (acceptRes == EAGAIN || acceptRes == EWOULDBLOCK) {
         //     usleep(3000); // Nothing trying to connect, just waste some time before looping again
         // } else {
@@ -423,7 +427,7 @@ int main(int argc, char *argv[]) {
         //         i += 20;
         //     }
         // }
-        // if (close(acceptRes) == -1) { perror("Problem closing socket"); exit(8); }
+        if (close(acceptRes) == -1) { perror("Problem closing socket"); exit(8); }
         usleep(3000);
     }
     Cleanup();
