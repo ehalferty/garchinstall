@@ -170,7 +170,7 @@ void LoadBitmap(const char *path, uint8_t *bmp) {
     uint8_t *tmp = stbi_load(path, &x, &y, &n, 0);
     printf("Loaded bitmap %s w=%d h=%d bpp=%d\n", path, x, y, n);
     if (n == 3) {
-        printf("Converting 3bpp to 4...\n");
+        printf("Converting 3bpp to 4... New size=%d\n", x * y * 4);
         bmp = malloc(x * y * 4);
         for (int i = 0; i < x; i++) { for (int j = 0; j < y; j++) {
             offset = ((j * x) + i);
@@ -185,6 +185,7 @@ void FreeBitmap(uint8_t *bmp) {
     stbi_image_free(bmp);
 }
 void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
+    printf("Drawing bitmap w=%d h=%d size=%d\n", w, h, w * h * 4);
     uint32_t i, j, offset;
     for (i = 0; i < w; i++) { for (j = 0; j < h; j++) {
         offset = ((j * w) + i) * (vinfo->bits_per_pixel / 8);
