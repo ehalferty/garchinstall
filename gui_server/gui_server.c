@@ -164,12 +164,13 @@ void ClearScreen() {
     uint32_t x, y;
     for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
 }
-void LoadBitmap(const char *path, uint8_t *bmp) {
+uint8_t * LoadBitmap(const char *path) {
     int x, y, n;
     uint32_t i, j, offset;
-    uint8_t *tmp = stbi_load(path, &x, &y, &n, 0);
+    uint8_t *bmp = stbi_load(path, &x, &y, &n, 0), *tmp;
     printf("Loaded bitmap %s w=%d h=%d bpp=%d\n", path, x, y, n);
     if (n == 3) {
+        tmp = bmp;
         bmp = malloc(x * y * 4);
         printf("Converting 3bpp to 4... New size=%d addr=%08llx\n", x * y * 4, (uint64_t)bmp);
         for (int i = 0; i < x; i++) { for (int j = 0; j < y; j++) {
@@ -180,6 +181,7 @@ void LoadBitmap(const char *path, uint8_t *bmp) {
             bmp[offset * 4 + 4] = 0xFF;
         } }
     }
+    return bmp;
 }
 void FreeBitmap(uint8_t *bmp) {
     stbi_image_free(bmp);
@@ -343,7 +345,7 @@ int main(int argc, char *argv[]) {
     buff = malloc(65536);
     tmpStr = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
-    LoadBitmap("bundle/images/closebox32.png", close_box_img2);
+    close_box_img2 = LoadBitmap("bundle/images/closebox32.png");
     printf("close_box_img2=%08llx\n", close_box_img2);
     exit(1);
     OpenFramebuffer();

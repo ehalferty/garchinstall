@@ -48,7 +48,7 @@ void ExitNormally();
 void ExitWithError(char *msg);
 void Cleanup();
 void DoPage();
-void LoadBitmap(const char *path, uint8_t *bmp);
+uint8_t * LoadBitmap(const char *path);
 void FreeBitmap(uint8_t *bmp);
 void EnableGraphicsMode();
 int main(int argc, char *argv[]);
