@@ -16,7 +16,7 @@ uint8_t keysDown[NUM_KEYS_CHECKED], prevKeysDown[NUM_KEYS_CHECKED];
 uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
 uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
-uint8_t *close_box_img2;
+uint8_t *close_box_img2, *next_arrow_img2;
 void segfaultSigaction(int signal, siginfo_t *si, void *arg) {
     printf("Caught segfault at address %p\n", si->si_addr); ExitWithError("Segfault");
 }
@@ -201,7 +201,9 @@ void DrawCloseBox() {
     uint8_t pressed = mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY < 32;
     DrawBitmap(vinfo->xres - 32, 0, 32, 32, pressed ? close_box_pressed_img : close_box_img2);
 }
-// void DrawNextArrow() {
+void DrawNextArrow() {
+    DrawBitmap(vinfo->xres - 32, vinfo->yres - 32, 32, 32, next_arrow_img2);
+}
 //     uint32_t x, y;
 //     for (x = 0; x < 32; x++) { for (y = 0; y < 32; y++) {
 //         // if (mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY >= (vinfo->yres - 32)) {
@@ -314,7 +316,7 @@ void DoPage() {
     }
     if (redraw) { // TODO: Finer-grained redraw flags. Don't need to redraw entire page to redraw the closebox...
         DrawCloseBox();
-        // DrawNextArrow();
+        DrawNextArrow();
         SaveUnderCursor();
     }
 }
@@ -346,6 +348,7 @@ int main(int argc, char *argv[]) {
     tmpStr = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
     close_box_img2 = LoadBitmap("bundle/images/closebox32.png");
+    next_arrow_img2 = LoadBitmap("bundle/images/nextarrow32.png");
     OpenFramebuffer();
     EnableGraphicsMode();
     // newt.c_lflag = 0;//&= ~(ICANON | ECHO);
