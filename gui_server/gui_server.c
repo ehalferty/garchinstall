@@ -17,7 +17,9 @@ uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
 uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
 uint8_t *close_box_img2;
-
+void segfaultSigaction(int signal, siginfo_t *si, void *arg) {
+    printf("Caught segfault at address %p\n", si->si_addr); ExitWithError("Segfault");
+}
 unsigned long get_nsecs() {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -210,9 +212,18 @@ uint32_t MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h
 }
 void ExitNormally() {
     while (getchar() != EOF) {}
-    // TODO: system("reset"); ?
+    ioctl(tty0_fd, KDSETMODE, KD_TEXT);
     Cleanup();
+    printf("Exiting normally\n");
     exit(0);
+}
+void ExitWithError(char *msg) {
+    int oldErrno = errno;
+    while (getchar() != EOF) {}
+    ioctl(tty0_fd, KDSETMODE, KD_TEXT);
+    Cleanup();
+    printf("Error: %s. Exiting with error: %d (%s)\n", msg, oldErrno, strerror(oldErrno));
+    exit(2);
 }
 void DoPage() {
     uint8_t changedPage = prevPage != page;
@@ -291,6 +302,15 @@ void DoPage() {
         SaveUnderCursor();
     }
 }
+void EnableGraphicsMode() {
+    struct termios newt;
+    newt.c_lflag = 0;//&= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    printf("\f");
+    int t = -1;
+    tty0_fd = open("/dev/tty0", O_WRONLY, 0);
+    ioctl(tty0_fd, KDSETMODE, KD_GRAPHICS);
+}
 int main(int argc, char *argv[]) {
     struct termios oldt, newt;
     struct pollfd *pfds;
@@ -300,14 +320,21 @@ int main(int argc, char *argv[]) {
     int ready, x, y, ppid, pid, i;
     uint8_t xdir, ydir, leftBtn, rightBtn, midBtn, temp;
     int8_t xdiff, ydiff;
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(struct sigaction));
+    sigemptyset(&sa.sa_mask);
+    sa.sa_sigaction = segfaultSigaction;
+    sa.sa_flags = SA_SIGINFO;
+    sigaction(SIGSEGV, &sa, NULL);
     buff = malloc(65536);
     tmpStr = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
     // LoadBitmap("bundle/images/closebox32.png", close_box_img2);
     OpenFramebuffer();
-    newt.c_lflag = 0;//&= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-    printf("\f");
+    EnableGraphicsMode();
+    // newt.c_lflag = 0;//&= ~(ICANON | ECHO);
+    // tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    // printf("\f");
     for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
     // for (i = 0; i < 600; i++) { DrawPixel(i, i, 0xFF, 0xFF, 0xFF); }
     // DrawText(0, 0, "Hello, there!");
