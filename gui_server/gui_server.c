@@ -332,7 +332,7 @@ int ReadFromSocket() {
     fflush(stdout);
     t = sizeof(remote);
     // if((client_sockfd = accept(server_sockfd, (struct sockaddr *)&remote, &t)) == -1) { perror("accept"); exit(1); }
-    int acceptRes = accept4(server_sockfd, (struct sockaddr *)&remote, &t, O_NONBLOCK);
+    int acceptRes = accept4(server_sockfd, (struct sockaddr *)&remote, &t, SOCK_NONBLOCK);
     if (acceptRes == -1) {
         if (errno != EWOULDBLOCK && errno != EAGAIN) {
             perror("accept"); exit(1);
@@ -365,7 +365,7 @@ int ReadFromSocket() {
 }
 void SetupSocket() {
     totalMessage = malloc(MAX_MESSAGE_SIZE); 
-    if((server_sockfd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) { perror("Error creating server socket"); exit(1); }
+    if((server_sockfd = socket(AF_UNIX, SOCK_STREAM, SOCK_NONBLOCK)) == -1) { perror("Error creating server socket"); exit(1); }
     local.sun_family = AF_UNIX;
     strcpy(local.sun_path, SOCK_PATH);
     unlink(local.sun_path);
