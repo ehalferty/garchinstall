@@ -295,12 +295,14 @@ void DoPage() {
             break;
         }
     }
-    ReadFromSocket();
-    HandleMessage();
-    send(client_sockfd, totalMessage, totalMessageIdx, 0);
-    close(client_sockfd);
-    printf("Done handling\n");
-    fflush(stdout);
+    int socketReadRes = ReadFromSocket();
+    if (socketReadRes) {
+        HandleMessage();
+        send(client_sockfd, totalMessage, totalMessageIdx, 0);
+        close(client_sockfd);
+        printf("Done handling\n");
+        fflush(stdout);
+    }
     if (redraw) { // TODO: Finer-grained redraw flags. Don't need to redraw entire page to redraw the closebox...
         DrawCloseBox();
         DrawNextArrow();
@@ -325,10 +327,18 @@ void HandleMessage() {
     totalMessage[5] = 'k';
     totalMessageIdx = 6;
 }
-void ReadFromSocket() {
-    printf("Waiting for a connection\n");
+int ReadFromSocket() {
+    // printf("Check for a connection\n");
     fflush(stdout);
     t = sizeof(remote);
+    // if((client_sockfd = accept(server_sockfd, (struct sockaddr *)&remote, &t)) == -1) { perror("accept"); exit(1); }
+    int acceptRes = accept4(server_sockfd, (struct sockaddr *)&remote, &t, O_NONBLOCK);
+    if (acceptRes == -1) {
+        if (errno != EWOULDBLOCK && errno != EAGAIN) {
+            perror("accept"); exit(1);
+        }
+        return 0;
+    }
     if((client_sockfd = accept(server_sockfd, (struct sockaddr *)&remote, &t)) == -1) { perror("accept"); exit(1); }
     printf("Accepted connection\n");
     fflush(stdout);
@@ -350,6 +360,7 @@ void ReadFromSocket() {
             break;
         }
     }
+    return 1;
 }
 void SetupSocket() {
     totalMessage = malloc(MAX_MESSAGE_SIZE); 

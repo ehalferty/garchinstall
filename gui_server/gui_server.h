@@ -58,6 +58,6 @@ void FreeBitmap(uint8_t *bmp);
 void EnableGraphicsMode();
 void SetupSocket();
 void stop_server();
-void ReadFromSocket();
+int ReadFromSocket();
 void HandleMessage();
 int main(int argc, char *argv[]);
