@@ -329,7 +329,7 @@ int main(int argc, char *argv[]) {
     buff = malloc(65536);
     tmpStr = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
-    // LoadBitmap("bundle/images/closebox32.png", close_box_img2);
+    LoadBitmap("bundle/images/closebox32.png", close_box_img2);
     OpenFramebuffer();
     EnableGraphicsMode();
     // newt.c_lflag = 0;//&= ~(ICANON | ECHO);
