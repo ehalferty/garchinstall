@@ -1,4 +1,6 @@
 #include "gui_server.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 int fbfd = 0, kbfd = 0, msfd = 0, page = 0, prevPage = 1;
 struct fb_var_screeninfo *vinfo;
@@ -14,6 +16,7 @@ uint8_t keysDown[NUM_KEYS_CHECKED], prevKeysDown[NUM_KEYS_CHECKED];
 uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
 uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
+uint8_t *close_box_img2;
 
 unsigned long get_nsecs() {
     struct timespec ts;
@@ -159,6 +162,13 @@ void ClearScreen() {
     uint32_t x, y;
     for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
 }
+void LoadBitmap(const char *path, uint8_t *bmp) {
+    int x, y, n;
+    return stbi_load(filename, &x, &y, &n, 0);
+}
+void FreeBitmap(uint8_t *bmp) {
+    stbi_image_free(bmp);
+}
 void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
     uint32_t i, j, offset;
     for (i = 0; i < w; i++) { for (j = 0; j < h; j++) {
@@ -171,7 +181,7 @@ void DrawArchLogo(uint32_t x, uint32_t y) {
 }
 void DrawCloseBox() {
     uint8_t pressed = mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY < 32;
-    DrawBitmap(vinfo->xres - 32, 0, 32, 32, pressed ? close_box_pressed_img : close_box_img);
+    DrawBitmap(vinfo->xres - 32, 0, 32, 32, pressed ? close_box_pressed_img : close_box_img2);
 }
 // void DrawNextArrow() {
 //     uint32_t x, y;
@@ -293,6 +303,7 @@ int main(int argc, char *argv[]) {
     buff = malloc(65536);
     tmpStr = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
+    LoadBitmap("bundle/images/closebox32.png", close_box_img2)
     OpenFramebuffer();
     newt.c_lflag = 0;//&= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
