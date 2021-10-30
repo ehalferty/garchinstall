@@ -59,7 +59,7 @@ void OpenFramebuffer() {
         if (i == 0) { perror("Error: failed to map framebuffer device to memory"); exit(4); }
         mmapsize = screensize * i;
         fbp = (char *)mmap(0, mmapsize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
-        if (fbp != -1) { break; }
+        if (fbp != (void *)-1) { break; }
     }
 }
 int OpenKeyboard() {
@@ -74,8 +74,8 @@ int OpenKeyboard() {
                 kbLink = malloc(256);
                 kbPath = malloc(256);
                 sprintf(kbLink, "/dev/input/by-path/%s", dir->d_name);
-                res = realpath(kbLink, kbPath);
-                if (res == 0) { perror("ERror getting realpath of kbd device symlink"); exit(10); }
+                char *realpathRes = realpath(kbLink, kbPath);
+                if (realpathRes == (char *)NULL) { perror("ERror getting realpath of kbd device symlink"); exit(10); }
                 res = open(kbPath, O_RDONLY);
                 if (res == -1) {
                     sprintf(kbPath, "Error: Can't open %s", kbPath);
@@ -164,7 +164,7 @@ void ClearScreen() {
 }
 void LoadBitmap(const char *path, uint8_t *bmp) {
     int x, y, n;
-    return stbi_load(filename, &x, &y, &n, 0);
+    bmp = stbi_load(path, &x, &y, &n, 0);
 }
 void FreeBitmap(uint8_t *bmp) {
     stbi_image_free(bmp);
@@ -232,7 +232,7 @@ void DoPage() {
                 // GetPartitions();
             }
             if (redraw) {
-                sprintf(tmpStr, "Welcome", NUM_STEPS);
+                sprintf(tmpStr, "Welcome");
                 DrawText(0, 0, tmpStr);
                 DrawArchLogo(0, 24);
             }
@@ -303,7 +303,7 @@ int main(int argc, char *argv[]) {
     buff = malloc(65536);
     tmpStr = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
-    LoadBitmap("bundle/images/closebox32.png", close_box_img2)
+    LoadBitmap("bundle/images/closebox32.png", close_box_img2);
     OpenFramebuffer();
     newt.c_lflag = 0;//&= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
