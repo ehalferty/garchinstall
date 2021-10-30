@@ -1,4 +1,4 @@
-#include "main.h"
+#include "gui_server.h"
 
 int fbfd = 0, kbfd = 0, msfd = 0, page = 0, prevPage = 1;
 struct fb_var_screeninfo *vinfo;
