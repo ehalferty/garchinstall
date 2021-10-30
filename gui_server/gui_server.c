@@ -295,7 +295,7 @@ void DoPage() {
             break;
         }
     }
-    int socketReadRes = ReadFromSocket();
+    int socketReadRes = 0;//ReadFromSocket();
     if (socketReadRes) {
         HandleMessage();
         send(client_sockfd, totalMessage, totalMessageIdx, 0);
