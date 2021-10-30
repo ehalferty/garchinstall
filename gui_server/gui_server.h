@@ -27,6 +27,10 @@
 #define CURSOR_SIZE 24
 #define NUM_KEYS_CHECKED 1024
 #define NUM_STEPS 5
+#define PID_PATH "/tmp/gui_server.pid"
+#define SOCK_PATH "/tmp/gui_server_socket"
+#define LOG_PATH "/tmp/gui_server.log"
+#define MAX_MESSAGE_SIZE 1024*1024*16 // 16 MB
 
 uint32_t GetFBOffset(uint32_t x, uint32_t y);
 void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b);
