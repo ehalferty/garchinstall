@@ -193,22 +193,6 @@ void DrawNextArrow() {
     uint8_t pressed = mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY >= (vinfo->yres - 32);
     DrawBitmap(vinfo->xres - 32, vinfo->yres - 32, 32, 32, pressed ? next_arrow_img2 : next_arrow_img2);
 }
-//     uint32_t x, y;
-//     for (x = 0; x < 32; x++) { for (y = 0; y < 32; y++) {
-//         // if (mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY >= (vinfo->yres - 32)) {
-//             if (x == 0 || x == 31 || y == 0 || y == 31 ||
-//                 (x >= 8 && x < 16 && y >= 14 && y < 18) ||
-//                 (x >= 16 && x < 24 && y > (8 - x) && y < 16) ||
-//             ) {
-//                 DrawPixel(vinfo->xres - 32 + x, y, 0x00, 0x00, 0xFF);
-//             } else { DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0xFF, 0xFF); }
-//         // } else {
-//         //     if (x == 0 || x == 31 || y == 0 || y == 31 || x == y || x == (32 - y)) {
-//         //         DrawPixel(vinfo->xres - 32 + x, y, 0xFF, 0xFF, 0xFF);
-//         //     } else { DrawPixel(vinfo->xres - 32 + x, y, 0x00, 0x00, 0xFF); }
-//         // }
-//     }}
-// }
 void Cleanup() {
     munmap(fbp, screensize);
     close(fbfd);
