@@ -167,6 +167,7 @@ void ClearScreen() {
 void LoadBitmap(const char *path, uint8_t *bmp) {
     int x, y, n;
     bmp = stbi_load(path, &x, &y, &n, 0);
+    printf("Loaded bitmap %s w=%d h=%d bpp=%d\n", path, x, y, n);
 }
 void FreeBitmap(uint8_t *bmp) {
     stbi_image_free(bmp);
@@ -183,7 +184,7 @@ void DrawArchLogo(uint32_t x, uint32_t y) {
 }
 void DrawCloseBox() {
     uint8_t pressed = mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY < 32;
-    // DrawBitmap(vinfo->xres - 32, 0, 32, 32, pressed ? close_box_pressed_img : close_box_img2);
+    DrawBitmap(vinfo->xres - 32, 0, 32, 32, pressed ? close_box_pressed_img : close_box_img2);
 }
 // void DrawNextArrow() {
 //     uint32_t x, y;
