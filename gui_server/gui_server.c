@@ -167,20 +167,20 @@ void ClearScreen() {
 uint8_t * LoadBitmap(const char *path) {
     int x, y, n;
     uint32_t i, j, offset;
-    uint8_t *bmp = stbi_load(path, &x, &y, &n, 0), *tmp;
+    uint8_t *bmp = stbi_load(path, &x, &y, &n, 4), *tmp;
     printf("Loaded bitmap %s w=%d h=%d bpp=%d\n", path, x, y, n);
-    if (n == 3) {
-        tmp = bmp;
-        bmp = malloc(x * y * 4);
-        printf("Converting 3bpp to 4... New size=%d addr=%08llx\n", x * y * 4, (uint64_t)bmp);
-        for (int i = 0; i < x; i++) { for (int j = 0; j < y; j++) {
-            offset = ((j * x) + i);
-            bmp[offset * 4] = tmp[offset * 3];
-            bmp[offset * 4 + 1] = tmp[offset * 3 + 1];
-            bmp[offset * 4 + 2] = tmp[offset * 3 + 2];
-            bmp[offset * 4 + 3] = 0xFF;
-        } }
-    }
+    // if (n == 3) {
+    //     tmp = bmp;
+    //     bmp = malloc(x * y * 4);
+    //     printf("Converting 3bpp to 4... New size=%d addr=%08llx\n", x * y * 4, (uint64_t)bmp);
+    //     for (int i = 0; i < x; i++) { for (int j = 0; j < y; j++) {
+    //         offset = ((j * x) + i);
+    //         bmp[offset * 4] = tmp[offset * 3];
+    //         bmp[offset * 4 + 1] = tmp[offset * 3 + 1];
+    //         bmp[offset * 4 + 2] = tmp[offset * 3 + 2];
+    //         bmp[offset * 4 + 3] = 0xFF;
+    //     } }
+    // }
     return bmp;
 }
 void FreeBitmap(uint8_t *bmp) {
