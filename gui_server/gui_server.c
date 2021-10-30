@@ -181,7 +181,7 @@ void DrawArchLogo(uint32_t x, uint32_t y) {
 }
 void DrawCloseBox() {
     uint8_t pressed = mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY < 32;
-    DrawBitmap(vinfo->xres - 32, 0, 32, 32, pressed ? close_box_pressed_img : close_box_img2);
+    // DrawBitmap(vinfo->xres - 32, 0, 32, 32, pressed ? close_box_pressed_img : close_box_img2);
 }
 // void DrawNextArrow() {
 //     uint32_t x, y;
@@ -303,7 +303,7 @@ int main(int argc, char *argv[]) {
     buff = malloc(65536);
     tmpStr = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
-    LoadBitmap("bundle/images/closebox32.png", close_box_img2);
+    // LoadBitmap("bundle/images/closebox32.png", close_box_img2);
     OpenFramebuffer();
     newt.c_lflag = 0;//&= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
