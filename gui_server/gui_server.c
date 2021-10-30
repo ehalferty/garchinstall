@@ -173,7 +173,7 @@ void LoadBitmap(const char *path, uint8_t *bmp) {
         printf("Converting 3bpp to 4...\n");
         bmp = malloc(x * y * 4);
         for (int i = 0; i < x; i++) { for (int j = 0; j < y; j++) {
-            offset = ((j * w) + i);
+            offset = ((j * x) + i);
             bmp[offset * 4] = tmp[offset * 3];
             bmp[offset * 4 + 1] = tmp[offset * 3 + 1];
             bmp[offset * 4 + 3] = tmp[offset * 3 + 2];
