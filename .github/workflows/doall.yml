@@ -13,7 +13,9 @@ jobs:
         sudo -E apt-get install --yes gcc ruby
 
     - name: Compile GUI Server
-      run: cd gui_server && gcc arch_logo.c close_box_img.c cursor.c font.c gui_server.c keycode_names.c -o ../bundle/gui_server
+      run: |
+        cd gui_server
+        gcc arch_logo.c close_box_img.c cursor.c font.c gui_server.c keycode_names.c -lm -o ../bundle/gui_server
 
     - name: Zip up files
       run: tar -czf bundle.tar.gz ./bundle
