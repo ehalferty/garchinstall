@@ -2,7 +2,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-int fbfd = 0, kbfd = 0, msfd = 0, page = 0, prevPage = 1;
+int tty0_fd, fbfd = 0, kbfd = 0, msfd = 0, page = 0, prevPage = 1;
 struct fb_var_screeninfo *vinfo;
 struct fb_fix_screeninfo *finfo;
 long int screensize = 0, rowsize = 0, mmapsize = 0;
