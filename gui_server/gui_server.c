@@ -295,7 +295,7 @@ void DoPage() {
             break;
         }
     }
-    int socketReadRes = 0;//ReadFromSocket();
+    int socketReadRes = ReadFromSocket();
     if (socketReadRes) {
         HandleMessage();
         send(client_sockfd, totalMessage, totalMessageIdx, 0);
@@ -339,7 +339,8 @@ int ReadFromSocket() {
         }
         return 0;
     }
-    if((client_sockfd = accept(server_sockfd, (struct sockaddr *)&remote, &t)) == -1) { perror("accept"); exit(1); }
+    client_sockfd = acceptRes;
+    // if((client_sockfd = accept(server_sockfd, (struct sockaddr *)&remote, &t)) == -1) { perror("accept"); exit(1); }
     printf("Accepted connection\n");
     fflush(stdout);
     printf("Handling connection\n");
