@@ -166,7 +166,7 @@ void ClearScreen() {
 }
 void LoadBitmap(const char *path, uint8_t *bmp) {
     int x, y, n;
-    bmp = stbi_load(path, &x, &y, &n, 0);
+    bmp = stbi_load(path, &x, &y, &n, 4); // 4: Always loads in 32bpp
     printf("Loaded bitmap %s w=%d h=%d bpp=%d\n", path, x, y, n);
 }
 void FreeBitmap(uint8_t *bmp) {
