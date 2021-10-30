@@ -166,8 +166,20 @@ void ClearScreen() {
 }
 void LoadBitmap(const char *path, uint8_t *bmp) {
     int x, y, n;
-    bmp = stbi_load(path, &x, &y, &n, 4); // 4: Always loads in 32bpp
+    uint32_t i, j, offset;
+    uint8_t *tmp = stbi_load(path, &x, &y, &n, 0);
     printf("Loaded bitmap %s w=%d h=%d bpp=%d\n", path, x, y, n);
+    if (n == 3) {
+        printf("Converting 3bpp to 4...\n");
+        bmp = malloc(x * y * 4);
+        for (int i = 0; i < x; i++) { for (int j = 0; j < y; j++) {
+            offset = ((j * w) + i);
+            bmp[offset * 4] = tmp[offset * 3];
+            bmp[offset * 4 + 1] = tmp[offset * 3 + 1];
+            bmp[offset * 4 + 3] = tmp[offset * 3 + 2];
+            bmp[offset * 4 + 4] = 0xFF;
+        } }
+    }
 }
 void FreeBitmap(uint8_t *bmp) {
     stbi_image_free(bmp);
