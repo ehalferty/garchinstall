@@ -19,8 +19,6 @@
 #include "keycode_names.h"
 #include "cursor.h"
 #include "font.h"
-#include "arch_logo.h"
-#include "close_box_img.h"
 
 #define MOD_LINGER_NANOS 100000000 // How many nanoseconds modifier keys remain down after the user lifts them
 #define CURSOR_SIZE 24

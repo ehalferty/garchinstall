@@ -16,7 +16,7 @@ uint8_t keysDown[NUM_KEYS_CHECKED], prevKeysDown[NUM_KEYS_CHECKED];
 uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
 uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
-uint8_t *close_box_img2, *next_arrow_img2;
+uint8_t *close_box_img2, *next_arrow_img2, *arch_logo_img2;
 void segfaultSigaction(int signal, siginfo_t *si, void *arg) {
     printf("Caught segfault at address %p\n", si->si_addr); ExitWithError("Segfault");
 }
@@ -167,20 +167,8 @@ void ClearScreen() {
 uint8_t * LoadBitmap(const char *path) {
     int x, y, n;
     uint32_t i, j, offset;
-    uint8_t *bmp = stbi_load(path, &x, &y, &n, 4), *tmp;
+    uint8_t *bmp = stbi_load(path, &x, &y, &n, 4), *tmp; // 4: Always try to get RGBA format
     printf("Loaded bitmap %s w=%d h=%d bpp=%d\n", path, x, y, n);
-    // if (n == 3) {
-    //     tmp = bmp;
-    //     bmp = malloc(x * y * 4);
-    //     printf("Converting 3bpp to 4... New size=%d addr=%08llx\n", x * y * 4, (uint64_t)bmp);
-    //     for (int i = 0; i < x; i++) { for (int j = 0; j < y; j++) {
-    //         offset = ((j * x) + i);
-    //         bmp[offset * 4] = tmp[offset * 3];
-    //         bmp[offset * 4 + 1] = tmp[offset * 3 + 1];
-    //         bmp[offset * 4 + 2] = tmp[offset * 3 + 2];
-    //         bmp[offset * 4 + 3] = 0xFF;
-    //     } }
-    // }
     return bmp;
 }
 void FreeBitmap(uint8_t *bmp) {
@@ -191,18 +179,19 @@ void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
     uint32_t i, j, offset;
     for (i = 0; i < w; i++) { for (j = 0; j < h; j++) {
         offset = ((j * w) + i) * (vinfo->bits_per_pixel / 8);
-        DrawPixel(x + i, y + j, bmp[offset + 2], bmp[offset + 1], bmp[offset]);
+        DrawPixel(x + i, y + j, bmp[offset], bmp[offset + 1], bmp[offset + 2]);
     } }
 }
 void DrawArchLogo(uint32_t x, uint32_t y) {
-    DrawBitmap(x, y, ARCH_LOGO_WIDTH, ARCH_LOGO_HEIGHT, arch_logo);
+    DrawBitmap(x, y, 65, 65, arch_logo_img2);
 }
 void DrawCloseBox() {
     uint8_t pressed = mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY < 32;
-    DrawBitmap(vinfo->xres - 32, 0, 32, 32, pressed ? close_box_pressed_img : close_box_img2);
+    DrawBitmap(vinfo->xres - 32, 0, 32, 32, pressed ? close_box_img2 : close_box_img2);
 }
 void DrawNextArrow() {
-    DrawBitmap(vinfo->xres - 32, vinfo->yres - 32, 32, 32, next_arrow_img2);
+    uint8_t pressed = mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY >= (vinfo->yres - 32);
+    DrawBitmap(vinfo->xres - 32, vinfo->yres - 32, 32, 32, pressed ? next_arrow_img2 : next_arrow_img2);
 }
 //     uint32_t x, y;
 //     for (x = 0; x < 32; x++) { for (y = 0; y < 32; y++) {
@@ -347,6 +336,7 @@ int main(int argc, char *argv[]) {
     buff = malloc(65536);
     tmpStr = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
+    arch_logo_img2 = LoadBitmap("bundle/images/archlogo65.png");
     close_box_img2 = LoadBitmap("bundle/images/closebox32.png");
     next_arrow_img2 = LoadBitmap("bundle/images/nextarrow32.png");
     OpenFramebuffer();
