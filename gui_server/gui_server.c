@@ -175,10 +175,10 @@ uint8_t * LoadBitmap(const char *path) {
         printf("Converting 3bpp to 4... New size=%d addr=%08llx\n", x * y * 4, (uint64_t)bmp);
         for (int i = 0; i < x; i++) { for (int j = 0; j < y; j++) {
             offset = ((j * x) + i);
-            bmp[offset * 4] = 0xFF;//tmp[offset * 3];
-            bmp[offset * 4 + 1] = tmp[offset * 3];
-            bmp[offset * 4 + 3] = tmp[offset * 3 + 1];
-            bmp[offset * 4 + 4] = tmp[offset * 3 + 2;
+            bmp[offset * 4] = tmp[offset * 3];
+            bmp[offset * 4 + 1] = tmp[offset * 3 + 1];
+            bmp[offset * 4 + 2] = tmp[offset * 3 + 2];
+            bmp[offset * 4 + 3] = 0xFF;
         } }
     }
     return bmp;
