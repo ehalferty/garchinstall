@@ -15,7 +15,7 @@ uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
 uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
 int tty0_fd;
-int listenSocket;
+// int listenSocket;
 struct sockaddr_in serverAddr, connectionAddr;
 
 
@@ -325,17 +325,17 @@ int main(int argc, char *argv[]) {
     tmpStr = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
     OpenFramebuffer();
-    // EnableGraphicsMode();
+    EnableGraphicsMode();
     printf("I have begun\n");
-    sockfd = socket(AF_INET, SOCK_DGRAM | SOCK_NONBLOCK, 0);
-    memset(&serv_addr, 0, sizeof(serv_addr));
-    portno = 666;
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(portno);
-    if (bind(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-        ExitWithError("Problem binding socket.");
-    }
+    // sockfd = socket(AF_INET, SOCK_DGRAM | SOCK_NONBLOCK, 0);
+    // memset(&serv_addr, 0, sizeof(serv_addr));
+    // portno = 666;
+    // serv_addr.sin_family = AF_INET;
+    // serv_addr.sin_addr.s_addr = INADDR_ANY;
+    // serv_addr.sin_port = htons(portno);
+    // if (bind(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+    //     ExitWithError("Problem binding socket.");
+    // }
     // listen(sockfd,5);
     // listenSocket = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     // if (listenSocket == -1) { ExitWithError("Problem creating socket. OOM?"); }
@@ -357,16 +357,16 @@ int main(int argc, char *argv[]) {
     // int accept(int sockfd, struct sockaddr *restrict addr, socklen_t *restrict addrlen);
     // for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
     // for (i = 0; i < 600; i++) { DrawPixel(i, i, 0xFF, 0xFF, 0xFF); }
-    // DrawText(0, 0, "Hello, there!");
-    // DrawArchLogo(200, 200);
-    // ClearScreen();
-    // SaveUnderCursor();
+    DrawText(0, 0, "Hello, there!");
+    DrawArchLogo(200, 200);
+    ClearScreen();
+    SaveUnderCursor();
     kbfd = OpenKeyboard();
     msfd = OpenMouse();
     pfds[0].fd = kbfd; pfds[0].events = POLLIN;
     pfds[1].fd = msfd; pfds[1].events = POLLIN;
-    ssize_t numBytesReadFromSocket;
-    char socketReadBuff[SOCKET_READ_BUFF_SIZE];
+    // ssize_t numBytesReadFromSocket;
+    // char socketReadBuff[SOCKET_READ_BUFF_SIZE];
     while (1) {
         mouseWentDown = 0;
         mouseWentUp = 0;
@@ -449,25 +449,25 @@ int main(int argc, char *argv[]) {
         }
         // DoPage();
         // printf("I'm listening\n");
-        clilen = sizeof(cli_addr);
-        int res = recv(sockfd, fileBuff, 1024, MSG_DONTWAIT);
-        // if (res == -1)
-        // newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, &clilen);
-        if (res == -1) {
-            if (errno == EAGAIN || errno == EWOULDBLOCK) {}
-            else { ExitWithError("Problem accepting connection on socket"); }
-        } else {
-            // printf("I hear you\n");
-            int i = 0, numRead = 0;
-            FILE *f = fopen("/tmp/asdf", "a");
-            int sendRes = send(sockfd, "OKAY\n\0OKAY\n\0OKAY\n\0OKAY\n\0OKAY\n\0", 5, NULL);
-            // while ((numRead = read(newsockfd, fileBuff, 1024)) > 0) {
+        // clilen = sizeof(cli_addr);
+        // int res = recv(sockfd, fileBuff, 1024, MSG_DONTWAIT);
+        // // if (res == -1)
+        // // newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, &clilen);
+        // if (res == -1) {
+        //     if (errno == EAGAIN || errno == EWOULDBLOCK) {}
+        //     else { ExitWithError("Problem accepting connection on socket"); }
+        // } else {
+        //     // printf("I hear you\n");
+        //     int i = 0, numRead = 0;
+        //     FILE *f = fopen("/tmp/asdf", "a");
+        //     int sendRes = send(sockfd, "OKAY\n\0OKAY\n\0OKAY\n\0OKAY\n\0OKAY\n\0", 5, NULL);
+        //     // while ((numRead = read(newsockfd, fileBuff, 1024)) > 0) {
                 
-            // }
-            fprintf(f, fileBuff);
-            fprintf(f, "============\n");
-            fclose(f);
-        }
+        //     // }
+        //     fprintf(f, fileBuff);
+        //     fprintf(f, "============\n");
+        //     fclose(f);
+        // }
 
 
         // int connectionLen = sizeof(connectionAddr);
