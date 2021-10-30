@@ -17,6 +17,13 @@ uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
 uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
 uint8_t *close_box_img2, *next_arrow_img2, *arch_logo_img2;
+int server_sockfd;
+unsigned int totalMessageIdx = 0;
+char *totalMessage = NULL;
+int client_sockfd, t;
+struct sockaddr_un remote, local;
+char buff[1024];
+unsigned int i, len, expectedMsgLen = 0;
 void segfaultSigaction(int signal, siginfo_t *si, void *arg) {
     printf("Caught segfault at address %p\n", si->si_addr); ExitWithError("Segfault");
 }
@@ -195,6 +202,7 @@ void DrawNextArrow() {
 }
 void Cleanup() {
     munmap(fbp, screensize);
+    stop_server();
     close(fbfd);
 }
 uint32_t MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
@@ -287,6 +295,12 @@ void DoPage() {
             break;
         }
     }
+    ReadFromSocket();
+    HandleMessage();
+    send(client_sockfd, totalMessage, totalMessageIdx, 0);
+    close(client_sockfd);
+    printf("Done handling\n");
+    fflush(stdout);
     if (redraw) { // TODO: Finer-grained redraw flags. Don't need to redraw entire page to redraw the closebox...
         DrawCloseBox();
         DrawNextArrow();
@@ -301,6 +315,58 @@ void EnableGraphicsMode() {
     int t = -1;
     tty0_fd = open("/dev/tty0", O_WRONLY, 0);
     ioctl(tty0_fd, KDSETMODE, KD_GRAPHICS);
+}
+void HandleMessage() {
+    totalMessage[0] = 2;
+    totalMessage[1] = 0;
+    totalMessage[2] = 0;
+    totalMessage[3] = 0;
+    totalMessage[4] = 'o';
+    totalMessage[5] = 'k';
+    totalMessageIdx = 6;
+}
+void ReadFromSocket() {
+    printf("Waiting for a connection\n");
+    fflush(stdout);
+    t = sizeof(remote);
+    if((client_sockfd = accept(server_sockfd, (struct sockaddr *)&remote, &t)) == -1) { perror("accept"); exit(1); }
+    printf("Accepted connection\n");
+    fflush(stdout);
+    printf("Handling connection\n");
+    fflush(stdout);
+    totalMessageIdx = 0;
+    memset(totalMessage, 0, MAX_MESSAGE_SIZE);
+    while(len = recv(client_sockfd, &buff, 1024, 0), len > 0) {
+        memcpy(&(totalMessage[totalMessageIdx]), buff, len);
+        totalMessageIdx += len;
+        if (expectedMsgLen == 0 && totalMessageIdx >= 4) {
+            expectedMsgLen = (unsigned int)totalMessage[0] + ((unsigned int)totalMessage[1] << 8) +
+                            ((unsigned int)totalMessage[2] << 16) + ((unsigned int)totalMessage[3] << 24);
+        }
+        if (expectedMsgLen != 0 && totalMessageIdx >= expectedMsgLen + 4) {
+            totalMessage[expectedMsgLen + 4] = 0;
+            printf("Read all we're gonna read (expectedMsgLen=%d)\n", expectedMsgLen);
+            printf("Read: »%s«\n", &(totalMessage[4]));
+            break;
+        }
+    }
+}
+void SetupSocket() {
+    totalMessage = malloc(MAX_MESSAGE_SIZE); 
+    if((server_sockfd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) { perror("Error creating server socket"); exit(1); }
+    local.sun_family = AF_UNIX;
+    strcpy(local.sun_path, SOCK_PATH);
+    unlink(local.sun_path);
+    len = strlen(local.sun_path) + sizeof(local.sun_family);
+    if(bind(server_sockfd, (struct sockaddr *)&local, len) == -1) { perror("binding"); exit(1); }
+    if (listen(server_sockfd, 5) == -1) { perror("listen"); exit(1); }
+    printf("Listening...\n");
+    fflush(stdout);
+}
+void stop_server() {
+    unlink(SOCK_PATH);
+    kill(0, SIGKILL);
+    exit(0);
 }
 int main(int argc, char *argv[]) {
     struct termios oldt, newt;
@@ -323,6 +389,8 @@ int main(int argc, char *argv[]) {
     arch_logo_img2 = LoadBitmap("bundle/images/archlogo65.png");
     close_box_img2 = LoadBitmap("bundle/images/closebox32.png");
     next_arrow_img2 = LoadBitmap("bundle/images/nextarrow32.png");
+    signal(SIGTERM, stop_server);
+    SetupSocket();
     OpenFramebuffer();
     EnableGraphicsMode();
     // newt.c_lflag = 0;//&= ~(ICANON | ECHO);

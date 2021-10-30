@@ -49,4 +49,8 @@ void DoPage();
 uint8_t * LoadBitmap(const char *path);
 void FreeBitmap(uint8_t *bmp);
 void EnableGraphicsMode();
+void SetupSocket();
+void stop_server();
+void ReadFromSocket();
+void HandleMessage();
 int main(int argc, char *argv[]);
