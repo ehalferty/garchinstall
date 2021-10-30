@@ -344,6 +344,8 @@ int main(int argc, char *argv[]) {
     tmpStr = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
     LoadBitmap("bundle/images/closebox32.png", close_box_img2);
+    printf("close_box_img2=%08llx\n", close_box_img2);
+    exit(1);
     OpenFramebuffer();
     EnableGraphicsMode();
     // newt.c_lflag = 0;//&= ~(ICANON | ECHO);
