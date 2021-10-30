@@ -10,11 +10,13 @@
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
+#include <wait.h>
 #include <linux/fb.h>
 #include <linux/input.h>
 #include <linux/kd.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <sys/socket.h>
 #include <sys/stat.h>
 #include "keycode_names.h"
 #include "cursor.h"
