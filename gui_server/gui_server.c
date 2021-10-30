@@ -170,8 +170,8 @@ void LoadBitmap(const char *path, uint8_t *bmp) {
     uint8_t *tmp = stbi_load(path, &x, &y, &n, 0);
     printf("Loaded bitmap %s w=%d h=%d bpp=%d\n", path, x, y, n);
     if (n == 3) {
-        printf("Converting 3bpp to 4... New size=%d addr=%08llx\n", x * y * 4, (uint64_t)bmp);
         bmp = malloc(x * y * 4);
+        printf("Converting 3bpp to 4... New size=%d addr=%08llx\n", x * y * 4, (uint64_t)bmp);
         for (int i = 0; i < x; i++) { for (int j = 0; j < y; j++) {
             offset = ((j * x) + i);
             bmp[offset * 4] = tmp[offset * 3];
