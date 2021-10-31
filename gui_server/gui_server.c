@@ -328,57 +328,57 @@ void EnableGraphicsMode() {
     ioctl(tty0_fd, KDSETMODE, KD_GRAPHICS);
 }
 void HandleMessage() {
-    returnMessageIdx = 0;
-    char *tm = totalMessage;
-    int idx = 4;
-    int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
-    while (1) {
-        int returned = 0;
-        int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
-        switch (subMsgCode) {
-            case MSG_CLEAR_SCREEN: { ClearScreen(); break; }
-            case MSG_SET_FGCOLOR: { SetFGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
-            case MSG_SET_BGCOLOR: { SetBGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
-            case MSG_DRAW_RECT: {
-                DrawRect(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)));
-                break; }
-            case MSG_LOAD_BITMAP: {
-                char *bmp = LoadBitmap(&(tm[idx]));
-                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp) & 0xff;
-                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 8) & 0xff;
-                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 16) & 0xff;
-                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 24) & 0xff;
-                returned = 1;
-                break; }
-            case MSG_DRAW_BITMAP: {
-                DrawBitmap(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                         (char *)((uint64_t)tm[idx++] | ((uint64_t)tm[idx++] << 8) |
-                             ((uint64_t)tm[idx++] << 16) | ((uint64_t)tm[idx++] << 24)));
-                break; }
-            case MSG_DRAW_TEXT: {
-                DrawText(
-                    ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                    ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                    (char *)(&(tm[idx]))
-                );
-                idx += strlen(&(tm[idx]));
-                break;
-        }
-        if (!returned) {
-            returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
-        }
-        memcpy(totalMessage, returnMessage, returnMessageIdx);
-        totalMessage[0] = (returnMessageIdx & 0xFF);
-        totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
-        totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
-        totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
-    }
+    // returnMessageIdx = 0;
+    // char *tm = totalMessage;
+    // int idx = 4;
+    // int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
+    // while (1) {
+    //     int returned = 0;
+    //     int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
+    //     switch (subMsgCode) {
+    //         case MSG_CLEAR_SCREEN: { ClearScreen(); break; }
+    //         case MSG_SET_FGCOLOR: { SetFGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
+    //         case MSG_SET_BGCOLOR: { SetBGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
+    //         case MSG_DRAW_RECT: {
+    //             DrawRect(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+    //                      ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+    //                      ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+    //                      ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)));
+    //             break; }
+    //         case MSG_LOAD_BITMAP: {
+    //             char *bmp = LoadBitmap(&(tm[idx]));
+    //             returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp) & 0xff;
+    //             returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 8) & 0xff;
+    //             returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 16) & 0xff;
+    //             returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 24) & 0xff;
+    //             returned = 1;
+    //             break; }
+    //         case MSG_DRAW_BITMAP: {
+    //             DrawBitmap(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+    //                      ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+    //                      ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+    //                      ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+    //                      (char *)((uint64_t)tm[idx++] | ((uint64_t)tm[idx++] << 8) |
+    //                          ((uint64_t)tm[idx++] << 16) | ((uint64_t)tm[idx++] << 24)));
+    //             break; }
+    //         case MSG_DRAW_TEXT: {
+    //             DrawText(
+    //                 ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+    //                 ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+    //                 (char *)(&(tm[idx]))
+    //             );
+    //             idx += strlen(&(tm[idx]));
+    //             break;
+    //     }
+    //     if (!returned) {
+    //         returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
+    //     }
+    //     memcpy(totalMessage, returnMessage, returnMessageIdx);
+    //     totalMessage[0] = (returnMessageIdx & 0xFF);
+    //     totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
+    //     totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
+    //     totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
+    // }
 }
 int ReadFromSocket() {
     t = sizeof(remote);
