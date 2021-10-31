@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     eargs[1] = malloc(128);
     eargs[2] = 0;
     sprintf(eargs[0], "/usr/bin/perl");
-    sprintf(eargs[1], "bundle/installer/installer.pl");
+    sprintf(eargs[1], "bundle/installer/00_init.pl");
     execve("/usr/bin/perl", eargs, NULL);
     return 0;
 }

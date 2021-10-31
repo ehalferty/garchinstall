@@ -1,3 +1,5 @@
+# Prints welcome, starts gui server
+
 print("Welcome to garchinstaller!");
 # system("mkdir /mnt/installer-root");
 # system("mount -t tmpfs -o size=4g tmpfs /mnt/installer-root");

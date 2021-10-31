@@ -18,8 +18,8 @@ uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
 uint8_t *close_box_img2, *next_arrow_img2, *arch_logo_img2;
 int server_sockfd;
-unsigned int totalMessageIdx = 0;
-char *totalMessage = NULL;
+unsigned int totalMessageIdx = 0, returnMessageIdx = 0;
+char *totalMessage = NULL, *returnMessage = NULL;
 int client_sockfd, t;
 struct sockaddr_un remote, local;
 char buff[1024];
@@ -166,6 +166,15 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
             yCharPos++;
         }
     }
+}
+void DrawRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
+    int i, j, xx, yy;
+    for (j = 0; j < h; j++) { for (i = 0; i < w; i++) {
+        xx = x + i; yy = y + j;
+        if (xx < vinfo->xres && yy < vinfo->yres) {
+            DrawPixel(xx, yy, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
+        }
+    } }
 }
 void ClearScreen() {
     uint32_t x, y;
@@ -319,32 +328,66 @@ void EnableGraphicsMode() {
     ioctl(tty0_fd, KDSETMODE, KD_GRAPHICS);
 }
 void HandleMessage() {
-    totalMessage[0] = 2;
-    totalMessage[1] = 0;
-    totalMessage[2] = 0;
-    totalMessage[3] = 0;
-    totalMessage[4] = 'o';
-    totalMessage[5] = 'k';
-    totalMessageIdx = 6;
+    returnMessageIdx = 0;
+    char *tm = totalMessage;
+    int idx = 4;
+    int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
+    while (1) {
+        int returned = 0;
+        int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
+        switch (subMsgCode) {
+            case MSG_CLEAR_SCREEN: { ClearScreen(); break; }
+            case MSG_SET_FGCOLOR: { SetFGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
+            case MSG_SET_BGCOLOR: { SetBGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
+            case MSG_DRAW_RECT: {
+                DrawRect(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)));
+                break; }
+            case MSG_LOAD_BITMAP: {
+                char *bmp = LoadBitmap(&(tm[idx]));
+                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp) & 0xff;
+                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 8) & 0xff;
+                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 16) & 0xff;
+                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 24) & 0xff;
+                returned = 1;
+                break; }
+            case MSG_DRAW_BITMAP: {
+                DrawBitmap(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                         (char *)((unsigned int)tm[idx++] | ((unsigned int)tm[idx++] << 8) |
+                             ((unsigned int)tm[idx++] << 16) | ((unsigned int)tm[idx++] << 24)));
+                break; }
+            case MSG_DRAW_TEXT: {
+                DrawText(
+                    ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                    ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                    (char *)(&(tm[idx]))
+                );
+                idx += strlen(tm[idx]);
+                break;
+        }
+        if (!returned) {
+            returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
+        }
+        memcpy(totalMessage, returnMessage, returnMessageIdx);
+        totalMessage[0] = (returnMessageIdx & 0xFF);
+        totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
+        totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
+        totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
+    }
 }
 int ReadFromSocket() {
-    // printf("Check for a connection\n");
-    fflush(stdout);
     t = sizeof(remote);
-    // if((client_sockfd = accept(server_sockfd, (struct sockaddr *)&remote, &t)) == -1) { perror("accept"); exit(1); }
     int acceptRes = accept4(server_sockfd, (struct sockaddr *)&remote, &t, SOCK_NONBLOCK);
     if (acceptRes == -1) {
-        if (errno != EWOULDBLOCK && errno != EAGAIN) {
-            perror("accept"); exit(1);
-        }
+        if (errno != EWOULDBLOCK && errno != EAGAIN) { perror("accept"); exit(1); }
         return 0;
     }
     client_sockfd = acceptRes;
-    // if((client_sockfd = accept(server_sockfd, (struct sockaddr *)&remote, &t)) == -1) { perror("accept"); exit(1); }
-    printf("Accepted connection\n");
-    fflush(stdout);
-    printf("Handling connection\n");
-    fflush(stdout);
     totalMessageIdx = 0;
     memset(totalMessage, 0, MAX_MESSAGE_SIZE);
     while(len = recv(client_sockfd, &buff, 1024, 0), len > 0) {
@@ -356,8 +399,6 @@ int ReadFromSocket() {
         }
         if (expectedMsgLen != 0 && totalMessageIdx >= expectedMsgLen + 4) {
             totalMessage[expectedMsgLen + 4] = 0;
-            printf("Read all we're gonna read (expectedMsgLen=%d)\n", expectedMsgLen);
-            printf("Read: »%s«\n", &(totalMessage[4]));
             break;
         }
     }
@@ -365,6 +406,7 @@ int ReadFromSocket() {
 }
 void SetupSocket() {
     totalMessage = malloc(MAX_MESSAGE_SIZE); 
+    returnMessage = malloc(MAX_MESSAGE_SIZE); 
     if((server_sockfd = socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0)) == -1) { perror("Error creating server socket"); exit(1); }
     local.sun_family = AF_UNIX;
     strcpy(local.sun_path, SOCK_PATH);

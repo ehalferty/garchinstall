@@ -32,10 +32,19 @@
 #define LOG_PATH "/tmp/gui_server.log"
 #define MAX_MESSAGE_SIZE 1024*1024*16 // 16 MB
 
+#define MSG_CLEAR_SCREEN 1
+#define MSG_SET_FGCOLOR 2
+#define MSG_SET_BGCOLOR 3
+#define MSG_DRAW_RECT 4
+#define MSG_LOAD_BITMAP 5
+#define MSG_DRAW_BITMAP 6
+#define MSG_DRAW_TEXT 7
+
 uint32_t GetFBOffset(uint32_t x, uint32_t y);
 void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b);
 void DrawPixel32U(uint32_t x2, uint32_t y2, uint32_t c);
 void DrawText(uint32_t x, uint32_t y, char *str);
+void DrawRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
 uint32_t GetPixel(uint32_t x2, uint32_t y2);
 void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp);
 void DrawArchLogo(uint32_t x, uint32_t y);
