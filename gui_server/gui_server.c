@@ -1,6 +1,8 @@
 #include "gui_server.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#define _GNU_SOURCE
+#include <sys/socket.h>
 
 int tty0_fd, fbfd = 0, kbfd = 0, msfd = 0, page = 0, prevPage = 1;
 struct fb_var_screeninfo *vinfo;
