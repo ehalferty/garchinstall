@@ -16,6 +16,7 @@
 #include <linux/kd.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#define _GNU_SOURCE
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/un.h>
