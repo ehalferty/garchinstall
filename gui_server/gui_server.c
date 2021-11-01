@@ -371,6 +371,7 @@ void HandleMessage() {
                              ((uint64_t)tm[idx++] << 16) | ((uint64_t)tm[idx++] << 24)));
                 break; }
             case MSG_DRAW_TEXT: {
+                printf("MSG_DRAW_TEXT %s\n", (char *)&(tm[tdx + 4]));
                 DrawText(
                     ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
                     ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
