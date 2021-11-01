@@ -307,6 +307,7 @@ void DoPage() {
     int socketReadRes = ReadFromSocket();
     if (socketReadRes) {
         HandleMessage();
+        printf("Sending response\n");
         send(client_sockfd, totalMessage, totalMessageIdx, 0);
         close(client_sockfd);
         printf("Done handling\n");
@@ -332,9 +333,11 @@ void HandleMessage() {
     char *tm = totalMessage;
     int idx = 4, subMessageIdx;
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
+    printf("numSubmessages=%d\n", numSubmessages);
     for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
         int returned = 0;
         int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
+        printf("subMsgCode=%d\n", subMsgCode);
         switch (subMsgCode) {
             case MSG_CLEAR_SCREEN: { ClearScreen(); break; }
             case MSG_SET_FGCOLOR: { SetFGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
