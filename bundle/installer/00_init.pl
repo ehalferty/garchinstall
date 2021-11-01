@@ -12,8 +12,6 @@ print("Welcome to garchinstaller!");
 
 system("stty -echo");
 print("Starting gui_server...");
-system("pwd");
-system("ls -la");
 system("chmod +x ./bundle/gui_server");
 system("./bundle/gui_server &> /tmp/serverlog.txt &");
 # system("perl 01_language_chooser.pl");
