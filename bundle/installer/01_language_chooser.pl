@@ -6,12 +6,15 @@ use constant MSG_DRAW_TEXT => 7;
 
 sub send_msg {
     my $client = IO::Socket::UNIX->new(Type => SOCK_STREAM(), Peer => $SOCK_PATH);
+    my $len = length(@_[1]);
     my $msg = sprintf(
-        "%c%c%c%c%s\x00",
+        "%c%c%c%c\x01\x00%c%c%s\x00",
+        $len & 0xFF,
+        ($len >> 8) & 0xFF,
+        ($len >> 16) & 0xFF,
+        ($len >> 24) & 0xFF,
         @_[0] & 0xFF,
         (@_[0] >> 8) & 0xFF,
-        (@_[0] >> 16) & 0xFF,
-        (@_[0] >> 24) & 0xFF,
         @_[1]
     );
     print $msg;
@@ -26,4 +29,4 @@ sub send_msg {
     close $client;
 }
 
-send_msg(MSG_DRAW_TEXT, "\x01\x00\x05\x00\x05\x00ABCD");
+send_msg(MSG_DRAW_TEXT, "\x15\x00\x15\x00ABCD");
