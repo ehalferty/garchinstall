@@ -443,13 +443,8 @@ int ReadFromSocket() {
             expectedMsgLen = (unsigned int)totalMessage[0] + ((unsigned int)totalMessage[1] << 8) +
                             ((unsigned int)totalMessage[2] << 16) + ((unsigned int)totalMessage[3] << 24);
         }
-        if (expectedMsgLen != 0 && totalMessageIdx >= expectedMsgLen + 4) {
-            // totalMessage[expectedMsgLen + 4] = 0;
-            // printf("Done\n");
-            break;
-        }
+        if (expectedMsgLen != 0 && totalMessageIdx >= expectedMsgLen + 4) { break; }
     }
-    // printf("Returning. expectedMsgLen=%d\n", expectedMsgLen); fflush(stdout);
     return 1;
 }
 void SetupSocket() {
