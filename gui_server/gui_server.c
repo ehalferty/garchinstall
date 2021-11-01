@@ -187,14 +187,14 @@ uint8_t * LoadBitmap(const char *path) {
     int x, y, n;
     uint32_t i, j, offset;
     uint8_t *bmp = stbi_load(path, &x, &y, &n, 4), *tmp; // 4: Always try to get RGBA format
-    // printf("Loaded bitmap %s w=%d h=%d bpp=%d\n", path, x, y, n);
+    printf("Loaded bitmap %s w=%d h=%d bpp=%d addr=%08lx\n", path, x, y, n, (uint64_t)bmp);
     return bmp;
 }
 void FreeBitmap(uint8_t *bmp) {
     stbi_image_free(bmp);
 }
 void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
-    // printf("Drawing bitmap w=%d h=%d size=%d addr=%08lx\n", w, h, w * h * 4, (uint64_t)bmp);
+    printf("Drawing bitmap w=%d h=%d size=%d addr=%08lx\n", w, h, w * h * 4, (uint64_t)bmp);
     uint32_t i, j, offset;
     for (i = 0; i < w; i++) { for (j = 0; j < h; j++) {
         offset = ((j * w) + i) * (vinfo->bits_per_pixel / 8);
