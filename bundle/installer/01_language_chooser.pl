@@ -23,8 +23,8 @@ sub send_msg {
     # my $bufsize = 100;
     # my $buffer=0;
     # my $n = sysread(F,$buffer,$bufsize);
-    while (my $data = sysread($sock, $resBuff, $resBuffSize)) {
-        $res = $res . $data;
+    while (sysread($sock, $resBuff, $resBuffSize)) {
+        $res = $res . $resBuff;
     }
     close $client;
     return $res;
