@@ -371,6 +371,7 @@ void HandleMessage() {
                 break; }
             case MSG_LOAD_BITMAP: {
                 char *bmp = LoadBitmap(&(tm[idx]));
+                printf("bmp=%08llx\n", bmp);
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 8) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 16) & 0xff;
@@ -420,7 +421,7 @@ void HandleMessage() {
         totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
         totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
         printf(
-            "returnMessage %x %x %x %x %x %x %x %x\n",
+            "totalMessage %x %x %x %x %x %x %x %x\n",
             (uint8_t)totalMessage[0],
             (uint8_t)totalMessage[1],
             (uint8_t)totalMessage[2],
