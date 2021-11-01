@@ -16,7 +16,7 @@ sub send_msg {
     my $len = length(@_[1]) + 5;
     my $msg = sprintf("%c%c%c%c\x01\x00%c%c%s\x00", $len & 0xFF, ($len >> 8) & 0xFF, ($len >> 16) & 0xFF,
         ($len >> 24) & 0xFF, @_[0] & 0xFF, (@_[0] >> 8) & 0xFF, @_[1]);
-    print map { sprintf '%02X ', ord } split //, $msg;
+    # print map { sprintf '%02X ', ord } split //, $msg;
     print {$client} $msg;
     my $res = scalar <$client>;
     close $client;
@@ -34,5 +34,6 @@ sub load_bmp { return send_msg(MSG_LOAD_BITMAP, @_[0]); }
 draw_text(100, 100, "Hello, world!");
 my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
 print "===\n";
-print $arch_logo_ref
+print map { sprintf '%02X ', ord } split //, $arch_logo_ref;
+# print $arch_logo_ref
 print "\n";
