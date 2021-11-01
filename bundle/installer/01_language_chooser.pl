@@ -18,9 +18,13 @@ sub send_msg {
         ($len >> 24) & 0xFF, @_[0] & 0xFF, (@_[0] >> 8) & 0xFF, @_[1]);
     # print map { sprintf '%02X ', ord } split //, $msg;
     print {$client} $msg;
-    my $res = "";
-    while (my $char = $sock->getc) {
-        $res = $res . $char;
+    my $resBuff = 0;
+    my $resBuffSize = 1024;
+    # my $bufsize = 100;
+    # my $buffer=0;
+    # my $n = sysread(F,$buffer,$bufsize);
+    while (my $data = sysread($sock, $resBuff, $resBuffSize)) {
+        $res = $res . $data;
     }
     close $client;
     return $res;
