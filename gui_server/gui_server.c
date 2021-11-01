@@ -236,74 +236,74 @@ void ExitWithError(char *msg) {
     exit(2);
 }
 void DoPage() {
-    uint8_t changedPage = prevPage != page;
-    uint32_t redraw = changedPage || mouseWentDown || mouseWentUp;
-    prevPage = page;
-    if (redraw) {
-        RestoreUnderCursor();
-        ClearScreen();
-    }
-    switch (page) {
-        case 0: {
-            if (mouseWentUp) {
-                if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
-                else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
-            }
-            if (changedPage) {
-                // GetPartitions();
-            }
-            if (redraw) {
-                sprintf(tmpStr, "Welcome");
-                DrawText(0, 0, tmpStr);
-                DrawArchLogo(0, 24);
-            }
-            break;
-        }
-        case 1: {
-            if (mouseWentUp) {
-                if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
-                else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
-            }
-            if (redraw) {
-                sprintf(tmpStr, "Step 1 of %d - Choose Boot Drive", NUM_STEPS);
-                DrawText(0, 0, tmpStr);
-            }
-            break;
-        }
-        case 2: {
-            if (mouseWentUp) {
-                if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
-                else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
-            }
-            if (redraw) {
-                sprintf(tmpStr, "Step 2 of %d - Choose Keyboard Layout", NUM_STEPS);
-                DrawText(0, 0, tmpStr);
-            }
-            break;
-        }
-        case 3: {
-            if (mouseWentUp) {
-                if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
-                else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
-            }
-            if (redraw) {
-                sprintf(tmpStr, "Step 3 of %d - Connect to Network", NUM_STEPS);
-                DrawText(0, 0, tmpStr);
-            }
-            break;
-        }
-        default: {
-            if (mouseWentUp) {
-                if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
-            }
-            if (redraw) {
-                RestoreUnderCursor();
-                ClearScreen();
-                SaveUnderCursor();
-            }
-            break;
-        }
-    }
+    // uint8_t changedPage = prevPage != page;
+    // uint32_t redraw = changedPage || mouseWentDown || mouseWentUp;
+    // prevPage = page;
+    // if (redraw) {
+    //     RestoreUnderCursor();
+    //     ClearScreen();
+    // }
+    // switch (page) {
+    //     case 0: {
+    //         if (mouseWentUp) {
+    //             if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
+    //             else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
+    //         }
+    //         if (changedPage) {
+    //             // GetPartitions();
+    //         }
+    //         if (redraw) {
+    //             sprintf(tmpStr, "Welcome");
+    //             DrawText(0, 0, tmpStr);
+    //             DrawArchLogo(0, 24);
+    //         }
+    //         break;
+    //     }
+    //     case 1: {
+    //         if (mouseWentUp) {
+    //             if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
+    //             else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
+    //         }
+    //         if (redraw) {
+    //             sprintf(tmpStr, "Step 1 of %d - Choose Boot Drive", NUM_STEPS);
+    //             DrawText(0, 0, tmpStr);
+    //         }
+    //         break;
+    //     }
+    //     case 2: {
+    //         if (mouseWentUp) {
+    //             if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
+    //             else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
+    //         }
+    //         if (redraw) {
+    //             sprintf(tmpStr, "Step 2 of %d - Choose Keyboard Layout", NUM_STEPS);
+    //             DrawText(0, 0, tmpStr);
+    //         }
+    //         break;
+    //     }
+    //     case 3: {
+    //         if (mouseWentUp) {
+    //             if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
+    //             else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
+    //         }
+    //         if (redraw) {
+    //             sprintf(tmpStr, "Step 3 of %d - Connect to Network", NUM_STEPS);
+    //             DrawText(0, 0, tmpStr);
+    //         }
+    //         break;
+    //     }
+    //     default: {
+    //         if (mouseWentUp) {
+    //             if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
+    //         }
+    //         if (redraw) {
+    //             RestoreUnderCursor();
+    //             ClearScreen();
+    //             SaveUnderCursor();
+    //         }
+    //         break;
+    //     }
+    // }
     int socketReadRes = ReadFromSocket();
     if (socketReadRes) {
         printf("About to call HandleMessage\n"); fflush(stdout);
@@ -314,11 +314,11 @@ void DoPage() {
         printf("Done handling\n");
         fflush(stdout);
     }
-    if (redraw) { // TODO: Finer-grained redraw flags. Don't need to redraw entire page to redraw the closebox...
-        DrawCloseBox();
-        DrawNextArrow();
-        SaveUnderCursor();
-    }
+    // if (redraw) { // TODO: Finer-grained redraw flags. Don't need to redraw entire page to redraw the closebox...
+    //     DrawCloseBox();
+    //     DrawNextArrow();
+    //     SaveUnderCursor();
+    // }
 }
 void EnableGraphicsMode() {
     struct termios newt;
