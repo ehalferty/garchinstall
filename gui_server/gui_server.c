@@ -324,9 +324,9 @@ void DoPage() {
 }
 void EnableGraphicsMode() {
     struct termios newt;
+    printf("\f");
     newt.c_lflag = 0;//&= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-    printf("\f");
     int t = -1;
     tty0_fd = open("/dev/tty0", O_WRONLY, 0);
     ioctl(tty0_fd, KDSETMODE, KD_GRAPHICS);
