@@ -360,7 +360,7 @@ void HandleMessage() {
                 break; }
             case MSG_LOAD_BITMAP: {
                 char *bmp = LoadBitmap(&(tm[idx]));
-                printf("MSG_LOAD_BITMAP bmp=%08llx\n", bmp);
+                printf("MSG_LOAD_BITMAP bmp=%08llx path=%s\n", bmp, (char *)&(tm[idx]));
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 8) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 16) & 0xff;
