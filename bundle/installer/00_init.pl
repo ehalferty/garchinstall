@@ -1,6 +1,6 @@
 # Prints welcome, starts gui server
 
-print("Welcome to garchinstaller!");
+print("Welcome to garchinstaller!\n");
 # system("mkdir /mnt/installer-root");
 # system("mount -t tmpfs -o size=4g tmpfs /mnt/installer-root");
 # system("pacstrap /mnt/installer-root base linux");
@@ -12,7 +12,7 @@ print("Welcome to garchinstaller!");
 
 system("stty -echo");
 system("killall gui_server");
-print("Starting gui_server...");
+print("Starting gui_server...\n");
 system("chmod +x ./bundle/gui_server");
 system("./bundle/gui_server &> /tmp/serverlog.txt &");
 # system("perl 01_language_chooser.pl");

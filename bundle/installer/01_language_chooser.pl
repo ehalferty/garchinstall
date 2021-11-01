@@ -14,6 +14,7 @@ sub send_msg {
         (@_[0] >> 24) & 0xFF,
         @_[1]
     );
+    print $msg;
     print {$client} $msg;
 
 
