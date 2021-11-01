@@ -353,23 +353,23 @@ void HandleMessage() {
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 24) & 0xff;
                 returned = 1;
                 break; }
-    //         case MSG_DRAW_BITMAP: {
-    //             DrawBitmap(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-    //                      ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-    //                      ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-    //                      ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-    //                      (char *)((uint64_t)tm[idx++] | ((uint64_t)tm[idx++] << 8) |
-    //                          ((uint64_t)tm[idx++] << 16) | ((uint64_t)tm[idx++] << 24)));
-    //             break; }
-    //         case MSG_DRAW_TEXT: {
-    //             DrawText(
-    //                 ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-    //                 ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-    //                 (char *)(&(tm[idx]))
-    //             );
-    //             idx += strlen(&(tm[idx]));
-    //             break;
-    //     }
+            case MSG_DRAW_BITMAP: {
+                DrawBitmap(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                         (char *)((uint64_t)tm[idx++] | ((uint64_t)tm[idx++] << 8) |
+                             ((uint64_t)tm[idx++] << 16) | ((uint64_t)tm[idx++] << 24)));
+                break; }
+            case MSG_DRAW_TEXT: {
+                DrawText(
+                    ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                    ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                    (char *)(&(tm[idx]))
+                );
+                idx += strlen(&(tm[idx]));
+                break; }
+        }
         if (!returned) {
             returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
         }
