@@ -403,11 +403,33 @@ void HandleMessage() {
             returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
         }
         printf("Building response. returnMessageIdx=%d\n", returnMessageIdx); fflush(stdout);
-        memcpy(totalMessage, returnMessage, returnMessageIdx);
+        printf(
+            "returnMessage %x %x %x %x %x %x %x %x\n",
+            (uint8_t)returnMessage[0],
+            (uint8_t)returnMessage[1],
+            (uint8_t)returnMessage[2],
+            (uint8_t)returnMessage[3],
+            (uint8_t)returnMessage[4],
+            (uint8_t)returnMessage[5],
+            (uint8_t)returnMessage[6],
+            (uint8_t)returnMessage[7]
+        );
+        memcpy(totalMessage, returnMessage, returnMessageIdx + 4);
         totalMessage[0] = (returnMessageIdx & 0xFF);
         totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
         totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
         totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
+        printf(
+            "returnMessage %x %x %x %x %x %x %x %x\n",
+            (uint8_t)totalMessage[0],
+            (uint8_t)totalMessage[1],
+            (uint8_t)totalMessage[2],
+            (uint8_t)totalMessage[3],
+            (uint8_t)totalMessage[4],
+            (uint8_t)totalMessage[5],
+            (uint8_t)totalMessage[6],
+            (uint8_t)totalMessage[7]
+        );
         printf("Leaving HandleMessage\n"); fflush(stdout);
     }
 }
