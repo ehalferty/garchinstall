@@ -383,6 +383,7 @@ void HandleMessage() {
         if (!returned) {
             returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
         }
+        printf("Building response. returnMessageIdx=%d\n", returnMessageIdx);
         memcpy(totalMessage, returnMessage, returnMessageIdx);
         totalMessage[0] = (returnMessageIdx & 0xFF);
         totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
