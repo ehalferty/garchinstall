@@ -336,6 +336,7 @@ void HandleMessage() {
     char *tm = totalMessage;
     int idx = 4, subMessageIdx, i;
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
+    printf("totalMessageIdx=%d", totalMessageIdx);
     // printf("numSubmessages=%d\n", numSubmessages);fflush(stdout);
     for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
         // printf("subMessageId%d\n", subMessageIdx); fflush(stdout);
