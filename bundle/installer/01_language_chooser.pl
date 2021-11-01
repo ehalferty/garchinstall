@@ -22,13 +22,8 @@ sub send_msg {
     print {$client} $msg;
     my $resBuff = 0;
     my $resBuffSize = 1024;
-    # my $bufsize = 100;
-    # my $buffer=0;
-    # my $n = sysread(F,$buffer,$bufsize);
     $res = "";
-    while (sysread($client, $resBuff, $resBuffSize)) {
-        $res = $res . $resBuff;
-    }
+    while (sysread($client, $resBuff, $resBuffSize)) { $res = $res . $resBuff; }
     close $client;
     return $res;
 }

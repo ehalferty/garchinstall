@@ -444,7 +444,7 @@ int ReadFromSocket() {
                             ((unsigned int)totalMessage[2] << 16) + ((unsigned int)totalMessage[3] << 24);
         }
         if (expectedMsgLen != 0 && totalMessageIdx >= expectedMsgLen + 4) {
-            totalMessage[expectedMsgLen + 4] = 0;
+            // totalMessage[expectedMsgLen + 4] = 0;
             // printf("Done\n");
             break;
         }
