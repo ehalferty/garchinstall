@@ -336,11 +336,6 @@ void HandleMessage() {
     char *tm = totalMessage;
     int idx = 4, subMessageIdx, i;
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
-    printf("totalMessageIdx=%d\n", totalMessageIdx);
-    for (i = 0; i < 64; i++) {
-        printf("%02x ", (uint8_t)totalMessage[i]);
-        if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
-    }
     // printf("path=%s\n", (char *)&(totalMessage[4]));
     // printf("numSubmessages=%d\n", numSubmessages);fflush(stdout);
     for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
@@ -378,6 +373,11 @@ void HandleMessage() {
                 idx += strlen(&(tm[idx])) + 8; // This may be wrong lol
                 break; }
             case MSG_DRAW_BITMAP: {
+                printf("MSG_DRAW_BITMAP\n");
+                for (i = 0; i < 64; i++) {
+                    printf("%02x ", (uint8_t)tm[i + 4]);
+                    if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
+                }
                 uint32_t x = (unsigned int)tm[idx] + ((unsigned int)tm[idx + 1] << 8);
                 uint32_t y = (unsigned int)tm[idx + 2] + ((unsigned int)tm[idx + 3] << 8);
                 uint32_t w = (unsigned int)tm[idx + 4] + ((unsigned int)tm[idx + 5] << 8);
