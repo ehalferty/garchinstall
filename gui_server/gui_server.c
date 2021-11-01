@@ -343,7 +343,7 @@ void HandleMessage() {
         int returned = 0;
         int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
         if (subMsgCode == 0) { break; }
-        // printf("subMsgCode=%d\n", subMsgCode);fflush(stdout);
+        printf("subMsgCode=%d\n", subMsgCode); fflush(stdout);
         int needToRedrawCursor = (subMsgCode == MSG_CLEAR_SCREEN || subMsgCode == MSG_DRAW_RECT ||
             subMsgCode == MSG_DRAW_BITMAP || subMsgCode == MSG_DRAW_TEXT);
         if (needToRedrawCursor) { RestoreUnderCursor(); }
