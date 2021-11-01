@@ -43,32 +43,32 @@ sub load_bmp { return substr(send_msg(MSG_LOAD_BITMAP, @_[0]), 8, 16); }
 
 sub draw_bmp {
     my ($x, $y, $w, $h, $addr) = @_;
-    my $a = sprintf("%c%c%c%c%c%c%c%c\n",
-        $x & 0xFF, ($x >> 8) & 0xFF,
-        $y & 0xFF, ($y >> 8) & 0xFF,
-        $w & 0xFF, ($w >> 8) & 0xFF,
-        $h & 0xFF, ($h >> 8) & 0xFF);
-    my $b = sprintf(pack('S<4Q', $x, $y, $w, $h, $addr) . "\n");
-    print map { sprintf '%02X ', ord } split //, $a;
-    print "\n";
-    print map { sprintf '%02X ', ord } split //, $b;
-    print "\n";
+    # my $a = sprintf("%c%c%c%c%c%c%c%c\n",
+    #     $x & 0xFF, ($x >> 8) & 0xFF,
+    #     $y & 0xFF, ($y >> 8) & 0xFF,
+    #     $w & 0xFF, ($w >> 8) & 0xFF,
+    #     $h & 0xFF, ($h >> 8) & 0xFF);
+    # my $b = sprintf(pack('S<4Q<', $x, $y, $w, $h, $addr) . "\n");
+    # print map { sprintf '%02X ', ord } split //, $a;
+    # print "\n";
+    # print map { sprintf '%02X ', ord } split //, $b;
+    # print "\n";
 
 
 
-    # my $msg = pack('Q>', $x) . pack('Q>', $y)
-    # my $bmpAddr = sprintf("%c%c%c%c%c%c%c%c",
+    # # my $msg = pack('Q>', $x) . pack('Q>', $y)
+    # # my $bmpAddr = sprintf("%c%c%c%c%c%c%c%c",
+    # #     $addr & 0xFF, ($addr >> 8) & 0xFF, ($addr >> 16) & 0xFF, ($addr >> 24) & 0xFF,
+    # #     ($addr >> 32) & 0xFF, ($addr >> 40) & 0xFF, ($addr >> 48) & 0xFF, ($addr >> 56) & 0xFF);
+    
+    # my $msg = sprintf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
+    #     $x & 0xFF, ($x >> 8) & 0xFF,
+    #     $y & 0xFF, ($y >> 8) & 0xFF,
+    #     $w & 0xFF, ($w >> 8) & 0xFF,
+    #     $h & 0xFF, ($h >> 8) & 0xFF,
     #     $addr & 0xFF, ($addr >> 8) & 0xFF, ($addr >> 16) & 0xFF, ($addr >> 24) & 0xFF,
     #     ($addr >> 32) & 0xFF, ($addr >> 40) & 0xFF, ($addr >> 48) & 0xFF, ($addr >> 56) & 0xFF);
-    
-    my $msg = sprintf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
-        $x & 0xFF, ($x >> 8) & 0xFF,
-        $y & 0xFF, ($y >> 8) & 0xFF,
-        $w & 0xFF, ($w >> 8) & 0xFF,
-        $h & 0xFF, ($h >> 8) & 0xFF,
-        $addr & 0xFF, ($addr >> 8) & 0xFF, ($addr >> 16) & 0xFF, ($addr >> 24) & 0xFF,
-        ($addr >> 32) & 0xFF, ($addr >> 40) & 0xFF, ($addr >> 48) & 0xFF, ($addr >> 56) & 0xFF);
-    return send_msg(MSG_DRAW_BITMAP, $msg);
+    return send_msg(MSG_DRAW_BITMAP, pack('S<4Q<', $x, $y, $w, $h, $addr));
 }
 
 draw_rect(0, 400, 400, 10);
