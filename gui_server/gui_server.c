@@ -418,6 +418,7 @@ void HandleMessage() {
             (uint8_t)returnMessage[6],
             (uint8_t)returnMessage[7]
         );
+        returnMessageIdx++;
         memcpy(totalMessage, returnMessage, returnMessageIdx + 4);
         totalMessage[0] = (returnMessageIdx & 0xFF);
         totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
