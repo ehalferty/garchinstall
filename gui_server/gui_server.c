@@ -335,24 +335,24 @@ void HandleMessage() {
     for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
         int returned = 0;
         int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
-    //     switch (subMsgCode) {
-    //         case MSG_CLEAR_SCREEN: { ClearScreen(); break; }
-    //         case MSG_SET_FGCOLOR: { SetFGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
-    //         case MSG_SET_BGCOLOR: { SetBGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
-    //         case MSG_DRAW_RECT: {
-    //             DrawRect(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-    //                      ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-    //                      ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-    //                      ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)));
-    //             break; }
-    //         case MSG_LOAD_BITMAP: {
-    //             char *bmp = LoadBitmap(&(tm[idx]));
-    //             returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp) & 0xff;
-    //             returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 8) & 0xff;
-    //             returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 16) & 0xff;
-    //             returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 24) & 0xff;
-    //             returned = 1;
-    //             break; }
+        switch (subMsgCode) {
+            case MSG_CLEAR_SCREEN: { ClearScreen(); break; }
+            case MSG_SET_FGCOLOR: { SetFGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
+            case MSG_SET_BGCOLOR: { SetBGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
+            case MSG_DRAW_RECT: {
+                DrawRect(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
+                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)));
+                break; }
+            case MSG_LOAD_BITMAP: {
+                char *bmp = LoadBitmap(&(tm[idx]));
+                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp) & 0xff;
+                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 8) & 0xff;
+                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 16) & 0xff;
+                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 24) & 0xff;
+                returned = 1;
+                break; }
     //         case MSG_DRAW_BITMAP: {
     //             DrawBitmap(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
     //                      ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
@@ -370,9 +370,9 @@ void HandleMessage() {
     //             idx += strlen(&(tm[idx]));
     //             break;
     //     }
-    //     if (!returned) {
-    //         returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
-    //     }
+        if (!returned) {
+            returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
+        }
         memcpy(totalMessage, returnMessage, returnMessageIdx);
         totalMessage[0] = (returnMessageIdx & 0xFF);
         totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
