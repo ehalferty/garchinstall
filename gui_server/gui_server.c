@@ -349,10 +349,12 @@ void HandleMessage() {
             case MSG_SET_FGCOLOR: { SetFGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
             case MSG_SET_BGCOLOR: { SetBGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
             case MSG_DRAW_RECT: {
-                DrawRect(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)));
+                uint32_t x = (unsigned int)tm[idx] + ((unsigned int)tm[idx + 1] << 8);
+                uint32_t y = (unsigned int)tm[idx + 2] + ((unsigned int)tm[idx + 3] << 8);
+                uint32_t w = (unsigned int)tm[idx + 4] + ((unsigned int)tm[idx + 5] << 8);
+                uint32_t h = (unsigned int)tm[idx + 6] + ((unsigned int)tm[idx + 7] << 8);
+                DrawRect(x, y, w, h);
+                idx += 8;
                 break; }
             case MSG_LOAD_BITMAP: {
                 char *bmp = LoadBitmap(&(tm[idx]));
@@ -361,14 +363,17 @@ void HandleMessage() {
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 16) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 24) & 0xff;
                 returned = 1;
+                idx += strlen(&(tm[idx])) + 4;
                 break; }
             case MSG_DRAW_BITMAP: {
-                DrawBitmap(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                         ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                         (char *)((uint64_t)tm[idx++] | ((uint64_t)tm[idx++] << 8) |
-                             ((uint64_t)tm[idx++] << 16) | ((uint64_t)tm[idx++] << 24)));
+                uint32_t x = (unsigned int)tm[idx] + ((unsigned int)tm[idx + 1] << 8);
+                uint32_t y = (unsigned int)tm[idx + 2] + ((unsigned int)tm[idx + 3] << 8);
+                uint32_t w = (unsigned int)tm[idx + 4] + ((unsigned int)tm[idx + 5] << 8);
+                uint32_t h = (unsigned int)tm[idx + 6] + ((unsigned int)tm[idx + 7] << 8);
+                uint8_t *bmp = (unsigned int)tm[idx + 9] + ((unsigned int)tm[idx + 10] << 8) +
+                    ((unsigned int)tm[idx + 11] << 16) + ((unsigned int)tm[idx + 12] << 24);
+                DrawBitmap(x, y, w, h, bmp);
+                idx += 12;
                 break; }
             case MSG_DRAW_TEXT: {
                 printf("MSG_DRAW_TEXT %s\n", (char *)&(tm[idx + 4])); fflush(stdout);
