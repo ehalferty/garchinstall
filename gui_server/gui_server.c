@@ -372,12 +372,11 @@ void HandleMessage() {
                 break; }
             case MSG_DRAW_TEXT: {
                 printf("MSG_DRAW_TEXT %s\n", (char *)&(tm[idx + 4])); fflush(stdout);
-                DrawText(
-                    ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                    ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
-                    (char *)(&(tm[idx]))
-                );
-                idx += strlen(&(tm[idx]));
+                uint32_t x = (unsigned int)tm[idx] + ((unsigned int)tm[idx + 1] << 8);
+                uint32_t y = (unsigned int)tm[idx + 2] + ((unsigned int)tm[idx + 3] << 8);
+                char *str = (char *)&(tm[idx + 4]);
+                DrawText(x, y, str);
+                idx += strlen(&(tm[idx + 4])) + 4;
                 break; }
         }
         if (needToRedrawCursor) { SaveUnderCursor(); DrawCursor(); }
