@@ -396,20 +396,18 @@ void HandleMessage() {
             returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
         }
         returnMessageIdx += 5;
-        // printf("Building response. size=%d\n", returnMessageIdx); fflush(stdout);
+        printf("Building response. size=%d\n", returnMessageIdx);
         memset(totalMessage, 0, MAX_MESSAGE_SIZE);
         memcpy(totalMessage, returnMessage, returnMessageIdx);
         totalMessage[0] = (returnMessageIdx & 0xFF);
         totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
         totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
         totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
-        // for (i = 0; i < 24; i++) {
-        //     printf("%x ", (uint8_t)totalMessage[i]);
-        //     if (i == 15) {
-        //         printf("\n");
-        //     }
-        // }
-        // printf("Leaving HandleMessage\n"); fflush(stdout);
+        for (i = 0; i < 24; i++) {
+            printf("%x ", (uint8_t)totalMessage[i]);
+            if (i == 15) { printf("\n"); }
+        }
+        printf("Leaving HandleMessage\n"); fflush(stdout);
     }
 }
 int ReadFromSocket() {
