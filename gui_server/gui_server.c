@@ -407,7 +407,7 @@ int ReadFromSocket() {
         printf("%s\n", buff);
         memcpy(&(totalMessage[totalMessageIdx]), buff, len);
         printf(
-            "%x %x %x %x %x %x %x %x %x %x %x %x\n",
+            "%x %x %x %x %x %x %x %x\n",
             (uint8_t)totalMessage[0],
             (uint8_t)totalMessage[1],
             (uint8_t)totalMessage[2],
