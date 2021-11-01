@@ -378,8 +378,8 @@ void HandleMessage() {
                     printf("%02x ", (uint8_t)tm[i + 8]);
                     if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
                 }
-                uint32_t x = (unsigned int)tm[idx] + ((unsigned int)tm[idx + 1] << 8);
-                uint32_t y = (unsigned int)tm[idx + 2] + ((unsigned int)tm[idx + 3] << 8);
+                uint32_t x = (uint8_t)(tm[idx]) + ((uint8_t)(tm[idx + 1]) << 8);
+                uint32_t y = (uint8_t)(tm[idx + 2]) + ((uint8_t)(tm[idx + 3]) << 8);
 
                 // uint32_t x = (uint8_t)(tm[idx]) + 
                 // uint32_t x = (uint32_t)(tm[idx]) + ((uint32_t)(tm[idx + 1]) << 8);
@@ -390,7 +390,7 @@ void HandleMessage() {
                     ((uint32_t)(tm[idx + 10]) << 16) + ((uint32_t)(tm[idx + 11]) << 24) +
                     ((uint32_t)(tm[idx + 12]) << 32) + ((uint32_t)(tm[idx + 13]) << 40) +
                     ((uint32_t)(tm[idx + 14]) << 48) + ((uint32_t)(tm[idx + 15]) << 56);
-                printf("MSG_DRAW_BITMAP x=%lu y=%lu w=%lu h=%lu bmp=%08llx\n", x, y, w, h, bmp);
+                printf("MSG_DRAW_BITMAP x=%d y=%d w=%lu h=%lu bmp=%08llx\n", x, y, w, h, bmp);
                 DrawBitmap(x, y, w, h, bmp);
                 idx += 12;
                 break; }
