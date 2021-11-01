@@ -385,7 +385,7 @@ void HandleMessage() {
                 uint32_t h = (uint8_t)(tm[idx + 6]) + ((uint8_t)(tm[idx + 7]) << 8);
                 uint64_t bmp = 0;
                 for (i = 0; i < 8; i++) { bmp |= (uint64_t)((uint8_t)(tm[idx + 8 + i])) << ((uint8_t)i * 8); }
-                // DrawBitmap(x, y, w, h, (char *)bmp);
+                DrawBitmap(x, y, w, h, (char *)bmp);
                 printf("MSG_DRAW_BITMAP bmp=%08llx\n", bmp); fflush(stdout);
                 idx += 12;
                 break; }
