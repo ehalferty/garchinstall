@@ -332,9 +332,9 @@ void HandleMessage() {
     char *tm = totalMessage;
     int idx = 4, subMessageIdx;
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
-    for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageId++) {
-    //     int returned = 0;
-    //     int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
+    for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
+        int returned = 0;
+        int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
     //     switch (subMsgCode) {
     //         case MSG_CLEAR_SCREEN: { ClearScreen(); break; }
     //         case MSG_SET_FGCOLOR: { SetFGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
@@ -373,11 +373,11 @@ void HandleMessage() {
     //     if (!returned) {
     //         returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
     //     }
-    //     memcpy(totalMessage, returnMessage, returnMessageIdx);
-    //     totalMessage[0] = (returnMessageIdx & 0xFF);
-    //     totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
-    //     totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
-    //     totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
+        memcpy(totalMessage, returnMessage, returnMessageIdx);
+        totalMessage[0] = (returnMessageIdx & 0xFF);
+        totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
+        totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
+        totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
     }
 }
 int ReadFromSocket() {
