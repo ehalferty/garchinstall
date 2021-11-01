@@ -418,7 +418,7 @@ int ReadFromSocket() {
             (uint8_t)totalMessage[7]
         );
         printf(
-            "%x %x %x %x %x %x %x %x %x %x %x %x\n",
+            "%x %x %x %x %x %x %x %x\n",
             (uint8_t)totalMessage[8],
             (uint8_t)totalMessage[9],
             (uint8_t)totalMessage[10],
@@ -429,7 +429,7 @@ int ReadFromSocket() {
             (uint8_t)totalMessage[15]
         );
         printf(
-            "%x %x %x %x %x %x %x %x %x %x %x %x\n",
+            "%x %x %x %x %x %x %x %x\n",
             (uint8_t)totalMessage[16],
             (uint8_t)totalMessage[17],
             (uint8_t)totalMessage[18],
