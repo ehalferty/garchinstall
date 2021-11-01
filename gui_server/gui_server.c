@@ -338,9 +338,10 @@ void HandleMessage() {
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
     printf("totalMessageIdx=%d\n", totalMessageIdx);
     for (i = 0; i < 64; i++) {
-        printf("%x ", (uint8_t)totalMessage[i]);
+        printf("%02x ", (uint8_t)totalMessage[i]);
         if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
     }
+    printf("path=%s\n", (char *)&(totalMessage[4]));
     // printf("numSubmessages=%d\n", numSubmessages);fflush(stdout);
     for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
         // printf("subMessageId%d\n", subMessageIdx); fflush(stdout);
