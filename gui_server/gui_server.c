@@ -383,10 +383,10 @@ void HandleMessage() {
                 uint32_t y = (uint8_t)(tm[idx + 2]) + ((uint8_t)(tm[idx + 3]) << 8);
                 uint32_t w = (uint8_t)(tm[idx + 4]) + ((uint8_t)(tm[idx + 5]) << 8);
                 uint32_t h = (uint8_t)(tm[idx + 6]) + ((uint8_t)(tm[idx + 7]) << 8);
-                uint8_t *bmp = (uint8_t)(tm[idx + 8]) + ((uint8_t)(tm[idx + 9]) << 8) +
-                    ((uint8_t)(tm[idx + 10]) << 16) + ((uint8_t)(tm[idx + 11]) << 24) +
-                    ((uint8_t)(tm[idx + 12]) << 32) + ((uint8_t)(tm[idx + 13]) << 40) +
-                    ((uint8_t)(tm[idx + 14]) << 48) + ((uint8_t)(tm[idx + 15]) << 56);
+                uint8_t *bmp = (uint64_t)(tm[idx + 8]) + ((uint64_t)(tm[idx + 9]) << 8) +
+                    ((uint64_t)(tm[idx + 10]) << 16) + ((uint64_t)(tm[idx + 11]) << 24) +
+                    ((uint64_t)(tm[idx + 12]) << 32) + ((uint64_t)(tm[idx + 13]) << 40) +
+                    ((uint64_t)(tm[idx + 14]) << 48) + ((uint64_t)(tm[idx + 15]) << 56);
                 printf("MSG_DRAW_BITMAP x=%d y=%d w=%lu h=%lu bmp=%08llx\n", x, y, w, h, bmp); fflush(stdout);
                 // DrawBitmap(x, y, w, h, bmp);
                 printf("OKAY OKAY OKAY\n");
