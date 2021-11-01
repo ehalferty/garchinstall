@@ -44,7 +44,7 @@ sub draw_rect {
     send_msg(MSG_DRAW_RECT, $msg);
 }
 
-sub load_bmp { return substr(send_msg(MSG_LOAD_BITMAP, @_[0]), 8, 16); }
+sub load_bmp { return substr(send_msg(MSG_LOAD_BITMAP, @_[0]), 8, 8); }
 
 sub draw_bmp {
     my ($x, $y, $w, $h, $addr) = @_;
@@ -74,7 +74,7 @@ sub draw_bmp {
     #     $addr & 0xFF, ($addr >> 8) & 0xFF, ($addr >> 16) & 0xFF, ($addr >> 24) & 0xFF,
     #     ($addr >> 32) & 0xFF, ($addr >> 40) & 0xFF, ($addr >> 48) & 0xFF, ($addr >> 56) & 0xFF);
     printf("About to send MSG_DRAW_BITMAP\n");
-    my $msg = pack('S<4', $x, $y, $w, $h) . pack('Q<', $addr);
+    my $msg = pack('S<4', $x, $y, $w, $h) . $addr[0..7]);
     print map { sprintf '%02X ', ord } split //, $msg;
     print "\n";
     my $r1 = send_msg(MSG_DRAW_BITMAP, $msg);
