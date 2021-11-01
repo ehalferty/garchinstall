@@ -396,7 +396,7 @@ int ReadFromSocket() {
     totalMessageIdx = 0;
     memset(totalMessage, 0, MAX_MESSAGE_SIZE);
     printf("Receiving...\n"); fflush(stdout);
-    while(len = recv(client_sockfd, &buff, 1024, 0), len > 0) {
+    while(len = recv(client_sockfd, &buff, 1024, 0), (int)len > 0) {
         printf("Got chunk: %d\n", len); fflush(stdout);
         memcpy(&(totalMessage[totalMessageIdx]), buff, len);
         totalMessageIdx += len;
