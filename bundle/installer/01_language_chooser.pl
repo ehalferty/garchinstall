@@ -27,6 +27,7 @@ sub send_msg {
     # print {$client} "\x0B\x00\x00\x00\x01\x00\x05\x00\x05\x00ABCD\x00";
     # print {$client} "\x0B\x00\x00\x00\x01\x00\x05\x00\x05\x00" . @_[1] . "\x00";
     print "Got reponse: ", scalar <$client>;
+    print "\n";
     close $client;
 }
 

@@ -415,11 +415,29 @@ int ReadFromSocket() {
             (uint8_t)totalMessage[4],
             (uint8_t)totalMessage[5],
             (uint8_t)totalMessage[6],
-            (uint8_t)totalMessage[7],
+            (uint8_t)totalMessage[7]
+        );
+        printf(
+            "%x %x %x %x %x %x %x %x %x %x %x %x\n",
             (uint8_t)totalMessage[8],
             (uint8_t)totalMessage[9],
             (uint8_t)totalMessage[10],
-            (uint8_t)totalMessage[11]
+            (uint8_t)totalMessage[11],
+            (uint8_t)totalMessage[12],
+            (uint8_t)totalMessage[13],
+            (uint8_t)totalMessage[14],
+            (uint8_t)totalMessage[15]
+        );
+        printf(
+            "%x %x %x %x %x %x %x %x %x %x %x %x\n",
+            (uint8_t)totalMessage[16],
+            (uint8_t)totalMessage[17],
+            (uint8_t)totalMessage[18],
+            (uint8_t)totalMessage[19],
+            (uint8_t)totalMessage[20],
+            (uint8_t)totalMessage[21],
+            (uint8_t)totalMessage[22],
+            (uint8_t)totalMessage[23]
         );
         totalMessageIdx += len;
         if (expectedMsgLen == 0 && totalMessageIdx >= 4) {
