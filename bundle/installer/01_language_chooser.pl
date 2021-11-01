@@ -31,3 +31,4 @@ sub draw_text {
 sub load_bmp { send_msg(MSG_DRAW_TEXT, @_[0]); }
 
 draw_text(100, 100, "Hello, world!");
+load_bmp("bundle/images/archlogo65.png");
