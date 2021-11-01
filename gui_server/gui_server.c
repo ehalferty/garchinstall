@@ -320,7 +320,7 @@ void DoPage() {
     //     DrawNextArrow();
     //     SaveUnderCursor();
     // }
-    printf("Leaving DoPage\n"); fflush(stdout);
+    // printf("Leaving DoPage\n"); fflush(stdout);
 }
 void EnableGraphicsMode() {
     struct termios newt;
