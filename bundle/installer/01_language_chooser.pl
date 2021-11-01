@@ -6,7 +6,7 @@ use constant MSG_DRAW_TEXT => 7;
 
 sub send_msg {
     my $client = IO::Socket::UNIX->new(Type => SOCK_STREAM(), Peer => $SOCK_PATH);
-    my $len = length(@_[1]);
+    my $len = length(@_[1]) + 5;
     printf("len=%d\n", $len);
     my $msg = sprintf(
         "%c%c%c%c\x01\x00%c%c%s\x00",
