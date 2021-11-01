@@ -307,7 +307,7 @@ void DoPage() {
     int socketReadRes = ReadFromSocket();
     if (socketReadRes) {
         printf("About to call HandleMessage\n"); fflush(stdout);
-        // HandleMessage();
+        HandleMessage();
         printf("Sending response\n");
         send(client_sockfd, totalMessage, totalMessageIdx, 0);
         close(client_sockfd);
@@ -340,15 +340,21 @@ void HandleMessage() {
         int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
         if (subMsgCode == 0) { break; }
         printf("subMsgCode=%d\n", subMsgCode);fflush(stdout);
+        int needToRedrawCursor = (subMsgCode == MSG_CLEAR_SCREEN || subMsgCode == MSG_DRAW_RECT ||
+            subMsgCode == MSG_DRAW_BITMAP || subMsgCode == MSG_DRAW_TEXT);
+        if (needToRedrawCursor) { RestoreUnderCursor(); }
         switch (subMsgCode) {
             case MSG_CLEAR_SCREEN: { ClearScreen(); break; }
             case MSG_SET_FGCOLOR: { SetFGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
             case MSG_SET_BGCOLOR: { SetBGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
             case MSG_DRAW_RECT: {
+                
                 DrawRect(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
                          ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
                          ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
                          ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)));
+                SaveUnderCursor();
+                DrawCursor();
                 break; }
             case MSG_LOAD_BITMAP: {
                 char *bmp = LoadBitmap(&(tm[idx]));
@@ -375,6 +381,7 @@ void HandleMessage() {
                 idx += strlen(&(tm[idx]));
                 break; }
         }
+        if (needToRedrawCursor) { SaveUnderCursor(); DrawCursor(); }
         if (!returned) {
             returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
         }
