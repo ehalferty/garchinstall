@@ -17,8 +17,6 @@ sub send_msg {
     printf("Sending a message with len=%d\n", $len);
     my $msg = sprintf("%c%c%c%c\x01\x00%c%c%s\x00", $len & 0xFF, ($len >> 8) & 0xFF, ($len >> 16) & 0xFF,
         ($len >> 24) & 0xFF, @_[0] & 0xFF, (@_[0] >> 8) & 0xFF, @_[1]);
-    print map { sprintf '%02X ', ord } split //, $msg;
-    print "\n";
     print {$client} $msg;
     my $resBuff = 0;
     my $resBuffSize = 1024;
@@ -45,12 +43,16 @@ sub load_bmp { return substr(send_msg(MSG_LOAD_BITMAP, @_[0]), 8, 16); }
 
 sub draw_bmp {
     my ($x, $y, $w, $h, $addr) = @_;
-    printf("%c%c%c%c%c%c%c%c\n",
+    my $a = sprintf("%c%c%c%c%c%c%c%c\n",
         $x & 0xFF, ($x >> 8) & 0xFF,
         $y & 0xFF, ($y >> 8) & 0xFF,
         $w & 0xFF, ($w >> 8) & 0xFF,
         $h & 0xFF, ($h >> 8) & 0xFF);
-    printf(pack('Q>4', $x, $y, $w, $h) . "\n");
+    my $b = sprintf(pack('Q>4', $x, $y, $w, $h, $addr) . "\n");
+    print map { sprintf '%02X ', ord } split //, $a;
+    print "\n";
+    print map { sprintf '%02X ', ord } split //, $b;
+    print "\n";
 
 
 
