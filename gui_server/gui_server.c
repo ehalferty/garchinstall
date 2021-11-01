@@ -336,12 +336,12 @@ void HandleMessage() {
     char *tm = totalMessage;
     int idx = 4, subMessageIdx, i;
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
-    printf("totalMessageIdx=%d\n", totalMessageIdx);
-    for (i = 0; i < 64; i++) {
-        printf("%02x ", (uint8_t)totalMessage[i]);
-        if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
-    }
-    printf("path=%s\n", (char *)&(totalMessage[4]));
+    // printf("totalMessageIdx=%d\n", totalMessageIdx);
+    // for (i = 0; i < 64; i++) {
+    //     printf("%02x ", (uint8_t)totalMessage[i]);
+    //     if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
+    // }
+    // printf("path=%s\n", (char *)&(totalMessage[4]));
     // printf("numSubmessages=%d\n", numSubmessages);fflush(stdout);
     for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
         // printf("subMessageId%d\n", subMessageIdx); fflush(stdout);
@@ -384,6 +384,7 @@ void HandleMessage() {
                 uint32_t h = (unsigned int)tm[idx + 6] + ((unsigned int)tm[idx + 7] << 8);
                 uint8_t *bmp = (unsigned int)tm[idx + 9] + ((unsigned int)tm[idx + 10] << 8) +
                     ((unsigned int)tm[idx + 11] << 16) + ((unsigned int)tm[idx + 12] << 24);
+                printf("MSG_DRAW_BITMAP x=%d y=%d w=%d h=%d bmp=%08llx\n", x, y, w, h, bmp);
                 DrawBitmap(x, y, w, h, bmp);
                 idx += 12;
                 break; }
