@@ -386,6 +386,7 @@ void HandleMessage() {
 }
 int ReadFromSocket() {
     t = sizeof(remote);
+    printf("About to call accept4\n"); fflush(stdout);
     int acceptRes = accept4(server_sockfd, (struct sockaddr *)&remote, &t, SOCK_NONBLOCK);
     if (acceptRes == -1) {
         if (errno != EWOULDBLOCK && errno != EAGAIN) { perror("accept"); exit(1); }
@@ -394,9 +395,9 @@ int ReadFromSocket() {
     client_sockfd = acceptRes;
     totalMessageIdx = 0;
     memset(totalMessage, 0, MAX_MESSAGE_SIZE);
-    printf("Receiving...\n");
+    printf("Receiving...\n"); fflush(stdout);
     while(len = recv(client_sockfd, &buff, 1024, 0), len > 0) {
-        printf("Got chunk: %d\n", len);
+        printf("Got chunk: %d\n", len); fflush(stdout);
         memcpy(&(totalMessage[totalMessageIdx]), buff, len);
         totalMessageIdx += len;
         if (expectedMsgLen == 0 && totalMessageIdx >= 4) {
