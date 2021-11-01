@@ -48,7 +48,7 @@ sub draw_bmp {
         $y & 0xFF, ($y >> 8) & 0xFF,
         $w & 0xFF, ($w >> 8) & 0xFF,
         $h & 0xFF, ($h >> 8) & 0xFF);
-    my $b = sprintf(pack('Q>4', $x, $y, $w, $h, $addr) . "\n");
+    my $b = sprintf(pack('S<4Q', $x, $y, $w, $h, $addr) . "\n");
     print map { sprintf '%02X ', ord } split //, $a;
     print "\n";
     print map { sprintf '%02X ', ord } split //, $b;
