@@ -403,6 +403,17 @@ int ReadFromSocket() {
     printf("Receiving...\n"); fflush(stdout);
     while(len = recv(client_sockfd, &buff, 1024, 0), (int)len > 0) {
         printf("Got chunk: %d\n", len); fflush(stdout);
+        printf(
+            "%x %x %x %x %x %x %x %x\n",
+            (uint8_t)totalMessage[0],
+            (uint8_t)totalMessage[1],
+            (uint8_t)totalMessage[2],
+            (uint8_t)totalMessage[3],
+            (uint8_t)totalMessage[4],
+            (uint8_t)totalMessage[5],
+            (uint8_t)totalMessage[6],
+            (uint8_t)totalMessage[7]
+        );
         memcpy(&(totalMessage[totalMessageIdx]), buff, len);
         totalMessageIdx += len;
         if (expectedMsgLen == 0 && totalMessageIdx >= 4) {
