@@ -20,6 +20,7 @@ sub send_msg {
     print {$client} $msg;
     my $res = scalar <$client>;
     close $client;
+    return $res;
 }
 
 sub draw_text {
@@ -28,7 +29,7 @@ sub draw_text {
     send_msg(MSG_DRAW_TEXT, $msg);
 }
 
-sub load_bmp { send_msg(MSG_DRAW_TEXT, @_[0]); }
+sub load_bmp { return send_msg(MSG_DRAW_TEXT, @_[0]); }
 
 draw_text(100, 100, "Hello, world!");
-load_bmp("bundle/images/archlogo65.png");
+print load_bmp("bundle/images/archlogo65.png");
