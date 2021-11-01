@@ -194,7 +194,7 @@ void FreeBitmap(uint8_t *bmp) {
     stbi_image_free(bmp);
 }
 void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
-    printf("Drawing bitmap w=%d h=%d size=%d addr=%08lx\n", w, h, w * h * 4, (uint64_t)bmp);
+    printf("Drawing bitmap w=%d h=%d size=%d addr=%08lx\n", w, h, w * h * 4, (uint64_t)bmp); fflush(stdout);
     uint32_t i, j, offset;
     for (i = 0; i < w; i++) { for (j = 0; j < h; j++) {
         offset = ((j * w) + i) * (vinfo->bits_per_pixel / 8);
