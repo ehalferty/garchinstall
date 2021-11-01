@@ -19,7 +19,7 @@ sub draw_text {
     my $x = @_[0];
     my $y = @_[1];
     my $str = @_[2];
-    my $msg = sprintf("%c%c%c%c%s", $x & 0xFF, ($x >> 8) & 0xFF, $y & 0xFF, ($y >> 8) & 0xFF, $str)
+    my $msg = sprintf("%c%c%c%c%s", $x & 0xFF, ($x >> 8) & 0xFF, $y & 0xFF, ($y >> 8) & 0xFF, $str);
     send_msg(MSG_DRAW_TEXT, $msg);
 }
 
