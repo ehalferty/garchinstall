@@ -382,9 +382,10 @@ void HandleMessage() {
                 uint32_t y = (unsigned int)tm[idx + 2] + ((unsigned int)tm[idx + 3] << 8);
                 uint32_t w = (unsigned int)tm[idx + 4] + ((unsigned int)tm[idx + 5] << 8);
                 uint32_t h = (unsigned int)tm[idx + 6] + ((unsigned int)tm[idx + 7] << 8);
-                uint8_t *bmp = (unsigned int)tm[idx + 9] + ((unsigned int)tm[idx + 10] << 8) +
-                    ((unsigned int)tm[idx + 11] << 16) + ((unsigned int)tm[idx + 12] << 24);
-                printf("MSG_DRAW_BITMAP x=%d y=%d w=%d h=%d bmp=%08llx\n", x, y, w, h, bmp);
+                uint8_t *bmp = (unsigned int)tm[idx + 8] + ((unsigned int)tm[idx + 9] << 8) +
+                    ((unsigned int)tm[idx + 10] << 16) + ((unsigned int)tm[idx + 11] << 24);
+                printf("MSG_DRAW_BITMAP x=%d y=%d w=%d h=%d bmp=%08llx\n",
+                    (uint16_t)x, (uint16_t)y, (uint16_t)w, (uint16_t)h, bmp);
                 DrawBitmap(x, y, w, h, bmp);
                 idx += 12;
                 break; }
