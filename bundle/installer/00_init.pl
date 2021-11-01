@@ -11,6 +11,7 @@ print("Welcome to garchinstaller!");
 # system("arch-chroot /mnt/installer-root perl /root/garchinstall2.pl");
 
 system("stty -echo");
+system("killall gui_server");
 print("Starting gui_server...");
 system("chmod +x ./bundle/gui_server");
 system("./bundle/gui_server &> /tmp/serverlog.txt &");
