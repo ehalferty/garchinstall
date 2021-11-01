@@ -307,7 +307,7 @@ void DoPage() {
     int socketReadRes = ReadFromSocket();
     if (socketReadRes) {
         printf("About to call HandleMessage\n"); fflush(stdout);
-        // HandleMessage();
+        HandleMessage();
         printf("Sending response\n");
         send(client_sockfd, totalMessage, totalMessageIdx, 0);
         close(client_sockfd);
@@ -348,13 +348,10 @@ void HandleMessage() {
             case MSG_SET_FGCOLOR: { SetFGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
             case MSG_SET_BGCOLOR: { SetBGColor(tm[idx++], tm[idx++], tm[idx++]); break; }
             case MSG_DRAW_RECT: {
-                
                 DrawRect(((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
                          ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
                          ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)),
                          ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8)));
-                SaveUnderCursor();
-                DrawCursor();
                 break; }
             case MSG_LOAD_BITMAP: {
                 char *bmp = LoadBitmap(&(tm[idx]));
