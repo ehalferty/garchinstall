@@ -406,7 +406,8 @@ void HandleMessage() {
         if (!returned) {
             returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
         }
-        printf("Building response. returnMessageIdx=%d\n", returnMessageIdx); fflush(stdout);
+        returnMessageIdx += 5;
+        printf("Building response. size=%d\n", returnMessageIdx); fflush(stdout);
         printf(
             "returnMessage %x %x %x %x %x %x %x %x\n",
             (uint8_t)returnMessage[0],
@@ -418,8 +419,7 @@ void HandleMessage() {
             (uint8_t)returnMessage[6],
             (uint8_t)returnMessage[7]
         );
-        returnMessageIdx++;
-        memcpy(totalMessage, returnMessage, returnMessageIdx + 4);
+        memcpy(totalMessage, returnMessage, returnMessageIdx);
         totalMessage[0] = (returnMessageIdx & 0xFF);
         totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
         totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
