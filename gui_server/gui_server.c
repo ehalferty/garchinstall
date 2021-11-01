@@ -373,13 +373,17 @@ void HandleMessage() {
                 idx += strlen(&(tm[idx])) + 8; // This may be wrong lol
                 break; }
             case MSG_DRAW_BITMAP: {
-                printf("MSG_DRAW_BITMAP\n");
+                printf("MSG_DRAW_BITMAP idx=%d\n", idx);
                 for (i = 0; i < 64; i++) {
                     printf("%02x ", (uint8_t)tm[i + 4]);
                     if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
                 }
-                uint32_t x = (uint32_t)(tm[idx]) + ((uint32_t)(tm[idx + 1]) << 8);
-                uint32_t y = (uint32_t)(tm[idx + 2]) + ((uint32_t)(tm[idx + 3]) << 8);
+                uint32_t x = (unsigned int)tm[idx] + ((unsigned int)tm[idx + 1] << 8);
+                uint32_t y = (unsigned int)tm[idx + 2] + ((unsigned int)tm[idx + 3] << 8);
+
+                // uint32_t x = (uint8_t)(tm[idx]) + 
+                // uint32_t x = (uint32_t)(tm[idx]) + ((uint32_t)(tm[idx + 1]) << 8);
+                // uint32_t y = (uint32_t)(tm[idx + 2]) + ((uint32_t)(tm[idx + 3]) << 8);
                 uint32_t w = (uint32_t)(tm[idx + 4]) + ((uint32_t)(tm[idx + 5]) << 8);
                 uint32_t h = (uint32_t)(tm[idx + 6]) + ((uint32_t)(tm[idx + 7]) << 8);
                 uint8_t *bmp = (uint32_t)(tm[idx + 8]) + ((uint32_t)(tm[idx + 9]) << 8) +
