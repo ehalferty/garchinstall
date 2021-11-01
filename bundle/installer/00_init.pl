@@ -16,6 +16,7 @@ system("pwd");
 system("ls -la");
 system("chmod +x ./bundle/gui_server");
 system("./bundle/gui_server &> /tmp/serverlog.txt &");
+# system("perl 01_language_chooser.pl");
 # system("perl ./bundle/")
 # TODO: gui_server should listen on a socket
 # TODO: Should start sending it messages here, polling for messages here. Polled messages like.
