@@ -45,8 +45,16 @@ sub load_bmp { return send_msg(MSG_LOAD_BITMAP, @_[0]); }
 
 sub draw_bmp {
     my ($x, $y, $w, $h, $addr) = @_;
-    my $msg = sprintf("%c%c%c%c%c%c%c%c%c%c%c%c", $x & 0xFF, ($x >> 8) & 0xFF, $y & 0xFF, ($y >> 8) & 0xFF,
-        $w & 0xFF, ($w >> 8) & 0xFF, $h & 0xFF, ($h >> 8) & 0xFF,
+    my $msg = unpack
+    my $bmpAddr = sprintf("%c%c%c%c%c%c%c%c",
+        $addr & 0xFF, ($addr >> 8) & 0xFF, ($addr >> 16) & 0xFF, ($addr >> 24) & 0xFF,
+        ($addr >> 32) & 0xFF, ($addr >> 40) & 0xFF, ($addr >> 48) & 0xFF, ($addr >> 56) & 0xFF);
+    
+    my $msg = sprintf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
+        $x & 0xFF, ($x >> 8) & 0xFF,
+        $y & 0xFF, ($y >> 8) & 0xFF,
+        $w & 0xFF, ($w >> 8) & 0xFF,
+        $h & 0xFF, ($h >> 8) & 0xFF,
         $addr & 0xFF, ($addr >> 8) & 0xFF, ($addr >> 16) & 0xFF, ($addr >> 24) & 0xFF,
         ($addr >> 32) & 0xFF, ($addr >> 40) & 0xFF, ($addr >> 48) & 0xFF, ($addr >> 56) & 0xFF);
     return send_msg(MSG_DRAW_BITMAP, $msg);
@@ -55,13 +63,14 @@ sub draw_bmp {
 draw_rect(0, 400, 400, 10);
 draw_text(100, 100, "Hello, world!");
 my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
+printf("$arch_logo_ref=%08llx", $arch_logo_ref);
 # print "===\n";
 # print map { sprintf '%02X ', ord } split //, $arch_logo_ref;
-draw_bmp(150, 150, 65, 65,
-    (($arch_logo_ref[8]) & 0xFF) | (($arch_logo_ref[9]) & 0xFF) |
-    (($arch_logo_ref[10]) & 0xFF) | (($arch_logo_ref[11]) & 0xFF) |
-    (($arch_logo_ref[12]) & 0xFF) | (($arch_logo_ref[13]) & 0xFF) |
-    (($arch_logo_ref[14]) & 0xFF) | (($arch_logo_ref[15]) & 0xFF)
-);
+# draw_bmp(150, 150, 65, 65, pack()
+#     (($arch_logo_ref[8]) & 0xFF) | (($arch_logo_ref[9]) & 0xFF) |
+#     (($arch_logo_ref[10]) & 0xFF) | (($arch_logo_ref[11]) & 0xFF) |
+#     (($arch_logo_ref[12]) & 0xFF) | (($arch_logo_ref[13]) & 0xFF) |
+#     (($arch_logo_ref[14]) & 0xFF) | (($arch_logo_ref[15]) & 0xFF)
+# );
 # print $arch_logo_ref
 print "\n";
