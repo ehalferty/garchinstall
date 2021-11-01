@@ -307,7 +307,7 @@ void DoPage() {
     int socketReadRes = ReadFromSocket();
     if (socketReadRes) {
         printf("About to call HandleMessage\n"); fflush(stdout);
-        HandleMessage();
+        // HandleMessage();
         printf("Sending response\n");
         send(client_sockfd, totalMessage, totalMessageIdx, 0);
         close(client_sockfd);
