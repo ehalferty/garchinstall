@@ -198,7 +198,7 @@ void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
     uint32_t i, j, offset;
     for (i = 0; i < w; i++) { for (j = 0; j < h; j++) {
         offset = ((j * w) + i) * (vinfo->bits_per_pixel / 8);
-        DrawPixel(x + i, y + j, bmp[offset], bmp[offset + 1], bmp[offset + 2]);
+        // DrawPixel(x + i, y + j, bmp[offset], bmp[offset + 1], bmp[offset + 2]);
     } }
     // printf("Done drawing bitmap\n"); fflush(stdout);
 }
