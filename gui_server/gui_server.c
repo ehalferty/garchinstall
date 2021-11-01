@@ -406,7 +406,7 @@ int ReadFromSocket() {
         printf("%s\n", buff);
         memcpy(&(totalMessage[totalMessageIdx]), buff, len);
         printf(
-            "%x %x %x %x %x %x %x %x\n",
+            "%x %x %x %x %x %x %x %x %x %x %x %x\n",
             (uint8_t)totalMessage[0],
             (uint8_t)totalMessage[1],
             (uint8_t)totalMessage[2],
@@ -414,7 +414,11 @@ int ReadFromSocket() {
             (uint8_t)totalMessage[4],
             (uint8_t)totalMessage[5],
             (uint8_t)totalMessage[6],
-            (uint8_t)totalMessage[7]
+            (uint8_t)totalMessage[7],
+            (uint8_t)totalMessage[8],
+            (uint8_t)totalMessage[9],
+            (uint8_t)totalMessage[10],
+            (uint8_t)totalMessage[11]
         );
         totalMessageIdx += len;
         if (expectedMsgLen == 0 && totalMessageIdx >= 4) {
