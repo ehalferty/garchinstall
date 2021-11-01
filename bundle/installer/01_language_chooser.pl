@@ -41,7 +41,7 @@ sub draw_rect {
     send_msg(MSG_DRAW_RECT, $msg);
 }
 
-sub load_bmp { return send_msg(MSG_LOAD_BITMAP, @_[0]); }
+sub load_bmp { return substr(send_msg(MSG_LOAD_BITMAP, @_[0]), 8); }
 
 sub draw_bmp {
     my ($x, $y, $w, $h, $addr) = @_;
@@ -63,9 +63,9 @@ sub draw_bmp {
 draw_rect(0, 400, 400, 10);
 draw_text(100, 100, "Hello, world!");
 my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
-printf("$arch_logo_ref=%08llx", $arch_logo_ref);
+# printf("$arch_logo_ref=%08llx", $arch_logo_ref);
 # print "===\n";
-# print map { sprintf '%02X ', ord } split //, $arch_logo_ref;
+print map { sprintf '%02X ', ord } split //, $arch_logo_ref;
 # draw_bmp(150, 150, 65, 65, pack()
 #     (($arch_logo_ref[8]) & 0xFF) | (($arch_logo_ref[9]) & 0xFF) |
 #     (($arch_logo_ref[10]) & 0xFF) | (($arch_logo_ref[11]) & 0xFF) |
