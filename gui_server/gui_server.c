@@ -320,6 +320,7 @@ void DoPage() {
     //     DrawNextArrow();
     //     SaveUnderCursor();
     // }
+    printf("Leaving DoPage\n"); fflush(stdout);
 }
 void EnableGraphicsMode() {
     struct termios newt;
@@ -337,6 +338,7 @@ void HandleMessage() {
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
     printf("numSubmessages=%d\n", numSubmessages);fflush(stdout);
     for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
+        printf("subMessageId%d\n", subMessageIdx); fflush(stdout);
         int returned = 0;
         int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
         if (subMsgCode == 0) { break; }
@@ -382,18 +384,20 @@ void HandleMessage() {
                 char *str = (char *)&(tm[idx + 4]);
                 DrawText(x, y, str);
                 idx += strlen(&(tm[idx + 4])) + 4;
+                printf("Leaving MSG_DRAW_TEXT\n"); fflush(stdout);
                 break; }
         }
         if (needToRedrawCursor) { SaveUnderCursor(); DrawCursor(); }
         if (!returned) {
             returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
         }
-        printf("Building response. returnMessageIdx=%d\n", returnMessageIdx);
+        printf("Building response. returnMessageIdx=%d\n", returnMessageIdx); fflush(stdout);
         memcpy(totalMessage, returnMessage, returnMessageIdx);
         totalMessage[0] = (returnMessageIdx & 0xFF);
         totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
         totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
         totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
+        printf("Leaving HandleMessage\n"); fflush(stdout);
     }
 }
 int ReadFromSocket() {
