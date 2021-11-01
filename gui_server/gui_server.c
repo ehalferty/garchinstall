@@ -376,8 +376,11 @@ void HandleMessage() {
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 8) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 16) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 24) & 0xff;
+                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 32) & 0xff;
+                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 40) & 0xff;
+                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 48) & 0xff;
                 returned = 1;
-                idx += strlen(&(tm[idx])) + 4;
+                idx += strlen(&(tm[idx])) + 8; // This may be wrong lol
                 break; }
             case MSG_DRAW_BITMAP: {
                 uint32_t x = (unsigned int)tm[idx] + ((unsigned int)tm[idx + 1] << 8);
