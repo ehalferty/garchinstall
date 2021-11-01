@@ -18,7 +18,7 @@ sub send_msg {
         (@_[0] >> 8) & 0xFF,
         @_[1]
     );
-    print $msg;
+    print $msg . "\n";
     print {$client} $msg;
 
 
