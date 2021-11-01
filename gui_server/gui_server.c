@@ -200,7 +200,7 @@ void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
         offset = ((j * w) + i) * (vinfo->bits_per_pixel / 8);
         DrawPixel(x + i, y + j, bmp[offset], bmp[offset + 1], bmp[offset + 2]);
     } }
-    printf("Done drawing bitmap\n");
+    printf("Done drawing bitmap\n"); fflush(stdout);
 }
 void DrawArchLogo(uint32_t x, uint32_t y) {
     DrawBitmap(x, y, 65, 65, arch_logo_img2);
