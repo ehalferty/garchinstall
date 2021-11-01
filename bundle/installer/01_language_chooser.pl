@@ -11,6 +11,7 @@ sub send_msg {
         ($len >> 24) & 0xFF, @_[0] & 0xFF, (@_[0] >> 8) & 0xFF, @_[1]);
     print map { sprintf '%02X ', ord } split //, $msg;
     print {$client} $msg;
+    my $res = scalar <$client>;
     # print "Got reponse: ", scalar <$client>; print "\n";
     close $client;
 }
