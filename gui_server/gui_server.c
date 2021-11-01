@@ -385,7 +385,7 @@ void HandleMessage() {
                 uint32_t h = (uint8_t)(tm[idx + 6]) + ((uint8_t)(tm[idx + 7]) << 8);
                 uint64_t bmp = 0;
                 for (i = 0; i < 8; i++) {
-                    bmp += (uint8_t)tm[idx + i] << (i * 8);
+                    bmp += (uint64_t)(tm[idx + i]) << (i * 8);
                 }
                 // uint8_t *bmp = (uint64_t)((uint8_t)(tm[idx + 8]) + ((uint8_t)(tm[idx + 9]) << 8) +
                 //     ((uint8_t)(tm[idx + 10]) << 16) + ((uint8_t)(tm[idx + 11]) << 24) +
