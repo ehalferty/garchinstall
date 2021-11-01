@@ -46,7 +46,13 @@ sub draw_bmp {
 
 draw_text(100, 100, "Hello, world!");
 my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
-draw_bmp(150, 150, $arch_logo_ref);
+draw_bmp(
+    150, 150,
+    (($arch_logo_ref >> (8 * 8)) & 0xFF) | (($arch_logo_ref >> (8 * 9)) & 0xFF) |
+    (($arch_logo_ref >> (8 * 10)) & 0xFF) | (($arch_logo_ref >> (8 * 11)) & 0xFF) |
+    (($arch_logo_ref >> (8 * 12)) & 0xFF) | (($arch_logo_ref >> (8 * 13)) & 0xFF) |
+    (($arch_logo_ref >> (8 * 14)) & 0xFF) | (($arch_logo_ref >> (8 * 15)) & 0xFF)
+);
 print "===\n";
 print map { sprintf '%02X ', ord } split //, $arch_logo_ref;
 # print $arch_logo_ref
