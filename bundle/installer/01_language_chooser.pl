@@ -31,5 +31,8 @@ sub draw_text {
 
 sub load_bmp { return send_msg(MSG_LOAD_BITMAP, @_[0]); }
 
-# draw_text(100, 100, "Hello, world!");
-print load_bmp("bundle/images/archlogo65.png");
+draw_text(100, 100, "Hello, world!");
+my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
+print "===\n";
+print $arch_logo_ref
+print "\n";

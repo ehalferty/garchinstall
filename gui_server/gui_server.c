@@ -147,7 +147,7 @@ void SetFGColor(uint8_t r, uint8_t g, uint8_t b) {
 }
 void DrawText(uint32_t x, uint32_t y, char *str) {
     unsigned long xCharPos = 0, yCharPos = 0, glyphIdx, glyphRow, charIdx, len, j, x2, y2, c, i;
-    printf("x=%d y=%d str=%08llx str=%s 0=%x 1=%x 2=%x 3=%x\n", x, y, (uint64_t)str, str, str[0], str[1], str[2], str[3]);
+    // printf("x=%d y=%d str=%08llx str=%s 0=%x 1=%x 2=%x 3=%x\n", x, y, (uint64_t)str, str, str[0], str[1], str[2], str[3]);
     len = strlen(str);
     for (charIdx = 0; charIdx < len; charIdx++) {
         if (str[charIdx] >= 32 && str[charIdx] < 128) { // Check if printable
@@ -187,14 +187,14 @@ uint8_t * LoadBitmap(const char *path) {
     int x, y, n;
     uint32_t i, j, offset;
     uint8_t *bmp = stbi_load(path, &x, &y, &n, 4), *tmp; // 4: Always try to get RGBA format
-    printf("Loaded bitmap %s w=%d h=%d bpp=%d\n", path, x, y, n);
+    // printf("Loaded bitmap %s w=%d h=%d bpp=%d\n", path, x, y, n);
     return bmp;
 }
 void FreeBitmap(uint8_t *bmp) {
     stbi_image_free(bmp);
 }
 void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
-    printf("Drawing bitmap w=%d h=%d size=%d addr=%08lx\n", w, h, w * h * 4, (uint64_t)bmp);
+    // printf("Drawing bitmap w=%d h=%d size=%d addr=%08lx\n", w, h, w * h * 4, (uint64_t)bmp);
     uint32_t i, j, offset;
     for (i = 0; i < w; i++) { for (j = 0; j < h; j++) {
         offset = ((j * w) + i) * (vinfo->bits_per_pixel / 8);
@@ -307,23 +307,12 @@ void DoPage() {
     // }
     int socketReadRes = ReadFromSocket();
     if (socketReadRes) {
-        printf("About to call HandleMessage\n"); fflush(stdout);
+        // printf("About to call HandleMessage\n"); fflush(stdout);
         HandleMessage();
-        printf("Sending response\n");
-        printf(
-            "%x %x %x %x %x %x %x %x\n",
-            (uint8_t)totalMessage[0],
-            (uint8_t)totalMessage[1],
-            (uint8_t)totalMessage[2],
-            (uint8_t)totalMessage[3],
-            (uint8_t)totalMessage[4],
-            (uint8_t)totalMessage[5],
-            (uint8_t)totalMessage[6],
-            (uint8_t)totalMessage[7]
-        );
+        // printf("Sending response\n");
         send(client_sockfd, totalMessage, totalMessageIdx, 0);
         close(client_sockfd);
-        printf("Done handling\n");
+        // printf("Done handling\n");
         fflush(stdout);
     }
     // if (redraw) { // TODO: Finer-grained redraw flags. Don't need to redraw entire page to redraw the closebox...
@@ -347,13 +336,13 @@ void HandleMessage() {
     char *tm = totalMessage;
     int idx = 4, subMessageIdx, i;
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
-    printf("numSubmessages=%d\n", numSubmessages);fflush(stdout);
+    // printf("numSubmessages=%d\n", numSubmessages);fflush(stdout);
     for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
-        printf("subMessageId%d\n", subMessageIdx); fflush(stdout);
+        // printf("subMessageId%d\n", subMessageIdx); fflush(stdout);
         int returned = 0;
         int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
         if (subMsgCode == 0) { break; }
-        printf("subMsgCode=%d\n", subMsgCode);fflush(stdout);
+        // printf("subMsgCode=%d\n", subMsgCode);fflush(stdout);
         int needToRedrawCursor = (subMsgCode == MSG_CLEAR_SCREEN || subMsgCode == MSG_DRAW_RECT ||
             subMsgCode == MSG_DRAW_BITMAP || subMsgCode == MSG_DRAW_TEXT);
         if (needToRedrawCursor) { RestoreUnderCursor(); }
@@ -371,7 +360,7 @@ void HandleMessage() {
                 break; }
             case MSG_LOAD_BITMAP: {
                 char *bmp = LoadBitmap(&(tm[idx]));
-                printf("bmp=%08llx\n", bmp);
+                // printf("bmp=%08llx\n", bmp);
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 8) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 16) & 0xff;
@@ -393,13 +382,13 @@ void HandleMessage() {
                 idx += 12;
                 break; }
             case MSG_DRAW_TEXT: {
-                printf("MSG_DRAW_TEXT %s\n", (char *)&(tm[idx + 4])); fflush(stdout);
+                // printf("MSG_DRAW_TEXT %s\n", (char *)&(tm[idx + 4])); fflush(stdout);
                 uint32_t x = (unsigned int)tm[idx] + ((unsigned int)tm[idx + 1] << 8);
                 uint32_t y = (unsigned int)tm[idx + 2] + ((unsigned int)tm[idx + 3] << 8);
                 char *str = (char *)&(tm[idx + 4]);
                 DrawText(x, y, str);
                 idx += strlen(&(tm[idx + 4])) + 4;
-                printf("Leaving MSG_DRAW_TEXT\n"); fflush(stdout);
+                // printf("Leaving MSG_DRAW_TEXT\n"); fflush(stdout);
                 break; }
         }
         if (needToRedrawCursor) { SaveUnderCursor(); DrawCursor(); }
@@ -407,20 +396,20 @@ void HandleMessage() {
             returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
         }
         returnMessageIdx += 5;
-        printf("Building response. size=%d\n", returnMessageIdx); fflush(stdout);
+        // printf("Building response. size=%d\n", returnMessageIdx); fflush(stdout);
         memset(totalMessage, 0, MAX_MESSAGE_SIZE);
         memcpy(totalMessage, returnMessage, returnMessageIdx);
         totalMessage[0] = (returnMessageIdx & 0xFF);
         totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
         totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
         totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
-        for (i = 0; i < 24; i++) {
-            printf("%x ", (uint8_t)totalMessage[i]);
-            if (i == 15) {
-                printf("\n");
-            }
-        }
-        printf("Leaving HandleMessage\n"); fflush(stdout);
+        // for (i = 0; i < 24; i++) {
+        //     printf("%x ", (uint8_t)totalMessage[i]);
+        //     if (i == 15) {
+        //         printf("\n");
+        //     }
+        // }
+        // printf("Leaving HandleMessage\n"); fflush(stdout);
     }
 }
 int ReadFromSocket() {
@@ -434,10 +423,10 @@ int ReadFromSocket() {
     client_sockfd = acceptRes;
     totalMessageIdx = 0;
     memset(totalMessage, 0, MAX_MESSAGE_SIZE);
-    printf("Receiving...\n"); fflush(stdout);
+    // printf("Receiving...\n"); fflush(stdout);
     while(len = recv(client_sockfd, &buff, 1024, 0), (int)len > 0) {
-        printf("Got chunk: %d\n", len); fflush(stdout);
-        printf("%s\n", buff);
+        // printf("Got chunk: %d\n", len); fflush(stdout);
+        // printf("%s\n", buff);
         memcpy(&(totalMessage[totalMessageIdx]), buff, len);
         totalMessageIdx += len;
         if (expectedMsgLen == 0 && totalMessageIdx >= 4) {
@@ -446,11 +435,11 @@ int ReadFromSocket() {
         }
         if (expectedMsgLen != 0 && totalMessageIdx >= expectedMsgLen + 4) {
             totalMessage[expectedMsgLen + 4] = 0;
-            printf("Done\n");
+            // printf("Done\n");
             break;
         }
     }
-    printf("Returning. expectedMsgLen=%d\n", expectedMsgLen); fflush(stdout);
+    // printf("Returning. expectedMsgLen=%d\n", expectedMsgLen); fflush(stdout);
     return 1;
 }
 void SetupSocket() {
@@ -463,7 +452,7 @@ void SetupSocket() {
     len = strlen(local.sun_path) + sizeof(local.sun_family);
     if(bind(server_sockfd, (struct sockaddr *)&local, len) == -1) { perror("binding"); exit(1); }
     if (listen(server_sockfd, 5) == -1) { perror("listen"); exit(1); }
-    printf("Listening...\n");
+    // printf("Listening...\n");
     fflush(stdout);
 }
 void stop_server() {
