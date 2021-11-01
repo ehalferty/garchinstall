@@ -337,7 +337,7 @@ void HandleMessage() {
     int idx = 4, subMessageIdx, i;
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
     // printf("path=%s\n", (char *)&(totalMessage[4]));
-    // printf("numSubmessages=%d\n", numSubmessages);fflush(stdout);
+    printf("numSubmessages=%d\n", numSubmessages);fflush(stdout);
     for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
         // printf("subMessageId%d\n", subMessageIdx); fflush(stdout);
         int returned = 0;
@@ -405,7 +405,7 @@ void HandleMessage() {
             returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
         }
         returnMessageIdx += 5;
-        printf("Building response. size=%d\n", returnMessageIdx);
+        // printf("Building response. size=%d\n", returnMessageIdx);
         memset(totalMessage, 0, MAX_MESSAGE_SIZE);
         memcpy(totalMessage, returnMessage, returnMessageIdx);
         totalMessage[0] = (returnMessageIdx & 0xFF);
@@ -422,7 +422,7 @@ void HandleMessage() {
         //     printf("%x ", (uint8_t)totalMessage[i]);
         //     if (i == 15 || i == 31) { printf("\n"); }
         // }
-        printf("Leaving HandleMessage\n"); fflush(stdout);
+        // printf("Leaving HandleMessage\n"); fflush(stdout);
     }
 }
 int ReadFromSocket() {
