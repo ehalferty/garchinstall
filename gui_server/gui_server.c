@@ -147,7 +147,7 @@ void SetFGColor(uint8_t r, uint8_t g, uint8_t b) {
 }
 void DrawText(uint32_t x, uint32_t y, char *str) {
     unsigned long xCharPos = 0, yCharPos = 0, glyphIdx, glyphRow, charIdx, len, j, x2, y2, c, i;
-    printf("x=%d y=%d str=%08llx str=%s 0=%c 1=%c 2=%c 3=%c\n", x, y, (uint64_t)str, str, str[0], str[1], str[2], str[3]);
+    printf("x=%d y=%d str=%08llx str=%s 0=%x 1=%x 2=%x 3=%x\n", x, y, (uint64_t)str, str, str[0], str[1], str[2], str[3]);
     len = strlen(str);
     for (charIdx = 0; charIdx < len; charIdx++) {
         if (str[charIdx] >= 32 && str[charIdx] < 128) { // Check if printable
