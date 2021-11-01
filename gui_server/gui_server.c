@@ -336,11 +336,11 @@ void HandleMessage() {
     char *tm = totalMessage;
     int idx = 4, subMessageIdx, i;
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
-    // printf("totalMessageIdx=%d\n", totalMessageIdx);
-    // for (i = 0; i < 64; i++) {
-    //     printf("%02x ", (uint8_t)totalMessage[i]);
-    //     if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
-    // }
+    printf("totalMessageIdx=%d\n", totalMessageIdx);
+    for (i = 0; i < 64; i++) {
+        printf("%02x ", (uint8_t)totalMessage[i]);
+        if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
+    }
     // printf("path=%s\n", (char *)&(totalMessage[4]));
     // printf("numSubmessages=%d\n", numSubmessages);fflush(stdout);
     for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
@@ -413,16 +413,16 @@ void HandleMessage() {
         totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
         totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
         totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
-        printf("returnMessage:\n");
-        for (i = 0; i < 32; i++) {
-            printf("%x ", (uint8_t)returnMessage[i]);
-            if (i == 15 || i == 31) { printf("\n"); }
-        }
-        printf("totalMessage:\n");
-        for (i = 0; i < 32; i++) {
-            printf("%x ", (uint8_t)totalMessage[i]);
-            if (i == 15 || i == 31) { printf("\n"); }
-        }
+        // printf("returnMessage:\n");
+        // for (i = 0; i < 32; i++) {
+        //     printf("%x ", (uint8_t)returnMessage[i]);
+        //     if (i == 15 || i == 31) { printf("\n"); }
+        // }
+        // printf("totalMessage:\n");
+        // for (i = 0; i < 32; i++) {
+        //     printf("%x ", (uint8_t)totalMessage[i]);
+        //     if (i == 15 || i == 31) { printf("\n"); }
+        // }
         printf("Leaving HandleMessage\n"); fflush(stdout);
     }
 }
