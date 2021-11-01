@@ -375,7 +375,7 @@ void HandleMessage() {
             case MSG_DRAW_BITMAP: {
                 printf("MSG_DRAW_BITMAP idx=%d\n", idx);
                 for (i = 0; i < 64; i++) {
-                    printf("%02x ", (uint8_t)tm[i + 4]);
+                    printf("%02x ", (uint8_t)tm[i + 8]);
                     if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
                 }
                 uint32_t x = (unsigned int)tm[idx] + ((unsigned int)tm[idx + 1] << 8);
