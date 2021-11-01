@@ -374,30 +374,22 @@ void HandleMessage() {
                 idx += strlen(&(tm[idx])) + 8; // This may be wrong lol
                 break; }
             case MSG_DRAW_BITMAP: {
-                printf("MSG_DRAW_BITMAP idx=%d\n", idx); fflush(stdout);
-                for (i = 0; i < 64; i++) {
-                    printf("%02x ", (uint8_t)tm[i + 8]);
-                    if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
-                }
+                // printf("MSG_DRAW_BITMAP idx=%d\n", idx); fflush(stdout);
+                // for (i = 0; i < 64; i++) {
+                //     printf("%02x ", (uint8_t)tm[i + 8]);
+                //     if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
+                // }
                 uint32_t x = (uint8_t)(tm[idx]) + ((uint8_t)(tm[idx + 1]) << 8);
                 uint32_t y = (uint8_t)(tm[idx + 2]) + ((uint8_t)(tm[idx + 3]) << 8);
                 uint32_t w = (uint8_t)(tm[idx + 4]) + ((uint8_t)(tm[idx + 5]) << 8);
                 uint32_t h = (uint8_t)(tm[idx + 6]) + ((uint8_t)(tm[idx + 7]) << 8);
                 uint64_t bmp = 0;
-                for (i = 0; i < 8; i++) {
-                    bmp += (uint64_t)(tm[idx + 8 + i]) << (i * 8);
-                }
-                // uint8_t *bmp = (uint64_t)((uint8_t)(tm[idx + 8]) + ((uint8_t)(tm[idx + 9]) << 8) +
-                //     ((uint8_t)(tm[idx + 10]) << 16) + ((uint8_t)(tm[idx + 11]) << 24) +
-                //     ((uint8_t)(tm[idx + 12]) << 32) + ((uint8_t)(tm[idx + 13]) << 40) +
-                //     ((uint8_t)(tm[idx + 14]) << 48) + ((uint8_t)(tm[idx + 15]) << 56));
-                printf("MSG_DRAW_BITMAP x=%d y=%d w=%lu h=%lu bmp=%08llx\n", x, y, w, h, bmp); fflush(stdout);
-                // DrawBitmap(x, y, w, h, bmp);
-                printf("OKAY OKAY OKAY\n");
+                for (i = 0; i < 8; i++) { bmp += (uint64_t)(tm[idx + 8 + i]) << (i * 8); }
+                DrawBitmap(x, y, w, h, (char *)bmp);
                 idx += 12;
                 break; }
             case MSG_DRAW_TEXT: {
-                printf("MSG_DRAW_TEXT %s\n", (char *)&(tm[idx + 4])); fflush(stdout);
+                // printf("MSG_DRAW_TEXT %s\n", (char *)&(tm[idx + 4])); fflush(stdout);
                 uint32_t x = (uint8_t)(tm[idx]) + ((uint8_t)(tm[idx + 1]) << 8);
                 uint32_t y = (uint8_t)(tm[idx + 2]) + ((uint8_t)(tm[idx + 3]) << 8);
                 char *str = (char *)&(tm[idx + 4]);
