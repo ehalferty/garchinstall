@@ -85,7 +85,7 @@ sub draw_bmp {
 draw_rect(0, 400, 400, 10);
 draw_text(100, 100, "Hello, world!");
 my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
-draw_bmp(150, 150, 65, 65, arch_logo_ref);
+draw_bmp(150, 150, 65, 65, $arch_logo_ref);
 print "Done?\n";
 # print $arch_logo_ref
 print "\n";
