@@ -25,7 +25,7 @@ char *totalMessage = NULL, *returnMessage = NULL;
 int client_sockfd, t;
 struct sockaddr_un remote, local;
 char buff[1024];
-unsigned int i, len, expectedMsgLen = 0;
+uint64_t i, len, expectedMsgLen = 0;
 void segfaultSigaction(int signal, siginfo_t *si, void *arg) {
     printf("Caught segfault at address %p\n", si->si_addr); ExitWithError("Segfault");
 }
