@@ -18,7 +18,8 @@ sub send_msg {
         (@_[0] >> 8) & 0xFF,
         @_[1]
     );
-    printf("msgggggggggggg=%s\n", $msg);
+    print map { sprintf '%04X', ord } split //, $msg;
+    # printf("msgggggggggggg=%s\n", $msg);
     # print "$msg=" . $msg . "\n";
     print {$client} $msg;
 
