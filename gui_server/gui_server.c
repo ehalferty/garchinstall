@@ -328,11 +328,11 @@ void EnableGraphicsMode() {
     ioctl(tty0_fd, KDSETMODE, KD_GRAPHICS);
 }
 void HandleMessage() {
-    // returnMessageIdx = 0;
-    // char *tm = totalMessage;
-    // int idx = 4;
-    // int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
-    // while (1) {
+    returnMessageIdx = 0;
+    char *tm = totalMessage;
+    int idx = 4, subMessageIdx;
+    int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
+    for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageId++) {
     //     int returned = 0;
     //     int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
     //     switch (subMsgCode) {
@@ -378,7 +378,7 @@ void HandleMessage() {
     //     totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
     //     totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
     //     totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
-    // }
+    }
 }
 int ReadFromSocket() {
     t = sizeof(remote);
