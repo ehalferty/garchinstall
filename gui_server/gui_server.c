@@ -382,7 +382,7 @@ void HandleMessage() {
                 uint32_t y = (unsigned int)(tm[idx + 2]) + ((unsigned int)(tm[idx + 3]) << 8);
                 uint32_t w = (unsigned int)(tm[idx + 4]) + ((unsigned int)(tm[idx + 5]) << 8);
                 uint32_t h = (unsigned int)(tm[idx + 6]) + ((unsigned int)(tm[idx + 7]) << 8);
-                uint8_t *bmp = (unsigned int)tm[idx + 8]) + ((unsigned int)(tm[idx + 9]) << 8) +
+                uint8_t *bmp = (unsigned int)(tm[idx + 8]) + ((unsigned int)(tm[idx + 9]) << 8) +
                     ((unsigned int)(tm[idx + 10]) << 16) + ((unsigned int)(tm[idx + 11]) << 24) +
                     ((unsigned int)(tm[idx + 12]) << 32) + ((unsigned int)(tm[idx + 13]) << 40) +
                     ((unsigned int)(tm[idx + 14]) << 48) + ((unsigned int)(tm[idx + 15]) << 56);
