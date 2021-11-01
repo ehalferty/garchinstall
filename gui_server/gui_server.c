@@ -338,6 +338,7 @@ void HandleMessage() {
     for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
         int returned = 0;
         int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
+        if (subMsgCode == 0) { break; }
         printf("subMsgCode=%d\n", subMsgCode);fflush(stdout);
         switch (subMsgCode) {
             case MSG_CLEAR_SCREEN: { ClearScreen(); break; }
