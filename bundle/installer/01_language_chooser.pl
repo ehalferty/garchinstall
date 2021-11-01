@@ -34,6 +34,13 @@ sub draw_text {
     send_msg(MSG_DRAW_TEXT, $msg);
 }
 
+sub draw_rect {
+    my ($x, $y, $w, $h) = @_;
+    my $msg = sprintf("%c%c%c%c%c%c%c%c", $x & 0xFF, ($x >> 8) & 0xFF, $y & 0xFF, ($y >> 8) & 0xFF,
+        $w & 0xFF, ($w >> 8) & 0xFF, $h & 0xFF, ($h >> 8) & 0xFF);
+    send_msg(MSG_DRAW_RECT, $msg);
+}
+
 sub load_bmp { return send_msg(MSG_LOAD_BITMAP, @_[0]); }
 
 sub draw_bmp {
@@ -44,6 +51,7 @@ sub draw_bmp {
     return send_msg(MSG_DRAW_BITMAP, $msg);
 }
 
+draw_rect(0, 400, 400, 10);
 draw_text(100, 100, "Hello, world!");
 my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
 print "===\n";
