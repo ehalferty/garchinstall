@@ -378,16 +378,16 @@ void HandleMessage() {
                     printf("%02x ", (uint8_t)tm[i + 4]);
                     if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
                 }
-                uint32_t x = (unsigned int)tm[idx] + ((unsigned int)tm[idx + 1] << 8);
-                uint32_t y = (unsigned int)tm[idx + 2] + ((unsigned int)tm[idx + 3] << 8);
-                uint32_t w = (unsigned int)tm[idx + 4] + ((unsigned int)tm[idx + 5] << 8);
-                uint32_t h = (unsigned int)tm[idx + 6] + ((unsigned int)tm[idx + 7] << 8);
-                uint8_t *bmp = (unsigned int)tm[idx + 8] + ((unsigned int)tm[idx + 9] << 8) +
-                    ((unsigned int)tm[idx + 10] << 16) + ((unsigned int)tm[idx + 11] << 24) +
-                    ((unsigned int)tm[idx + 12] << 32) + ((unsigned int)tm[idx + 13] << 40) +
-                    ((unsigned int)tm[idx + 14] << 48) + ((unsigned int)tm[idx + 15] << 56);
+                uint32_t x = (unsigned int)(tm[idx]) + ((unsigned int)(tm[idx + 1]) << 8);
+                uint32_t y = (unsigned int)(tm[idx + 2]) + ((unsigned int)(tm[idx + 3]) << 8);
+                uint32_t w = (unsigned int)(tm[idx + 4]) + ((unsigned int)(tm[idx + 5]) << 8);
+                uint32_t h = (unsigned int)(tm[idx + 6]) + ((unsigned int)(tm[idx + 7]) << 8);
+                uint8_t *bmp = (unsigned int)tm[idx + 8]) + ((unsigned int)(tm[idx + 9]) << 8) +
+                    ((unsigned int)(tm[idx + 10]) << 16) + ((unsigned int)tm[idx + 11]) << 24) +
+                    ((unsigned int)(tm[idx + 12]) << 32) + ((unsigned int)tm[idx + 13]) << 40) +
+                    ((unsigned int)(tm[idx + 14]) << 48) + ((unsigned int)tm[idx + 15]) << 56);
                 printf("MSG_DRAW_BITMAP x=%d y=%d w=%d h=%d bmp=%08llx\n",
-                    (uint16_t)x, (uint16_t)y, (uint16_t)w, (uint16_t)h, bmp);
+                    (uint32_t)x, (uint32_t)y, (uint32_t)w, (uint32_t)h, bmp);
                 DrawBitmap(x, y, w, h, bmp);
                 idx += 12;
                 break; }
