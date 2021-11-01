@@ -53,15 +53,15 @@ sub draw_bmp {
 }
 
 draw_rect(0, 400, 400, 10);
-draw_text(100, 100, "Hello, world!");
-my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
-print "===\n";
-print map { sprintf '%02X ', ord } split //, $arch_logo_ref;
-draw_bmp(150, 150, 65, 65,
-    (($arch_logo_ref[8]) & 0xFF) | (($arch_logo_ref[9]) & 0xFF) |
-    (($arch_logo_ref[10]) & 0xFF) | (($arch_logo_ref[11]) & 0xFF) |
-    (($arch_logo_ref[12]) & 0xFF) | (($arch_logo_ref[13]) & 0xFF) |
-    (($arch_logo_ref[14]) & 0xFF) | (($arch_logo_ref[15]) & 0xFF)
-);
+# draw_text(100, 100, "Hello, world!");
+# my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
+# print "===\n";
+# print map { sprintf '%02X ', ord } split //, $arch_logo_ref;
+# draw_bmp(150, 150, 65, 65,
+#     (($arch_logo_ref[8]) & 0xFF) | (($arch_logo_ref[9]) & 0xFF) |
+#     (($arch_logo_ref[10]) & 0xFF) | (($arch_logo_ref[11]) & 0xFF) |
+#     (($arch_logo_ref[12]) & 0xFF) | (($arch_logo_ref[13]) & 0xFF) |
+#     (($arch_logo_ref[14]) & 0xFF) | (($arch_logo_ref[15]) & 0xFF)
+# );
 # print $arch_logo_ref
 print "\n";
