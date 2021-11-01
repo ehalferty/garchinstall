@@ -343,7 +343,7 @@ void EnableGraphicsMode() {
     ioctl(tty0_fd, KDSETMODE, KD_GRAPHICS);
 }
 void HandleMessage() {
-    returnMessageIdx = 0;
+    returnMessageIdx = 4;
     char *tm = totalMessage;
     int idx = 4, subMessageIdx, i;
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
