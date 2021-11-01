@@ -345,7 +345,7 @@ void EnableGraphicsMode() {
 void HandleMessage() {
     returnMessageIdx = 0;
     char *tm = totalMessage;
-    int idx = 4, subMessageIdx;
+    int idx = 4, subMessageIdx, i;
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
     printf("numSubmessages=%d\n", numSubmessages);fflush(stdout);
     for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
@@ -408,33 +408,17 @@ void HandleMessage() {
         }
         returnMessageIdx += 5;
         printf("Building response. size=%d\n", returnMessageIdx); fflush(stdout);
-        printf(
-            "returnMessage %x %x %x %x %x %x %x %x\n",
-            (uint8_t)returnMessage[0],
-            (uint8_t)returnMessage[1],
-            (uint8_t)returnMessage[2],
-            (uint8_t)returnMessage[3],
-            (uint8_t)returnMessage[4],
-            (uint8_t)returnMessage[5],
-            (uint8_t)returnMessage[6],
-            (uint8_t)returnMessage[7]
-        );
         memcpy(totalMessage, returnMessage, returnMessageIdx);
         totalMessage[0] = (returnMessageIdx & 0xFF);
         totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
         totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
         totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
-        printf(
-            "totalMessage %x %x %x %x %x %x %x %x\n",
-            (uint8_t)totalMessage[0],
-            (uint8_t)totalMessage[1],
-            (uint8_t)totalMessage[2],
-            (uint8_t)totalMessage[3],
-            (uint8_t)totalMessage[4],
-            (uint8_t)totalMessage[5],
-            (uint8_t)totalMessage[6],
-            (uint8_t)totalMessage[7]
-        );
+        for (i = 0; i < 24; i++) {
+            printf("%x ", totalMessage[i]);
+            if (i == 15) {
+                printf("\n");
+            }
+        }
         printf("Leaving HandleMessage\n"); fflush(stdout);
     }
 }
@@ -455,7 +439,7 @@ int ReadFromSocket() {
         printf("%s\n", buff);
         memcpy(&(totalMessage[totalMessageIdx]), buff, len);
         printf(
-            "%x %x %x %x %x %x %x %x %x %x %x %x %x\n",
+            "%x %x %x %x %x %x %x %x\n",
             (uint8_t)totalMessage[0],
             (uint8_t)totalMessage[1],
             (uint8_t)totalMessage[2],
@@ -463,12 +447,7 @@ int ReadFromSocket() {
             (uint8_t)totalMessage[4],
             (uint8_t)totalMessage[5],
             (uint8_t)totalMessage[6],
-            (uint8_t)totalMessage[7],
-            (uint8_t)totalMessage[8],
-            (uint8_t)totalMessage[9],
-            (uint8_t)totalMessage[10],
-            (uint8_t)totalMessage[11],
-            (uint8_t)totalMessage[12]
+            (uint8_t)totalMessage[7]
         );
         printf(
             "%x %x %x %x %x %x %x %x\n",
