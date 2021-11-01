@@ -12,22 +12,22 @@ use constant MSG_DRAW_BITMAP => 6;
 use constant MSG_DRAW_TEXT => 7;
 
 sub send_msg {
-    print "1\n";
+    # print "1\n";
     my $client = IO::Socket::UNIX->new(Type => SOCK_STREAM(), Peer => $SOCK_PATH);
     my $len = length(@_[1]) + 5;
     printf("Sending a message with id=%d len=%d\n", @_[0], $len);
     my $msg = sprintf("%c%c%c%c\x01\x00%c%c%s\x00", $len & 0xFF, ($len >> 8) & 0xFF, ($len >> 16) & 0xFF,
         ($len >> 24) & 0xFF, @_[0] & 0xFF, (@_[0] >> 8) & 0xFF, @_[1]);
-    print "2\n";
+    # print "2\n";
     print {$client} $msg;
-    print "3\n";
+    # print "3\n";
     my $resBuff = 0;
     my $resBuffSize = 1024;
     $res = "";
-    print "4\n";
+    # print "4\n";
     while (sysread($client, $resBuff, $resBuffSize)) { $res = $res . $resBuff; }
     close $client;
-    print "5\n";
+    # print "5\n";
     return $res;
 }
 

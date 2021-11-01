@@ -373,7 +373,7 @@ void HandleMessage() {
                 idx += strlen(&(tm[idx])) + 8; // This may be wrong lol
                 break; }
             case MSG_DRAW_BITMAP: {
-                printf("MSG_DRAW_BITMAP idx=%d\n", idx);
+                printf("MSG_DRAW_BITMAP idx=%d\n", idx); fflush(stdout);
                 for (i = 0; i < 64; i++) {
                     printf("%02x ", (uint8_t)tm[i + 8]);
                     if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
@@ -386,7 +386,7 @@ void HandleMessage() {
                     ((uint8_t)(tm[idx + 10]) << 16) + ((uint8_t)(tm[idx + 11]) << 24) +
                     ((uint8_t)(tm[idx + 12]) << 32) + ((uint8_t)(tm[idx + 13]) << 40) +
                     ((uint8_t)(tm[idx + 14]) << 48) + ((uint8_t)(tm[idx + 15]) << 56);
-                printf("MSG_DRAW_BITMAP x=%d y=%d w=%lu h=%lu bmp=%08llx\n", x, y, w, h, bmp);
+                printf("MSG_DRAW_BITMAP x=%d y=%d w=%lu h=%lu bmp=%08llx\n", x, y, w, h, bmp); fflush(stdout);
                 DrawBitmap(x, y, w, h, bmp);
                 idx += 12;
                 break; }
