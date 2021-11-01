@@ -41,7 +41,7 @@ sub draw_rect {
     send_msg(MSG_DRAW_RECT, $msg);
 }
 
-sub load_bmp { return substr(send_msg(MSG_LOAD_BITMAP, @_[0]), 8); }
+sub load_bmp { return substr(send_msg(MSG_LOAD_BITMAP, @_[0]), 8, 12); }
 
 sub draw_bmp {
     my ($x, $y, $w, $h, $addr) = @_;
