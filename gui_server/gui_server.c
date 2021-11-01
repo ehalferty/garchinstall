@@ -386,7 +386,7 @@ void HandleMessage() {
 }
 int ReadFromSocket() {
     t = sizeof(remote);
-    printf("About to call accept4\n"); fflush(stdout);
+    // printf("About to call accept4\n"); fflush(stdout);
     int acceptRes = accept4(server_sockfd, (struct sockaddr *)&remote, &t, SOCK_NONBLOCK);
     if (acceptRes == -1) {
         if (errno != EWOULDBLOCK && errno != EAGAIN) { perror("accept"); exit(1); }
@@ -410,6 +410,7 @@ int ReadFromSocket() {
             break;
         }
     }
+    printf("Returning. expectedMsgLen=%d\n", expectedMsgLen); fflush(stdout);
     return 1;
 }
 void SetupSocket() {
