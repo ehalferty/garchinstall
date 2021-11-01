@@ -2,6 +2,13 @@
 use IO::Socket::UNIX;
 
 my $SOCK_PATH = "/tmp/gui_server_socket";
+
+use constant MSG_CLEAR_SCREEN => 1;
+use constant MSG_SET_FGCOLOR => 2;
+use constant MSG_SET_BGCOLOR => 3;
+use constant MSG_DRAW_RECT => 4;
+use constant MSG_LOAD_BITMAP => 5;
+use constant MSG_DRAW_BITMAP => 6;
 use constant MSG_DRAW_TEXT => 7;
 
 sub send_msg {
@@ -12,17 +19,15 @@ sub send_msg {
     print map { sprintf '%02X ', ord } split //, $msg;
     print {$client} $msg;
     my $res = scalar <$client>;
-    # print "Got reponse: ", scalar <$client>; print "\n";
     close $client;
 }
 
 sub draw_text {
-    my $x = @_[0];
-    my $y = @_[1];
-    my $str = @_[2];
+    my ($x, $y, $str) = @_;
     my $msg = sprintf("%c%c%c%c%s", $x & 0xFF, ($x >> 8) & 0xFF, $y & 0xFF, ($y >> 8) & 0xFF, $str);
     send_msg(MSG_DRAW_TEXT, $msg);
 }
 
-# send_msg(MSG_DRAW_TEXT, "\x15\x00\x15\x00ABCD");
+sub load_bmp { send_msg(MSG_DRAW_TEXT, @_[0]); }
+
 draw_text(100, 100, "Hello, world!");

@@ -499,9 +499,9 @@ int main(int argc, char *argv[]) {
     buff = malloc(65536);
     tmpStr = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
-    arch_logo_img2 = LoadBitmap("bundle/images/archlogo65.png");
-    close_box_img2 = LoadBitmap("bundle/images/closebox32.png");
-    next_arrow_img2 = LoadBitmap("bundle/images/nextarrow32.png");
+    // arch_logo_img2 = LoadBitmap("bundle/images/archlogo65.png");
+    // close_box_img2 = LoadBitmap("bundle/images/closebox32.png");
+    // next_arrow_img2 = LoadBitmap("bundle/images/nextarrow32.png");
     signal(SIGTERM, stop_server);
     SetupSocket();
     OpenFramebuffer();
@@ -509,7 +509,7 @@ int main(int argc, char *argv[]) {
     // newt.c_lflag = 0;//&= ~(ICANON | ECHO);
     // tcsetattr(STDIN_FILENO, TCSANOW, &newt);
     // printf("\f");
-    for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
+    // for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
     // for (i = 0; i < 600; i++) { DrawPixel(i, i, 0xFF, 0xFF, 0xFF); }
     // DrawText(0, 0, "Hello, there!");
     // DrawArchLogo(200, 200);
