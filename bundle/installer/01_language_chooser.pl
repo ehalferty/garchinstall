@@ -74,7 +74,9 @@ sub draw_bmp {
     #     $addr & 0xFF, ($addr >> 8) & 0xFF, ($addr >> 16) & 0xFF, ($addr >> 24) & 0xFF,
     #     ($addr >> 32) & 0xFF, ($addr >> 40) & 0xFF, ($addr >> 48) & 0xFF, ($addr >> 56) & 0xFF);
     printf("About to send MSG_DRAW_BITMAP\n");
-    return send_msg(MSG_DRAW_BITMAP, pack('S<4Q<', $x, $y, $w, $h, $addr));
+    my $r1 = send_msg(MSG_DRAW_BITMAP, pack('S<4Q<', $x, $y, $w, $h, $addr));
+    print "Returned from draw_bmp\n";
+    return $r1;
 }
 
 draw_rect(0, 400, 400, 10);
