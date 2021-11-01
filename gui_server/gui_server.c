@@ -408,13 +408,14 @@ void HandleMessage() {
         }
         returnMessageIdx += 5;
         printf("Building response. size=%d\n", returnMessageIdx); fflush(stdout);
+        memset(totalMessage, 0, MAX_MESSAGE_SIZE);
         memcpy(totalMessage, returnMessage, returnMessageIdx);
         totalMessage[0] = (returnMessageIdx & 0xFF);
         totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
         totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
         totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
         for (i = 0; i < 24; i++) {
-            printf("%x ", totalMessage[i]);
+            printf("%x ", (uint8_t)totalMessage[i]);
             if (i == 15) {
                 printf("\n");
             }
@@ -438,39 +439,6 @@ int ReadFromSocket() {
         printf("Got chunk: %d\n", len); fflush(stdout);
         printf("%s\n", buff);
         memcpy(&(totalMessage[totalMessageIdx]), buff, len);
-        printf(
-            "%x %x %x %x %x %x %x %x\n",
-            (uint8_t)totalMessage[0],
-            (uint8_t)totalMessage[1],
-            (uint8_t)totalMessage[2],
-            (uint8_t)totalMessage[3],
-            (uint8_t)totalMessage[4],
-            (uint8_t)totalMessage[5],
-            (uint8_t)totalMessage[6],
-            (uint8_t)totalMessage[7]
-        );
-        printf(
-            "%x %x %x %x %x %x %x %x\n",
-            (uint8_t)totalMessage[8],
-            (uint8_t)totalMessage[9],
-            (uint8_t)totalMessage[10],
-            (uint8_t)totalMessage[11],
-            (uint8_t)totalMessage[12],
-            (uint8_t)totalMessage[13],
-            (uint8_t)totalMessage[14],
-            (uint8_t)totalMessage[15]
-        );
-        printf(
-            "%x %x %x %x %x %x %x %x\n",
-            (uint8_t)totalMessage[16],
-            (uint8_t)totalMessage[17],
-            (uint8_t)totalMessage[18],
-            (uint8_t)totalMessage[19],
-            (uint8_t)totalMessage[20],
-            (uint8_t)totalMessage[21],
-            (uint8_t)totalMessage[22],
-            (uint8_t)totalMessage[23]
-        );
         totalMessageIdx += len;
         if (expectedMsgLen == 0 && totalMessageIdx >= 4) {
             expectedMsgLen = (unsigned int)totalMessage[0] + ((unsigned int)totalMessage[1] << 8) +
