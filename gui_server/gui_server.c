@@ -360,7 +360,7 @@ void HandleMessage() {
                 break; }
             case MSG_LOAD_BITMAP: {
                 char *bmp = LoadBitmap(&(tm[idx]));
-                // printf("bmp=%08llx\n", bmp);
+                printf("MSG_LOAD_BITMAP bmp=%08llx\n", bmp);
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 8) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 16) & 0xff;
@@ -382,7 +382,7 @@ void HandleMessage() {
                 idx += 12;
                 break; }
             case MSG_DRAW_TEXT: {
-                // printf("MSG_DRAW_TEXT %s\n", (char *)&(tm[idx + 4])); fflush(stdout);
+                printf("MSG_DRAW_TEXT %s\n", (char *)&(tm[idx + 4])); fflush(stdout);
                 uint32_t x = (unsigned int)tm[idx] + ((unsigned int)tm[idx + 1] << 8);
                 uint32_t y = (unsigned int)tm[idx + 2] + ((unsigned int)tm[idx + 3] << 8);
                 char *str = (char *)&(tm[idx + 4]);
