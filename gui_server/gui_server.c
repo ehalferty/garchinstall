@@ -310,6 +310,17 @@ void DoPage() {
         printf("About to call HandleMessage\n"); fflush(stdout);
         HandleMessage();
         printf("Sending response\n");
+        printf(
+            "%x %x %x %x %x %x %x %x\n",
+            (uint8_t)totalMessage[0],
+            (uint8_t)totalMessage[1],
+            (uint8_t)totalMessage[2],
+            (uint8_t)totalMessage[3],
+            (uint8_t)totalMessage[4],
+            (uint8_t)totalMessage[5],
+            (uint8_t)totalMessage[6],
+            (uint8_t)totalMessage[7]
+        );
         send(client_sockfd, totalMessage, totalMessageIdx, 0);
         close(client_sockfd);
         printf("Done handling\n");
