@@ -14,9 +14,10 @@ use constant MSG_DRAW_TEXT => 7;
 sub send_msg {
     my $client = IO::Socket::UNIX->new(Type => SOCK_STREAM(), Peer => $SOCK_PATH);
     my $len = length(@_[1]) + 5;
+    printf("Sending a message with len=%d", $len);
     my $msg = sprintf("%c%c%c%c\x01\x00%c%c%s\x00", $len & 0xFF, ($len >> 8) & 0xFF, ($len >> 16) & 0xFF,
         ($len >> 24) & 0xFF, @_[0] & 0xFF, (@_[0] >> 8) & 0xFF, @_[1]);
-    # print map { sprintf '%02X ', ord } split //, $msg;
+    print map { sprintf '%02X ', ord } split //, $msg;
     print {$client} $msg;
     my $resBuff = 0;
     my $resBuffSize = 1024;
