@@ -162,6 +162,7 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
 void DrawRoundedRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t r) {
     DrawRect(x, y + r, w, h - r * 2);
     DrawRect(x + r, y, w - r * 2, r);
+    DrawRect(x + r, y + h - r * 2, w - r * 2, r);
 }
 void DrawRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
     int i, j, xx, yy;
