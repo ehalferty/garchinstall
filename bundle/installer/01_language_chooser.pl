@@ -36,6 +36,8 @@ sub draw_text {
 
 sub set_corner_radius {
     my $r = @_[0];
+    my $msg = sprintf("%c", $r);
+    send_msg(MSG_SET_CORNER_RADIUS, $msg);
 }
 
 sub draw_rect {
