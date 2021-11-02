@@ -55,12 +55,14 @@ sub get_events {
 draw_rect(0, 400, 400, 10);
 draw_text(100, 100, "Hello, world!");
 my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
-print "Return val from load_bmp:\n";
-print map { sprintf '%02X ', ord } split //, $arch_logo_ref;
-print "\n";
+# print "Return val from load_bmp:\n";
+# print map { sprintf '%02X ', ord } split //, $arch_logo_ref;
+# print "\n";
 draw_bmp(150, 150, 65, 65, $arch_logo_ref);
-print "Done?\n";
-print "\n";
+# print "Done?\n";
+# print "\n";
+my $events = 0;
 while (1) {
-    get_events();
+    $events = get_events();
+    print map { sprintf '%02X ', ord } split //, $events;
 }
