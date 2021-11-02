@@ -246,7 +246,7 @@ void HandleMessage() {
                 uint32_t y = (uint8_t)(tm[idx + 2]) + ((uint8_t)(tm[idx + 3]) << 8);
                 uint32_t w = (uint8_t)(tm[idx + 4]) + ((uint8_t)(tm[idx + 5]) << 8);
                 uint32_t h = (uint8_t)(tm[idx + 6]) + ((uint8_t)(tm[idx + 7]) << 8);
-                if (cornerRadius == 0) { DrawRect(x, y, w, h); } else { DrawRoundedRect(x, y, w, h, r); }
+                if (cornerRadius == 0) { DrawRect(x, y, w, h); } else { DrawRoundedRect(x, y, w, h, cornerRadius); }
                 idx += 8;
                 break; }
             case MSG_SET_CORNER_RADIUS: {
