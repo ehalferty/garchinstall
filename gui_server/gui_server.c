@@ -436,6 +436,7 @@ void HandleMessage() {
         totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
         totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
         totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
+        totalMessageIdx = returnMessageIdx;
         // printf("returnMessage:\n");
         // for (i = 0; i < 32; i++) {
         //     printf("%x ", (uint8_t)returnMessage[i]);
