@@ -391,6 +391,7 @@ void HandleMessage() {
                 idx += strlen(&(tm[idx + 4])) + 4;
                 // printf("Leaving MSG_DRAW_TEXT\n"); fflush(stdout);
                 break; }
+            // Send a basic set of event data an app may need to handle user interaction
             case MSG_GET_EVENTS: {
                 uint8_t shiftIsDown = shiftDown || (get_nsecs() < (shiftUpTimeNanos + MOD_LINGER_NANOS));
                 uint8_t ctrlIsDown = ctrlDown || (get_nsecs() < (ctrlUpTimeNanos + MOD_LINGER_NANOS));
@@ -408,6 +409,10 @@ void HandleMessage() {
                 returnMessage[returnMessageIdx++ + 4] = (((uint32_t)keyThatWentDown >> 8)) & 0xFF;
                 returnMessage[returnMessageIdx++ + 4] = (((uint32_t)keyThatWentUp)) & 0xFF;
                 returnMessage[returnMessageIdx++ + 4] = (((uint32_t)keyThatWentUp >> 8)) & 0xFF;
+                returnMessage[returnMessageIdx++ + 4] = (((uint32_t)mouseX)) & 0xFF;
+                returnMessage[returnMessageIdx++ + 4] = (((uint32_t)mouseX >> 8)) & 0xFF;
+                returnMessage[returnMessageIdx++ + 4] = (((uint32_t)mouseY)) & 0xFF;
+                returnMessage[returnMessageIdx++ + 4] = (((uint32_t)mouseY >> 8)) & 0xFF;
                 returned = 1;
                 mouseWentDown = 0;
                 mouseWentUp = 0;
