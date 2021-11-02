@@ -61,7 +61,7 @@ uint32_t MouseDownAndUpWithinRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h
 void ExitNormally();
 void ExitWithError(char *msg);
 void Cleanup();
-void DoPage();
+// void DoPage();
 uint8_t * LoadBitmap(const char *path);
 void FreeBitmap(uint8_t *bmp);
 void EnableGraphicsMode();

@@ -26,6 +26,7 @@ int client_sockfd, t;
 struct sockaddr_un remote, local;
 char buff[1024];
 uint64_t i, len, expectedMsgLen = 0;
+uint64_t timestamp = 0;
 void segfaultSigaction(int signal, siginfo_t *si, void *arg) {
     printf("Caught segfault at address %p\n", si->si_addr); ExitWithError("Segfault");
 }
@@ -237,7 +238,7 @@ void ExitWithError(char *msg) {
     printf("Error: %s. Exiting with error: %d (%s)\n", msg, oldErrno, strerror(oldErrno));
     exit(2);
 }
-void DoPage() {
+// void DoPage() {
     // uint8_t changedPage = prevPage != page;
     // uint32_t redraw = changedPage || mouseWentDown || mouseWentUp;
     // prevPage = page;
@@ -306,23 +307,13 @@ void DoPage() {
     //         break;
     //     }
     // }
-    int socketReadRes = ReadFromSocket();
-    if (socketReadRes) {
-        // printf("About to call HandleMessage\n"); fflush(stdout);
-        HandleMessage();
-        // printf("Sending response\n");
-        send(client_sockfd, totalMessage, totalMessageIdx, 0);
-        close(client_sockfd);
-        // printf("Done handling\n");
-        fflush(stdout);
-    }
     // if (redraw) { // TODO: Finer-grained redraw flags. Don't need to redraw entire page to redraw the closebox...
     //     DrawCloseBox();
     //     DrawNextArrow();
     //     SaveUnderCursor();
     // }
     // printf("Leaving DoPage\n"); fflush(stdout);
-}
+// }
 void EnableGraphicsMode() {
     struct termios newt;
     printf("\f");
@@ -458,7 +449,7 @@ int ReadFromSocket() {
     totalMessageIdx = 0;
     memset(totalMessage, 0, MAX_MESSAGE_SIZE);
     // printf("Receiving...\n"); fflush(stdout);
-    printf("Entering ReadFromSocket loop...\n"); fflush(stdout);
+    printf("%08llx: Entering ReadFromSocket loop...\n", timestamp); fflush(stdout);
     while (len = recv(client_sockfd, &buff, 1024, 0), (int)len > 0) {
         // printf("Got chunk: %d\n", len); fflush(stdout);
         // printf("%s\n", buff);
@@ -470,7 +461,7 @@ int ReadFromSocket() {
         }
         if (expectedMsgLen != 0 && totalMessageIdx >= expectedMsgLen + 4) { break; }
     }
-    printf("...exiting ReadFromSocket loop!\n"); fflush(stdout);
+    printf("%08llx: ...exiting ReadFromSocket loop!\n", timestamp); fflush(stdout);
     return 1;
 }
 void SetupSocket() {
@@ -609,7 +600,18 @@ int main(int argc, char *argv[]) {
                 old_midBtn = midBtn;
             }
         }
-        DoPage();
+        // DoPage();
+        int socketReadRes = ReadFromSocket();
+        if (socketReadRes) {
+            // printf("About to call HandleMessage\n"); fflush(stdout);
+            HandleMessage();
+            // printf("Sending response\n");
+            send(client_sockfd, totalMessage, totalMessageIdx, 0);
+            close(client_sockfd);
+            // printf("Done handling\n");
+            // fflush(stdout);
+        }
+        printf("%08llx: At usleep\n", timestamp); fflush(stdout);
         usleep(3000);
     }
     Cleanup();
