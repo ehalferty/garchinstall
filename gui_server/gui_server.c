@@ -608,8 +608,12 @@ int main(int argc, char *argv[]) {
             // printf("About to call HandleMessage\n"); fflush(stdout);
             HandleMessage();
             // printf("Sending response\n");
+            printf("%08llx: Calling send()...\n", timestamp++); fflush(stdout);
             send(client_sockfd, totalMessage, totalMessageIdx, 0);
+            printf("%08llx: ...Done calling send()\n", timestamp++); fflush(stdout);
+            printf("%08llx: Closing client_sockfd...\n", timestamp++); fflush(stdout);
             close(client_sockfd);
+            printf("%08llx: ...Done closing client_sockfd\n", timestamp++); fflush(stdout);
             // printf("Done handling\n");
             // fflush(stdout);
         }
