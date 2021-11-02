@@ -397,16 +397,16 @@ void HandleMessage() {
                     ((keyWentUp & 0x1)   << 3) |
                     ((mouseMoved & 0x1)  << 4);
                 returnMessage[returnMessageIdx++ + 4] = ((uint8_t)events) & 0xff;
-                returnMessage[returnMessageIdx++ + 4] = ((uint8_t)(
-                    (keysDown[0] & 1) |
-                    ((keysDown[1] & 1) << 1) |
-                    ((keysDown[2] & 1) << 2) |
-                    ((keysDown[3] & 1) << 3) |
-                    ((keysDown[4] & 1) << 4) |
-                    ((keysDown[5] & 1) << 5) |
-                    ((keysDown[6] & 1) << 6) |
-                    ((keysDown[7] & 1) << 7)
-                )) & 0xff;
+                // returnMessage[returnMessageIdx++ + 4] = ((uint8_t)(
+                //     (keysDown[0] & 1) |
+                //     ((keysDown[1] & 1) << 1) |
+                //     ((keysDown[2] & 1) << 2) |
+                //     ((keysDown[3] & 1) << 3) |
+                //     ((keysDown[4] & 1) << 4) |
+                //     ((keysDown[5] & 1) << 5) |
+                //     ((keysDown[6] & 1) << 6) |
+                //     ((keysDown[7] & 1) << 7)
+                // )) & 0xff;
                 // for (i = 0; i < 128; i++) {
                 //     returnMessage[returnMessageIdx++ + 4] = ((uint64_t)keysDown[i]) & 0xff;
                 //     //((uint8_t)(
