@@ -159,10 +159,36 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
         } else if (str[charIdx] == '\n') { xCharPos = 0; yCharPos++; }
     }
 }
+void DrawCirclePixels(uint32_t xc, uint32_t yc, uint32_t x, uint32_t y) {
+    DrawPixel(xc - x, yc - y, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
+    DrawPixel(xc - x, yc + y, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
+    DrawPixel(xc - y, yc - x, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
+    DrawPixel(xc - y, yc + x, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
+    DrawPixel(xc + x, yc - y, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
+    DrawPixel(xc + x, yc + y, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
+    DrawPixel(xc + y, yc - x, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
+    DrawPixel(xc + y, yc + x, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
+}
+void DrawCircle(uint32_t xc, uint32_t yc, uint32_t r) {
+    int x = 0, y = r;
+    int d = 3 - 2 * r;
+    DrawCirclePixels(xc, yc, x, y);
+    while (y >= x) {
+        x++;
+        if (d > 0) {
+            y--;
+            d = d + 4 * (x - y) + 10;
+        } else {
+            d = d + 4 * x + 6;
+        }
+        DrawCirclePixels(xc, yc, x, y);
+    }
+}
 void DrawRoundedRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t r) {
     DrawRect(x, y + r, w, h - r * 2);
     DrawRect(x + r, y, w - r * 2, r);
     DrawRect(x + r, y + h - r, w - r * 2, r);
+    DrawCircle(x + r, y + r, r);
 }
 void DrawRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
     int i, j, xx, yy;
