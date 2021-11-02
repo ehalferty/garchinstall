@@ -4,7 +4,7 @@
 #define _GNU_SOURCE
 #include <sys/socket.h>
 
-int tty0_fd, fbfd = 0, kbfd = 0, msfd = 0, page = 0, prevPage = 1;
+int tty0_fd, fbfd = 0, kbfd = 0, msfd = 0, page = 0, prevPage = 1, server_sockfd;
 struct fb_var_screeninfo *vinfo;
 struct fb_fix_screeninfo *finfo;
 long int screensize = 0, rowsize = 0, mmapsize = 0;
@@ -19,8 +19,6 @@ uint8_t keysDown[NUM_KEYS_CHECKED], prevKeysDown[NUM_KEYS_CHECKED];
 uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
 uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
-uint8_t *close_box_img2, *next_arrow_img2, *arch_logo_img2;
-int server_sockfd;
 unsigned int totalMessageIdx = 0, returnMessageIdx = 0;
 char *totalMessage = NULL, *returnMessage = NULL;
 int client_sockfd, t;
@@ -149,14 +147,12 @@ void SetFGColor(uint8_t r, uint8_t g, uint8_t b) {
 }
 void DrawText(uint32_t x, uint32_t y, char *str) {
     unsigned long xCharPos = 0, yCharPos = 0, glyphIdx, glyphRow, charIdx, len, j, x2, y2, c, i;
-    // printf("x=%d y=%d str=%08llx str=%s 0=%x 1=%x 2=%x 3=%x\n", x, y, (uint64_t)str, str, str[0], str[1], str[2], str[3]);
     len = strlen(str);
     for (charIdx = 0; charIdx < len; charIdx++) {
         if (str[charIdx] >= 32 && str[charIdx] < 128) { // Check if printable
             // Find the character in the font sheet
             for (glyphIdx = 0; glyphIdx < NUM_FONT_GLYPHS; glyphIdx++) {
-                if (font_glyph_encodings[glyphIdx] == str[charIdx]) { break; }
-            }
+                if (font_glyph_encodings[glyphIdx] == str[charIdx]) { break; } }
             for (j = 0; j < 16; j++) { for (i = 0; i < 16; i++) {
                 x2 = x + i + (xCharPos * FONT_WIDTH_INCLUDING_PADDING);
                 y2 = y + j + (yCharPos * FONT_HEIGHT_INCLUDING_PADDING);
@@ -166,10 +162,7 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
                 DrawPixel(x2, y2, (c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
             } }
             xCharPos++;
-        } else if (str[charIdx] == '\n') {
-            xCharPos = 0;
-            yCharPos++;
-        }
+        } else if (str[charIdx] == '\n') { xCharPos = 0; yCharPos++; }
     }
 }
 void DrawRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
@@ -189,31 +182,17 @@ uint8_t * LoadBitmap(const char *path) {
     int x, y, n;
     uint32_t i, j, offset;
     uint8_t *bmp = stbi_load(path, &x, &y, &n, 4), *tmp; // 4: Always try to get RGBA format
-    // printf("Loaded bitmap %s w=%d h=%d bpp=%d addr=%08llx\n", path, x, y, n, (uint64_t)bmp);
     return bmp;
 }
 void FreeBitmap(uint8_t *bmp) {
     stbi_image_free(bmp);
 }
 void DrawBitmap(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t *bmp) {
-    // printf("Drawing bitmap w=%d h=%d size=%d addr=%08llx\n", w, h, w * h * 4, (uint64_t)bmp); fflush(stdout);
     uint32_t i, j, offset;
     for (i = 0; i < w; i++) { for (j = 0; j < h; j++) {
         offset = ((j * w) + i) * (vinfo->bits_per_pixel / 8);
         DrawPixel(x + i, y + j, bmp[offset], bmp[offset + 1], bmp[offset + 2]);
     } }
-    // printf("Done drawing bitmap\n"); fflush(stdout);
-}
-void DrawArchLogo(uint32_t x, uint32_t y) {
-    DrawBitmap(x, y, 65, 65, arch_logo_img2);
-}
-void DrawCloseBox() {
-    uint8_t pressed = mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY < 32;
-    DrawBitmap(vinfo->xres - 32, 0, 32, 32, pressed ? close_box_img2 : close_box_img2);
-}
-void DrawNextArrow() {
-    uint8_t pressed = mouseIsDown && (mouseDownAtX >= (vinfo->xres - 32)) && mouseDownAtY >= (vinfo->yres - 32);
-    DrawBitmap(vinfo->xres - 32, vinfo->yres - 32, 32, 32, pressed ? next_arrow_img2 : next_arrow_img2);
 }
 void Cleanup() {
     munmap(fbp, screensize);
@@ -239,82 +218,6 @@ void ExitWithError(char *msg) {
     printf("Error: %s. Exiting with error: %d (%s)\n", msg, oldErrno, strerror(oldErrno));
     exit(2);
 }
-// void DoPage() {
-    // uint8_t changedPage = prevPage != page;
-    // uint32_t redraw = changedPage || mouseWentDown || mouseWentUp;
-    // prevPage = page;
-    // if (redraw) {
-    //     RestoreUnderCursor();
-    //     ClearScreen();
-    // }
-    // switch (page) {
-    //     case 0: {
-    //         if (mouseWentUp) {
-    //             if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
-    //             else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
-    //         }
-    //         if (changedPage) {
-    //             // GetPartitions();
-    //         }
-    //         if (redraw) {
-    //             sprintf(tmpStr, "Welcome");
-    //             DrawText(0, 0, tmpStr);
-    //             DrawArchLogo(0, 24);
-    //         }
-    //         break;
-    //     }
-    //     case 1: {
-    //         if (mouseWentUp) {
-    //             if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
-    //             else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
-    //         }
-    //         if (redraw) {
-    //             sprintf(tmpStr, "Step 1 of %d - Choose Boot Drive", NUM_STEPS);
-    //             DrawText(0, 0, tmpStr);
-    //         }
-    //         break;
-    //     }
-    //     case 2: {
-    //         if (mouseWentUp) {
-    //             if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
-    //             else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
-    //         }
-    //         if (redraw) {
-    //             sprintf(tmpStr, "Step 2 of %d - Choose Keyboard Layout", NUM_STEPS);
-    //             DrawText(0, 0, tmpStr);
-    //         }
-    //         break;
-    //     }
-    //     case 3: {
-    //         if (mouseWentUp) {
-    //             if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
-    //             else if (MouseDownAndUpWithinRect(vinfo->xres - 32, vinfo->yres - 32, 32, 32)) { page++; }
-    //         }
-    //         if (redraw) {
-    //             sprintf(tmpStr, "Step 3 of %d - Connect to Network", NUM_STEPS);
-    //             DrawText(0, 0, tmpStr);
-    //         }
-    //         break;
-    //     }
-    //     default: {
-    //         if (mouseWentUp) {
-    //             if (MouseDownAndUpWithinRect(vinfo->xres - 32, 0, 32, 32)) { ExitNormally(); } // Close button clicked
-    //         }
-    //         if (redraw) {
-    //             RestoreUnderCursor();
-    //             ClearScreen();
-    //             SaveUnderCursor();
-    //         }
-    //         break;
-    //     }
-    // }
-    // if (redraw) { // TODO: Finer-grained redraw flags. Don't need to redraw entire page to redraw the closebox...
-    //     DrawCloseBox();
-    //     DrawNextArrow();
-    //     SaveUnderCursor();
-    // }
-    // printf("Leaving DoPage\n"); fflush(stdout);
-// }
 void EnableGraphicsMode() {
     struct termios newt;
     printf("\f");
@@ -329,15 +232,10 @@ void HandleMessage() {
     char *tm = totalMessage;
     int idx = 4, subMessageIdx, i, j;
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
-    // printf("%08llx: Entering HandleMessage...\n", timestamp++); fflush(stdout);
-    // printf("path=%s\n", (char *)&(totalMessage[4]));
-    // printf("numSubmessages=%d\n", numSubmessages);fflush(stdout);
     for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
-        // printf("subMessageId%d\n", subMessageIdx); fflush(stdout);
         int returned = 0;
         int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
         if (subMsgCode == 0) { break; }
-        // printf("subMsgCode=%d\n", subMsgCode); fflush(stdout);
         int needToRedrawCursor = (subMsgCode == MSG_CLEAR_SCREEN || subMsgCode == MSG_DRAW_RECT ||
             subMsgCode == MSG_DRAW_BITMAP || subMsgCode == MSG_DRAW_TEXT);
         if (needToRedrawCursor) { RestoreUnderCursor(); }
@@ -355,7 +253,6 @@ void HandleMessage() {
                 break; }
             case MSG_LOAD_BITMAP: {
                 char *bmp = LoadBitmap(&(tm[idx]));
-                // printf("MSG_LOAD_BITMAP bmp=%08llx path=%s\n", bmp, (char *)&(tm[idx]));
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 8) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 16) & 0xff;
@@ -367,7 +264,6 @@ void HandleMessage() {
                 idx += strlen(&(tm[idx])) + 8; // This may be wrong lol
                 break; }
             case MSG_DRAW_BITMAP: {
-                // printf("MSG_DRAW_BITMAP idx=%d\n", idx); fflush(stdout);
                 for (i = 0; i < 64; i++) {
                     printf("%02x ", (uint8_t)tm[i + 8]);
                     if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
@@ -379,32 +275,23 @@ void HandleMessage() {
                 uint64_t bmp = 0;
                 for (i = 0; i < 8; i++) { bmp |= (uint64_t)((uint8_t)(tm[idx + 8 + i])) << ((uint8_t)i * 8); }
                 DrawBitmap(x, y, w, h, (char *)bmp);
-                // printf("MSG_DRAW_BITMAP bmp=%08llx\n", bmp); fflush(stdout);
                 idx += 12;
                 break; }
             case MSG_DRAW_TEXT: {
-                // printf("MSG_DRAW_TEXT %s\n", (char *)&(tm[idx + 4])); fflush(stdout);
                 uint32_t x = (uint8_t)(tm[idx]) + ((uint8_t)(tm[idx + 1]) << 8);
                 uint32_t y = (uint8_t)(tm[idx + 2]) + ((uint8_t)(tm[idx + 3]) << 8);
                 char *str = (char *)&(tm[idx + 4]);
                 DrawText(x, y, str);
                 idx += strlen(&(tm[idx + 4])) + 4;
-                // printf("Leaving MSG_DRAW_TEXT\n"); fflush(stdout);
                 break; }
             // Send a basic set of event data an app may need to handle user interaction
             case MSG_GET_EVENTS: {
                 uint8_t shiftIsDown = shiftDown || (get_nsecs() < (shiftUpTimeNanos + MOD_LINGER_NANOS));
                 uint8_t ctrlIsDown = ctrlDown || (get_nsecs() < (ctrlUpTimeNanos + MOD_LINGER_NANOS));
                 returnMessage[returnMessageIdx++ + 4] = ((uint8_t)(
-                    ( mouseWentDown & 0x1) |
-                    ((mouseWentUp & 0x1) << 1) |
-                    ((keyWentDown & 0x1) << 2) |
-                    ((keyWentUp & 0x1)   << 3) |
-                    ((mouseMoved & 0x1)  << 4) |
-                    ((mouseIsDown & 0x1) << 5) |
-                    ((shiftIsDown & 0x1) << 6) |
-                    ((ctrlIsDown & 0x1)  << 7)
-                )) & 0xFF;
+                    ( mouseWentDown & 0x1)      | ((mouseWentUp & 0x1) << 1) | ((keyWentDown & 0x1) << 2) |
+                    ((keyWentUp & 0x1)   << 3)  | ((mouseMoved & 0x1)  << 4) | ((mouseIsDown & 0x1) << 5) |
+                    ((shiftIsDown & 0x1) << 6)  | ((ctrlIsDown & 0x1)  << 7))) & 0xFF;
                 returnMessage[returnMessageIdx++ + 4] = (((uint32_t)keyThatWentDown)) & 0xFF;
                 returnMessage[returnMessageIdx++ + 4] = (((uint32_t)keyThatWentDown >> 8)) & 0xFF;
                 returnMessage[returnMessageIdx++ + 4] = (((uint32_t)keyThatWentUp)) & 0xFF;
@@ -414,11 +301,7 @@ void HandleMessage() {
                 returnMessage[returnMessageIdx++ + 4] = (((uint32_t)mouseY)) & 0xFF;
                 returnMessage[returnMessageIdx++ + 4] = (((uint32_t)mouseY >> 8)) & 0xFF;
                 returned = 1;
-                mouseWentDown = 0;
-                mouseWentUp = 0;
-                keyWentDown = 0;
-                keyWentUp = 0;
-                mouseMoved = 0;
+                mouseWentDown = 0; mouseWentUp = 0; keyWentDown = 0; keyWentUp = 0; mouseMoved = 0;
                 break; }
             case MSG_GET_KEYS: {
                 // Send first 256 key values (Nope)
@@ -433,35 +316,17 @@ void HandleMessage() {
             }
         }
         if (needToRedrawCursor) { SaveUnderCursor(); DrawCursor(); }
-        if (!returned) {
-            returnMessage[returnMessageIdx++ + 4] = 1; // Append default "OK" message to return buffer
-        }
+        if (!returned) { returnMessage[returnMessageIdx++ + 4] = 1; } // Append default "OK" message to return buffer
         returnMessageIdx += 5;
-        // printf("Building response. size=%d\n", returnMessageIdx);
         memset(totalMessage, 0, MAX_MESSAGE_SIZE);
         memcpy(totalMessage, returnMessage, returnMessageIdx);
-        totalMessage[0] = (returnMessageIdx & 0xFF);
-        totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
-        totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);
-        totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
+        totalMessage[0] = (returnMessageIdx & 0xFF);            totalMessage[1] = ((returnMessageIdx >> 8) & 0xFF);
+        totalMessage[2] = ((returnMessageIdx >> 16) & 0xFF);    totalMessage[3] = ((returnMessageIdx >> 24) & 0xFF);
         totalMessageIdx = returnMessageIdx;
-        // printf("returnMessage:\n");
-        // for (i = 0; i < 32; i++) {
-        //     printf("%x ", (uint8_t)returnMessage[i]);
-        //     if (i == 15 || i == 31) { printf("\n"); }
-        // }
-        // printf("totalMessage:\n");
-        // for (i = 0; i < 32; i++) {
-        //     printf("%x ", (uint8_t)totalMessage[i]);
-        //     if (i == 15 || i == 31) { printf("\n"); }
-        // }
-        // printf("Leaving HandleMessage\n"); fflush(stdout);
     }
-    // printf("%08llx: ...Exiting HandleMessage\n", timestamp++); fflush(stdout);
 }
 int ReadFromSocket() {
     t = sizeof(remote);
-    // printf("About to call accept4\n"); fflush(stdout);
     int acceptRes = accept4(server_sockfd, (struct sockaddr *)&remote, &t, SOCK_NONBLOCK);
     if (acceptRes == -1) {
         if (errno != EWOULDBLOCK && errno != EAGAIN) { perror("accept"); exit(1); }
@@ -470,11 +335,7 @@ int ReadFromSocket() {
     client_sockfd = acceptRes;
     totalMessageIdx = 0;
     memset(totalMessage, 0, MAX_MESSAGE_SIZE);
-    // printf("Receiving...\n"); fflush(stdout);
-    // printf("%08llx: Entering ReadFromSocket loop...\n", timestamp++); fflush(stdout);
     while (len = recv(client_sockfd, &buff, 1024, 0), (int)len > 0) {
-        // printf("Got chunk: %d\n", len); fflush(stdout);
-        // printf("%s\n", buff);
         memcpy(&(totalMessage[totalMessageIdx]), buff, len);
         totalMessageIdx += len;
         if (expectedMsgLen == 0 && totalMessageIdx >= 4) {
@@ -483,20 +344,19 @@ int ReadFromSocket() {
         }
         if (expectedMsgLen != 0 && totalMessageIdx >= expectedMsgLen + 4) { break; }
     }
-    // printf("%08llx: ...exiting ReadFromSocket loop!\n", timestamp++); fflush(stdout);
     return 1;
 }
 void SetupSocket() {
     totalMessage = malloc(MAX_MESSAGE_SIZE); 
     returnMessage = malloc(MAX_MESSAGE_SIZE); 
-    if((server_sockfd = socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0)) == -1) { perror("Error creating server socket"); exit(1); }
+    if((server_sockfd = socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0)) == -1) {
+        perror("Error creating server socket"); exit(1); }
     local.sun_family = AF_UNIX;
     strcpy(local.sun_path, SOCK_PATH);
     unlink(local.sun_path);
     len = strlen(local.sun_path) + sizeof(local.sun_family);
     if(bind(server_sockfd, (struct sockaddr *)&local, len) == -1) { perror("binding"); exit(1); }
     if (listen(server_sockfd, 5) == -1) { perror("listen"); exit(1); }
-    // printf("Listening...\n");
     fflush(stdout);
 }
 void stop_server() {
@@ -522,21 +382,11 @@ int main(int argc, char *argv[]) {
     buff = malloc(65536);
     tmpStr = malloc(65536);
     pfds = calloc(2, sizeof(struct pollfd));
-    // arch_logo_img2 = LoadBitmap("bundle/images/archlogo65.png");
-    // close_box_img2 = LoadBitmap("bundle/images/closebox32.png");
-    // next_arrow_img2 = LoadBitmap("bundle/images/nextarrow32.png");
     signal(SIGPIPE, SIG_IGN);
     signal(SIGTERM, stop_server);
     SetupSocket();
     OpenFramebuffer();
     EnableGraphicsMode();
-    // newt.c_lflag = 0;//&= ~(ICANON | ECHO);
-    // tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-    // printf("\f");
-    // for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
-    // for (i = 0; i < 600; i++) { DrawPixel(i, i, 0xFF, 0xFF, 0xFF); }
-    // DrawText(0, 0, "Hello, there!");
-    // DrawArchLogo(200, 200);
     ClearScreen();
     SaveUnderCursor();
     kbfd = OpenKeyboard();
@@ -608,39 +458,20 @@ int main(int argc, char *argv[]) {
                     mouseMoved = 1;
                 }
                 if (old_leftBtn != leftBtn) {
-                    if (leftBtn) { // Mouse down
-                        mouseDownAtX = mouseX;
-                        mouseDownAtY = mouseY;
-                        mouseWentDown = 1;
-                        mouseIsDown = 1;
-                    } else { // Mouse up
-                        mouseUpAtX = mouseX;
-                        mouseUpAtY = mouseY;
-                        mouseWentUp = 1;
-                        mouseIsDown = 0;
-                    }
+                    if (leftBtn) { mouseDownAtX = mouseX; mouseDownAtY = mouseY; mouseWentDown = 1; mouseIsDown = 1; }
+                    else { mouseUpAtX = mouseX; mouseUpAtY = mouseY; mouseWentUp = 1; mouseIsDown = 0; }
                 }
                 old_leftBtn = leftBtn;
                 old_rightBtn = rightBtn;
                 old_midBtn = midBtn;
             }
         }
-        // DoPage();
         int socketReadRes = ReadFromSocket();
         if (socketReadRes) {
-            // printf("About to call HandleMessage\n"); fflush(stdout);
             HandleMessage();
-            // printf("Sending response\n");
-            // printf("%08llx: Calling send()...\n", timestamp++); fflush(stdout);
             send(client_sockfd, totalMessage, totalMessageIdx, 0);
-            // printf("%08llx: ...Done calling send()\n", timestamp++); fflush(stdout);
-            // printf("%08llx: Closing client_sockfd...\n", timestamp++); fflush(stdout);
             close(client_sockfd);
-            // printf("%08llx: ...Done closing client_sockfd\n", timestamp++); fflush(stdout);
-            // printf("Done handling\n");
-            // fflush(stdout);
         }
-        // printf("%08llx: At usleep\n", timestamp++); fflush(stdout);
         usleep(3000);
     }
     Cleanup();
