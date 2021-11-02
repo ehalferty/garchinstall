@@ -188,7 +188,7 @@ void DrawRoundedRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t r)
     DrawRect(x, y + r, w, h - r * 2);
     DrawRect(x + r, y, w - r * 2, r);
     DrawRect(x + r, y + h - r, w - r * 2, r);
-    DrawCircle(x + r, y + r, r);
+    DrawCircle(x + r + 50, y + r + 50, r);
 }
 void DrawRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
     int i, j, xx, yy;
