@@ -67,8 +67,9 @@ sub get_events {
     return send_msg(MSG_GET_EVENTS, "");
 }
 
-draw_rect(0, 400, 400, 10);
-draw_rounded_rect(300, 300, 100, 50, 5);
+draw_rect(0, 400, 100, 50);
+draw_rounded_rect(100, 400, 100, 50, 5);
+
 draw_text(100, 100, "Hello, world!");
 my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
 # print "Return val from load_bmp:\n";
