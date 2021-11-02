@@ -79,7 +79,7 @@ sub get_events {
     return send_msg(MSG_GET_EVENTS, "");
 }
 
-set_fg_color(255, 255, 0);
+set_fg_color(0, 50, 200);
 draw_rect(0, 400, 100, 50);
 set_fg_color(90, 0, 128);
 draw_rounded_rect(100, 400, 100, 50, 5);
