@@ -458,7 +458,8 @@ int ReadFromSocket() {
     totalMessageIdx = 0;
     memset(totalMessage, 0, MAX_MESSAGE_SIZE);
     // printf("Receiving...\n"); fflush(stdout);
-    while(len = recv(client_sockfd, &buff, 1024, 0), (int)len > 0) {
+    printf("Entering ReadFromSocket loop...\n"); fflush(stdio);
+    while (len = recv(client_sockfd, &buff, 1024, 0), (int)len > 0) {
         // printf("Got chunk: %d\n", len); fflush(stdout);
         // printf("%s\n", buff);
         memcpy(&(totalMessage[totalMessageIdx]), buff, len);
@@ -469,6 +470,7 @@ int ReadFromSocket() {
         }
         if (expectedMsgLen != 0 && totalMessageIdx >= expectedMsgLen + 4) { break; }
     }
+    printf("...exiting ReadFromSocket loop!\n"); fflush(stdio);
     return 1;
 }
 void SetupSocket() {
