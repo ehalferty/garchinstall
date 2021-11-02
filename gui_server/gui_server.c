@@ -159,7 +159,7 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
         } else if (str[charIdx] == '\n') { xCharPos = 0; yCharPos++; }
     }
 }
-void DrawCirclePixels(uint32_t xc, uint32_t yc, uint32_t x, uint32_t y) {
+void DrawCirclePixels(uint32_t xc, uint32_t yc, uint32_t x, uint32_t y, uint32_t corner) {
     switch (corner) {
         case 0: {
             DrawPixel(xc - x, yc - y, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
