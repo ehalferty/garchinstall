@@ -65,4 +65,5 @@ my $events = 0;
 while (1) {
     $events = get_events();
     print map { sprintf '%02X ', ord } split //, $events;
+    print "\n";
 }
