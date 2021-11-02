@@ -4,28 +4,22 @@
 #define _GNU_SOURCE
 #include <sys/socket.h>
 
-int tty0_fd, fbfd = 0, kbfd = 0, msfd = 0, page = 0, prevPage = 1, server_sockfd;
-struct fb_var_screeninfo *vinfo;
-struct fb_fix_screeninfo *finfo;
-long int screensize = 0, rowsize = 0, mmapsize = 0;
-char *fbp = 0, *keyboardDeviceName = 0, *tmpStr;
-struct stat *st;
-uint8_t old_leftBtn, old_rightBtn, old_midBtn, shiftDown, ctrlDown;
-uint32_t mouseX = 0, mouseY = 0, mouseDownAtX = 0, mouseDownAtY = 0, mouseUpAtX = 0, mouseUpAtY = 0, mouseMoved = 0;
-uint32_t underCursorX = 0, underCursorY = 0, mouseWentDown = 0, mouseWentUp = 0, keyWentDown = 0, keyWentUp = 0;
-uint32_t keyThatWentDown = 0, keyThatWentUp;
-uint32_t mouseIsDown = 0;
-uint8_t keysDown[NUM_KEYS_CHECKED], prevKeysDown[NUM_KEYS_CHECKED];
-uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
-uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
-uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF;
-unsigned int totalMessageIdx = 0, returnMessageIdx = 0;
-char *totalMessage = NULL, *returnMessage = NULL;
-int client_sockfd, t;
-struct sockaddr_un remote, local;
+char *fbp = 0, *keyboardDeviceName = 0, *tmpStr, *totalMessage = NULL, *returnMessage = NULL;
 char buff[1024];
-uint64_t i, len, expectedMsgLen = 0;
-uint64_t timestamp = 0;
+int tty0_fd, fbfd = 0, kbfd = 0, msfd = 0, page = 0, prevPage = 1, server_sockfd, client_sockfd, t;
+long int screensize = 0, rowsize = 0, mmapsize = 0;
+struct fb_fix_screeninfo *finfo;
+struct fb_var_screeninfo *vinfo;
+struct sockaddr_un remote, local;
+struct stat *st;
+uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF, keyThatWentDown = 0, keyThatWentUp, mouseIsDown = 0;
+uint32_t mouseX = 0, mouseY = 0, mouseDownAtX = 0, mouseDownAtY = 0, mouseUpAtX = 0, mouseUpAtY = 0, mouseMoved = 0;
+uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
+uint32_t underCursorX = 0, underCursorY = 0, mouseWentDown = 0, mouseWentUp = 0, keyWentDown = 0, keyWentUp = 0;
+uint64_t i, len, expectedMsgLen = 0, shiftUpTimeNanos = 0, ctrlUpTimeNanos;
+uint8_t keysDown[NUM_KEYS_CHECKED], prevKeysDown[NUM_KEYS_CHECKED];
+uint8_t old_leftBtn, old_rightBtn, old_midBtn, shiftDown, ctrlDown, cornerRadius = 0;
+unsigned int totalMessageIdx = 0, returnMessageIdx = 0;
 void segfaultSigaction(int signal, siginfo_t *si, void *arg) {
     printf("Caught segfault at address %p\n", si->si_addr); ExitWithError("Segfault");
 }
@@ -165,6 +159,10 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
         } else if (str[charIdx] == '\n') { xCharPos = 0; yCharPos++; }
     }
 }
+void DrawRoundedRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t r) {
+    DrawRect(x, y + r, w, h - r * 2);
+    DrawRect(x + r, y, w - r * 2, r);
+}
 void DrawRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
     int i, j, xx, yy;
     for (j = 0; j < h; j++) { for (i = 0; i < w; i++) {
@@ -248,8 +246,11 @@ void HandleMessage() {
                 uint32_t y = (uint8_t)(tm[idx + 2]) + ((uint8_t)(tm[idx + 3]) << 8);
                 uint32_t w = (uint8_t)(tm[idx + 4]) + ((uint8_t)(tm[idx + 5]) << 8);
                 uint32_t h = (uint8_t)(tm[idx + 6]) + ((uint8_t)(tm[idx + 7]) << 8);
-                DrawRect(x, y, w, h);
+                if (cornerRadius == 0) { DrawRect(x, y, w, h); } else { DrawRoundedRect(x, y, w, h, r); }
                 idx += 8;
+                break; }
+            case MSG_SET_CORNER_RADIUS: {
+                cornerRadius = (uint8_t)(tm[idx]);
                 break; }
             case MSG_LOAD_BITMAP: {
                 char *bmp = LoadBitmap(&(tm[idx]));

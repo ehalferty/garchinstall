@@ -12,6 +12,7 @@ use constant MSG_DRAW_BITMAP => 6;
 use constant MSG_DRAW_TEXT => 7;
 use constant MSG_GET_EVENTS => 8;
 use constant MSG_GET_KEYS => 9;
+use constant MSG_SET_CORNER_RADIUS => 10;
 
 sub send_msg {
     my $client = IO::Socket::UNIX->new(Type => SOCK_STREAM(), Peer => $SOCK_PATH);
@@ -33,11 +34,22 @@ sub draw_text {
     send_msg(MSG_DRAW_TEXT, $msg);
 }
 
+sub set_corner_radius {
+    my $r = @_[0];
+}
+
 sub draw_rect {
     my ($x, $y, $w, $h) = @_;
     my $msg = sprintf("%c%c%c%c%c%c%c%c", $x & 0xFF, ($x >> 8) & 0xFF, $y & 0xFF, ($y >> 8) & 0xFF,
         $w & 0xFF, ($w >> 8) & 0xFF, $h & 0xFF, ($h >> 8) & 0xFF);
     send_msg(MSG_DRAW_RECT, $msg);
+}
+
+sub draw_rounded_rect {
+    my ($x, $y, $w, $h, $radius) = @_;
+    set_corner_radius($radius);
+    draw_rect($x, $y, $w, $h);
+    set_corner_radius(0);
 }
 
 sub load_bmp { return substr(send_msg(MSG_LOAD_BITMAP, @_[0]), 8, 8); }
@@ -54,6 +66,7 @@ sub get_events {
 }
 
 draw_rect(0, 400, 400, 10);
+draw_rounded_rect(300, 300, 100, 50, 5);
 draw_text(100, 100, "Hello, world!");
 my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
 # print "Return val from load_bmp:\n";
