@@ -38,6 +38,7 @@
 #define MSG_LOAD_BITMAP 5
 #define MSG_DRAW_BITMAP 6
 #define MSG_DRAW_TEXT 7
+#define MSG_GET_EVENTS 8 
 
 uint32_t GetFBOffset(uint32_t x, uint32_t y);
 void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b);

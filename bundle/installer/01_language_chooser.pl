@@ -10,24 +10,19 @@ use constant MSG_DRAW_RECT => 4;
 use constant MSG_LOAD_BITMAP => 5;
 use constant MSG_DRAW_BITMAP => 6;
 use constant MSG_DRAW_TEXT => 7;
+use constant MSG_GET_EVENTS => 8;
 
 sub send_msg {
-    # print "1\n";
     my $client = IO::Socket::UNIX->new(Type => SOCK_STREAM(), Peer => $SOCK_PATH);
     my $len = length(@_[1]) + 5;
-    printf("Sending a message with id=%d len=%d\n", @_[0], $len);
     my $msg = sprintf("%c%c%c%c\x01\x00%c%c%s\x00", $len & 0xFF, ($len >> 8) & 0xFF, ($len >> 16) & 0xFF,
         ($len >> 24) & 0xFF, @_[0] & 0xFF, (@_[0] >> 8) & 0xFF, @_[1]);
-    # print "2\n";
     print {$client} $msg;
-    # print "3\n";
     my $resBuff = 0;
     my $resBuffSize = 1024;
     $res = "";
-    # print "4\n";
     while (sysread($client, $resBuff, $resBuffSize)) { $res = $res . $resBuff; }
     close $client;
-    # print "5\n";
     return $res;
 }
 
@@ -48,38 +43,13 @@ sub load_bmp { return substr(send_msg(MSG_LOAD_BITMAP, @_[0]), 8, 8); }
 
 sub draw_bmp {
     my ($x, $y, $w, $h, $addr) = @_;
-    # my $a = sprintf("%c%c%c%c%c%c%c%c\n",
-    #     $x & 0xFF, ($x >> 8) & 0xFF,
-    #     $y & 0xFF, ($y >> 8) & 0xFF,
-    #     $w & 0xFF, ($w >> 8) & 0xFF,
-    #     $h & 0xFF, ($h >> 8) & 0xFF);
-    # my $b = sprintf(pack('S<4Q<', $x, $y, $w, $h, $addr) . "\n");
-    # print map { sprintf '%02X ', ord } split //, $a;
-    # print "\n";
-    # print map { sprintf '%02X ', ord } split //, $b;
-    # print "\n";
-
-
-
-    # # my $msg = pack('Q>', $x) . pack('Q>', $y)
-    # # my $bmpAddr = sprintf("%c%c%c%c%c%c%c%c",
-    # #     $addr & 0xFF, ($addr >> 8) & 0xFF, ($addr >> 16) & 0xFF, ($addr >> 24) & 0xFF,
-    # #     ($addr >> 32) & 0xFF, ($addr >> 40) & 0xFF, ($addr >> 48) & 0xFF, ($addr >> 56) & 0xFF);
-    
-    # my $msg = sprintf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
-    #     $x & 0xFF, ($x >> 8) & 0xFF,
-    #     $y & 0xFF, ($y >> 8) & 0xFF,
-    #     $w & 0xFF, ($w >> 8) & 0xFF,
-    #     $h & 0xFF, ($h >> 8) & 0xFF,
-    #     $addr & 0xFF, ($addr >> 8) & 0xFF, ($addr >> 16) & 0xFF, ($addr >> 24) & 0xFF,
-    #     ($addr >> 32) & 0xFF, ($addr >> 40) & 0xFF, ($addr >> 48) & 0xFF, ($addr >> 56) & 0xFF);
-    printf("About to send MSG_DRAW_BITMAP\n");
     my $msg = pack('S<4', $x, $y, $w, $h) . $addr;
-    print map { sprintf '%02X ', ord } split //, $msg;
-    print "\n";
     my $r1 = send_msg(MSG_DRAW_BITMAP, $msg);
-    print "Returned from draw_bmp\n";
     return $r1;
+}
+
+sub get_events {
+    return send_msg(MSG_GET_EVENTS, "");
 }
 
 draw_rect(0, 400, 400, 10);
@@ -90,5 +60,4 @@ print map { sprintf '%02X ', ord } split //, $arch_logo_ref;
 print "\n";
 draw_bmp(150, 150, 65, 65, $arch_logo_ref);
 print "Done?\n";
-# print $arch_logo_ref
 print "\n";

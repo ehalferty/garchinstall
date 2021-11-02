@@ -398,6 +398,28 @@ void HandleMessage() {
                 idx += strlen(&(tm[idx + 4])) + 4;
                 // printf("Leaving MSG_DRAW_TEXT\n"); fflush(stdout);
                 break; }
+            case MSG_GET_EVENTS: {
+                uint8_t events = (mouseWentDown & 0x1) |
+                    ((mouseWentUp & 0x1) << 1) |
+                    ((keyWentDown & 0x1) << 2) |
+                    ((keyWentUp & 0x1)   << 3) |
+                    ((mouseMoved & 0x1)  << 4);
+                returnMessage[returnMessageIdx++ + 4] = ((uint64_t)events) & 0xff;
+                for (i = 0; i < 8; i++) {
+                    returnMessage[returnMessageIdx++ + 4] = ((uint64_t)(
+                        (keysDown[i] & 0x1) | ((keysDown[i + 1] & 0x1) << 1) |
+                        ((keysDown[i + 2] & 0x1) << 2) | ((keysDown[i + 3] & 0x1) << 3) |
+                        ((keysDown[i + 4] & 0x1) << 4) | ((keysDown[i + 5] & 0x1) << 5) |
+                        ((keysDown[i + 6] & 0x1) << 6) | ((keysDown[i + 7] & 0x1) << 7)
+                    )) & 0xff;
+                }
+                returned = 1;
+                mouseWentDown = 0;
+                mouseWentUp = 0;
+                keyWentDown = 0;
+                keyWentUp = 0;
+                mouseMoved = 0;
+                break; }
         }
         if (needToRedrawCursor) { SaveUnderCursor(); DrawCursor(); }
         if (!returned) {
@@ -505,12 +527,12 @@ int main(int argc, char *argv[]) {
     msfd = OpenMouse();
     pfds[0].fd = kbfd; pfds[0].events = POLLIN;
     pfds[1].fd = msfd; pfds[1].events = POLLIN;
+    mouseWentDown = 0;
+    mouseWentUp = 0;
+    keyWentDown = 0;
+    keyWentUp = 0;
+    mouseMoved = 0;
     while (1) {
-        mouseWentDown = 0;
-        mouseWentUp = 0;
-        keyWentDown = 0;
-        keyWentUp = 0;
-        mouseMoved = 0;
         ready = poll(pfds, 2, 30);
         if (ready == -1) { perror("poll() returned -1");exit(9); }
         if (pfds[0].revents != 0) {
