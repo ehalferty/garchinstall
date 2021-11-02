@@ -163,10 +163,10 @@ void DrawCirclePixels(uint32_t xc, uint32_t yc, uint32_t x, uint32_t y, uint32_t
     switch (corner) {
         case 0: {
             DrawPixel(xc - x, yc - y, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
-            DrawPixel(xc - x, yc + y, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
+            DrawPixel(xc - y, yc - x, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
         break; }
         case 1: {
-            DrawPixel(xc - y, yc - x, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
+            DrawPixel(xc - x, yc + y, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
             DrawPixel(xc - y, yc + x, (foregroundColor >> 16) & 0xFF, (foregroundColor >> 8) & 0xFF, foregroundColor & 0xFF);
         break; }
         case 2: {
