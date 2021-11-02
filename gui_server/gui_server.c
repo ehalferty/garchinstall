@@ -165,8 +165,8 @@ void DrawCirclePixels(uint32_t xc, uint32_t yc, uint32_t x, uint32_t y, uint32_t
     switch (corner) {
         case 0: { DrawPixel(xc - x, yc - y, r, g, b); DrawPixel(xc - y, yc - x, r, g, b); break; }
         case 1: { DrawPixel(xc + x, yc - y, r, g, b); DrawPixel(xc + y, yc - x, r, g, b); break; }
-        case 2: { DrawPixel(xc + x, yc + y, r, g, b); DrawPixel(xc + y, yc + x, r, g, b); break; }
-        case 3: { DrawPixel(xc - x, yc + y, r, g, b); DrawPixel(xc - y, yc + x, r, g, b); break; }
+        case 2: { DrawPixel(xc - x, yc + y, r, g, b); DrawPixel(xc - y, yc + x, r, g, b); break; }
+        case 3: { DrawPixel(xc + x, yc + y, r, g, b); DrawPixel(xc + y, yc + x, r, g, b); break; }
     }
 }
 void DrawCircle(uint32_t xc, uint32_t yc, uint32_t r, uint32_t corner) {
@@ -184,10 +184,10 @@ void DrawRoundedRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t r)
     DrawRect(x, y + r, w, h - r * 2);
     DrawRect(x + r, y, w - r * 2, r);
     DrawRect(x + r, y + h - r, w - r * 2, r);
-    DrawCircle(x - 10, y - 10, r + 3, 0);
-    DrawCircle(x + w + 10, y - 10, r + 3, 1);
-    DrawCircle(x - 10, y + h + 10, r + 3, 2);
-    DrawCircle(x + w + 10, y + h + 10, r + 3, 3);
+    DrawCircle(x, y, r, 0);
+    DrawCircle(x + w, y, r, 1);
+    DrawCircle(x, y + h, r, 2);
+    DrawCircle(x + w, y + h, r, 3);
 }
 void DrawRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
     int i, j, xx, yy;
