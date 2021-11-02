@@ -184,10 +184,10 @@ void DrawRoundedRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t r)
     DrawRect(x, y + r, w, h - r * 2);
     DrawRect(x + r, y, w - r * 2, r);
     DrawRect(x + r, y + h - r, w - r * 2, r);
-    DrawCircle(x, y, r, 0);
-    DrawCircle(x + w, y, r, 1);
-    DrawCircle(x, y + h, r, 2);
-    DrawCircle(x + w, y + h, r, 3);
+    DrawCircle(x + r, y + r, r, 0);
+    DrawCircle(x + w - r, y _ r, r, 1);
+    DrawCircle(x + r, y + h - r, r, 2);
+    DrawCircle(x + w - r, y + h - r, r, 3);
 }
 void DrawRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
     int i, j, xx, yy;
