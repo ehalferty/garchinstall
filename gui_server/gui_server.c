@@ -326,7 +326,7 @@ void EnableGraphicsMode() {
 void HandleMessage() {
     returnMessageIdx = 4;
     char *tm = totalMessage;
-    int idx = 4, subMessageIdx, i;
+    int idx = 4, subMessageIdx, i, j;
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
     // printf("%08llx: Entering HandleMessage...\n", timestamp++); fflush(stdout);
     // printf("path=%s\n", (char *)&(totalMessage[4]));
@@ -397,25 +397,16 @@ void HandleMessage() {
                     ((keyWentUp & 0x1)   << 3) |
                     ((mouseMoved & 0x1)  << 4);
                 returnMessage[returnMessageIdx++ + 4] = ((uint8_t)events) & 0xff;
-                // returnMessage[returnMessageIdx++ + 4] = ((uint8_t)(
-                //     (keysDown[0] & 1) |
-                //     ((keysDown[1] & 1) << 1) |
-                //     ((keysDown[2] & 1) << 2) |
-                //     ((keysDown[3] & 1) << 3) |
-                //     ((keysDown[4] & 1) << 4) |
-                //     ((keysDown[5] & 1) << 5) |
-                //     ((keysDown[6] & 1) << 6) |
-                //     ((keysDown[7] & 1) << 7)
-                // )) & 0xff;
-                for (i = 0; i < 32; i++) {
-                    returnMessage[returnMessageIdx++ + 4] = keysDown[i];
-                    // returnMessage[returnMessageIdx++ + 4] = ((uint8_t)(
-                    //      (keysDown[i * 8] & 0x1) |              ((keysDown[i * 8 + 1] & 0x1) << 1) |
-                    //     ((keysDown[i * 8 + 2] & 0x1) << 2) |    ((keysDown[i * 8 + 3] & 0x1) << 3) |
-                    //     ((keysDown[i * 8 + 4] & 0x1) << 4) |    ((keysDown[i * 8 + 5] & 0x1) << 5) |
-                    //     ((keysDown[i * 8 + 6] & 0x1) << 6) |    ((keysDown[i * 8 + 7] & 0x1) << 7)
-                    // )) & 0xff;
-                }
+                for (i = 0; i < 32; i++) { for (j = 0; j < 8; j++) {
+                    returnMessage[returnMessageIdx++ + 4] |= (keysDown[i * 8 + j] & 1) << j;
+                } }
+                //     returnMessage[returnMessageIdx++ + 4] = ((uint8_t)(
+                //         ((keysDown[i * 8] & 1) << 0) | ((keysDown[i * 8 + 1] & 1) << 1) |
+                //         ((keysDown[i * 8] & 2) << 2) | ((keysDown[i * 8 + 1] & 3) << 3) |
+                //         ((keysDown[i * 8] & 4) << 4) | ((keysDown[i * 8 + 1] & 3) << 3) |
+                //         ((keysDown[i * 8] & 6) << 6) | ((keysDown[i * 8 + 1] & 3) << 3) |
+                //     )) & 0xff;
+                // }
                 returned = 1;
                 mouseWentDown = 0;
                 mouseWentUp = 0;
@@ -557,11 +548,11 @@ int main(int argc, char *argv[]) {
                                 if (evt->code == 42 || evt->code == 54) { shiftDown = 1; }
                                 if (evt->code == 29 || evt->code == 97) { ctrlDown = 1; }
                                 for (i = 0; i < NUM_KEYS_CHECKED; i++) { prevKeysDown[i] = keysDown[i]; }
-                                keysDown[evt->value] = 1;
+                                keysDown[evt->code] = 1;
                             } else if (evt->value == 0) {
                                 keyWentUp = 1;
                                 for (i = 0; i < NUM_KEYS_CHECKED; i++) { prevKeysDown[i] = keysDown[i]; }
-                                keysDown[evt->value] = 0;
+                                keysDown[evt->code] = 0;
                                 temp = ctrlDown || (get_nsecs() < (ctrlUpTimeNanos + MOD_LINGER_NANOS));
                                 if (evt->code == 16 && temp) { ExitNormally(); } // ctrl-q quits
                                 if (evt->code == 42 || evt->code == 54) {
