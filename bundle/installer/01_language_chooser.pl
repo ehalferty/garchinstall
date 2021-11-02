@@ -61,3 +61,6 @@ print "\n";
 draw_bmp(150, 150, 65, 65, $arch_logo_ref);
 print "Done?\n";
 print "\n";
+while (1) {
+    get_events();
+}

@@ -344,7 +344,7 @@ void HandleMessage() {
         int returned = 0;
         int subMsgCode = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
         if (subMsgCode == 0) { break; }
-        printf("subMsgCode=%d\n", subMsgCode); fflush(stdout);
+        // printf("subMsgCode=%d\n", subMsgCode); fflush(stdout);
         int needToRedrawCursor = (subMsgCode == MSG_CLEAR_SCREEN || subMsgCode == MSG_DRAW_RECT ||
             subMsgCode == MSG_DRAW_BITMAP || subMsgCode == MSG_DRAW_TEXT);
         if (needToRedrawCursor) { RestoreUnderCursor(); }
@@ -362,7 +362,7 @@ void HandleMessage() {
                 break; }
             case MSG_LOAD_BITMAP: {
                 char *bmp = LoadBitmap(&(tm[idx]));
-                printf("MSG_LOAD_BITMAP bmp=%08llx path=%s\n", bmp, (char *)&(tm[idx]));
+                // printf("MSG_LOAD_BITMAP bmp=%08llx path=%s\n", bmp, (char *)&(tm[idx]));
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 8) & 0xff;
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)bmp >> 16) & 0xff;
@@ -374,7 +374,7 @@ void HandleMessage() {
                 idx += strlen(&(tm[idx])) + 8; // This may be wrong lol
                 break; }
             case MSG_DRAW_BITMAP: {
-                printf("MSG_DRAW_BITMAP idx=%d\n", idx); fflush(stdout);
+                // printf("MSG_DRAW_BITMAP idx=%d\n", idx); fflush(stdout);
                 for (i = 0; i < 64; i++) {
                     printf("%02x ", (uint8_t)tm[i + 8]);
                     if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
@@ -386,7 +386,7 @@ void HandleMessage() {
                 uint64_t bmp = 0;
                 for (i = 0; i < 8; i++) { bmp |= (uint64_t)((uint8_t)(tm[idx + 8 + i])) << ((uint8_t)i * 8); }
                 DrawBitmap(x, y, w, h, (char *)bmp);
-                printf("MSG_DRAW_BITMAP bmp=%08llx\n", bmp); fflush(stdout);
+                // printf("MSG_DRAW_BITMAP bmp=%08llx\n", bmp); fflush(stdout);
                 idx += 12;
                 break; }
             case MSG_DRAW_TEXT: {
