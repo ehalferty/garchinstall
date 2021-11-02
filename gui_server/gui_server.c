@@ -392,8 +392,18 @@ void HandleMessage() {
                 // printf("Leaving MSG_DRAW_TEXT\n"); fflush(stdout);
                 break; }
             case MSG_GET_EVENTS: {
-                returnMessage[returnMessageIdx++ + 4] = ((uint8_t)((mouseWentDown & 0x1) | ((mouseWentUp & 0x1) << 1) |
-                    ((keyWentDown & 0x1) << 2) | ((keyWentUp & 0x1)   << 3) | ((mouseMoved & 0x1)  << 4))) & 0xFF;
+                uint8_t shiftIsDown = shiftDown || (get_nsecs() < (shiftUpTimeNanos + MOD_LINGER_NANOS));
+                uint8_t ctrlIsDown = ctrlDown || (get_nsecs() < (ctrlUpTimeNanos + MOD_LINGER_NANOS));
+                returnMessage[returnMessageIdx++ + 4] = ((uint8_t)(
+                    ( mouseWentDown & 0x1) |
+                    ((mouseWentUp & 0x1) << 1) |
+                    ((keyWentDown & 0x1) << 2) |
+                    ((keyWentUp & 0x1)   << 3) |
+                    ((mouseMoved & 0x1)  << 4) |
+                    ((mouseIsDown & 0x1) << 5) |
+                    ((shiftIsDown & 0x1) << 6) |
+                    ((ctrlIsDown & 0x1)  << 7)
+                )) & 0xFF;
                 returnMessage[returnMessageIdx++ + 4] = (((uint32_t)keyThatWentDown)) & 0xFF;
                 returnMessage[returnMessageIdx++ + 4] = (((uint32_t)keyThatWentDown >> 8)) & 0xFF;
                 returnMessage[returnMessageIdx++ + 4] = (((uint32_t)keyThatWentUp)) & 0xFF;
