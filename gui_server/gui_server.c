@@ -505,6 +505,7 @@ int main(int argc, char *argv[]) {
     // arch_logo_img2 = LoadBitmap("bundle/images/archlogo65.png");
     // close_box_img2 = LoadBitmap("bundle/images/closebox32.png");
     // next_arrow_img2 = LoadBitmap("bundle/images/nextarrow32.png");
+    signal(SIGPIPE, SIG_IGN);
     signal(SIGTERM, stop_server);
     SetupSocket();
     OpenFramebuffer();
