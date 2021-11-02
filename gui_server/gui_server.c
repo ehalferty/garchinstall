@@ -328,6 +328,7 @@ void HandleMessage() {
     char *tm = totalMessage;
     int idx = 4, subMessageIdx, i;
     int numSubmessages = ((unsigned int)tm[idx++] + ((unsigned int)tm[idx++] << 8));
+    printf("%08llx: Entering HandleMessage...\n", timestamp++); fflush(stdout);
     // printf("path=%s\n", (char *)&(totalMessage[4]));
     // printf("numSubmessages=%d\n", numSubmessages);fflush(stdout);
     for (subMessageIdx = 0; subMessageIdx < numSubmessages; subMessageIdx++) {
@@ -436,6 +437,7 @@ void HandleMessage() {
         // }
         // printf("Leaving HandleMessage\n"); fflush(stdout);
     }
+    printf("%08llx: ...Exiting HandleMessage\n", timestamp++); fflush(stdout);
 }
 int ReadFromSocket() {
     t = sizeof(remote);
@@ -449,7 +451,7 @@ int ReadFromSocket() {
     totalMessageIdx = 0;
     memset(totalMessage, 0, MAX_MESSAGE_SIZE);
     // printf("Receiving...\n"); fflush(stdout);
-    printf("%08llx: Entering ReadFromSocket loop...\n", timestamp); fflush(stdout);
+    printf("%08llx: Entering ReadFromSocket loop...\n", timestamp++); fflush(stdout);
     while (len = recv(client_sockfd, &buff, 1024, 0), (int)len > 0) {
         // printf("Got chunk: %d\n", len); fflush(stdout);
         // printf("%s\n", buff);
@@ -461,7 +463,7 @@ int ReadFromSocket() {
         }
         if (expectedMsgLen != 0 && totalMessageIdx >= expectedMsgLen + 4) { break; }
     }
-    printf("%08llx: ...exiting ReadFromSocket loop!\n", timestamp); fflush(stdout);
+    printf("%08llx: ...exiting ReadFromSocket loop!\n", timestamp++); fflush(stdout);
     return 1;
 }
 void SetupSocket() {
@@ -611,7 +613,7 @@ int main(int argc, char *argv[]) {
             // printf("Done handling\n");
             // fflush(stdout);
         }
-        printf("%08llx: At usleep\n", timestamp); fflush(stdout);
+        printf("%08llx: At usleep\n", timestamp++); fflush(stdout);
         usleep(3000);
     }
     Cleanup();
