@@ -408,12 +408,13 @@ void HandleMessage() {
                 //     ((keysDown[7] & 1) << 7)
                 // )) & 0xff;
                 for (i = 0; i < 32; i++) {
-                    returnMessage[returnMessageIdx++ + 4] = ((uint8_t)(
-                         (keysDown[i * 8] & 0x1) |              ((keysDown[i * 8 + 1] & 0x1) << 1) |
-                        ((keysDown[i * 8 + 2] & 0x1) << 2) |    ((keysDown[i * 8 + 3] & 0x1) << 3) |
-                        ((keysDown[i * 8 + 4] & 0x1) << 4) |    ((keysDown[i * 8 + 5] & 0x1) << 5) |
-                        ((keysDown[i * 8 + 6] & 0x1) << 6) |    ((keysDown[i * 8 + 7] & 0x1) << 7)
-                    )) & 0xff;
+                    returnMessage[returnMessageIdx++ + 4] = keysDown[i];
+                    // returnMessage[returnMessageIdx++ + 4] = ((uint8_t)(
+                    //      (keysDown[i * 8] & 0x1) |              ((keysDown[i * 8 + 1] & 0x1) << 1) |
+                    //     ((keysDown[i * 8 + 2] & 0x1) << 2) |    ((keysDown[i * 8 + 3] & 0x1) << 3) |
+                    //     ((keysDown[i * 8 + 4] & 0x1) << 4) |    ((keysDown[i * 8 + 5] & 0x1) << 5) |
+                    //     ((keysDown[i * 8 + 6] & 0x1) << 6) |    ((keysDown[i * 8 + 7] & 0x1) << 7)
+                    // )) & 0xff;
                 }
                 returned = 1;
                 mouseWentDown = 0;
