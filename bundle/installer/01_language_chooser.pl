@@ -82,7 +82,7 @@ sub get_events {
 set_fg_color(0, 50, 200);
 draw_rect(0, 400, 100, 50);
 set_fg_color(90, 0, 128);
-draw_rounded_rect(100, 400, 100, 50, 5);
+draw_rounded_rect(100, 400, 100, 50, 10);
 
 draw_text(100, 100, "Hello, world!");
 my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
