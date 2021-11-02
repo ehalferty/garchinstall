@@ -13,6 +13,7 @@ struct stat *st;
 uint8_t old_leftBtn, old_rightBtn, old_midBtn, shiftDown, ctrlDown;
 uint32_t mouseX = 0, mouseY = 0, mouseDownAtX = 0, mouseDownAtY = 0, mouseUpAtX = 0, mouseUpAtY = 0, mouseMoved = 0;
 uint32_t underCursorX = 0, underCursorY = 0, mouseWentDown = 0, mouseWentUp = 0, keyWentDown = 0, keyWentUp = 0;
+uint32_t keyThatWentDown = 0, keyThatWentUp;
 uint32_t mouseIsDown = 0;
 uint8_t keysDown[NUM_KEYS_CHECKED], prevKeysDown[NUM_KEYS_CHECKED];
 uint64_t shiftUpTimeNanos = 0, ctrlUpTimeNanos;
@@ -391,22 +392,12 @@ void HandleMessage() {
                 // printf("Leaving MSG_DRAW_TEXT\n"); fflush(stdout);
                 break; }
             case MSG_GET_EVENTS: {
-                uint8_t events = (mouseWentDown & 0x1) |
-                    ((mouseWentUp & 0x1) << 1) |
-                    ((keyWentDown & 0x1) << 2) |
-                    ((keyWentUp & 0x1)   << 3) |
-                    ((mouseMoved & 0x1)  << 4);
-                returnMessage[returnMessageIdx++ + 4] = ((uint8_t)events) & 0xff;
-                for (i = 0; i < 32; i++) {
-                //     returnMessage[returnMessageIdx++ + 4] |= (keysDown[i * 8 + j] & 1) << j;
-                // }
-                    returnMessage[returnMessageIdx++ + 4] = ((uint8_t)(
-                        ((keysDown[i * 8 + 0] & 1) << 0) | ((keysDown[i * 8 + 1] & 1) << 1) |
-                        ((keysDown[i * 8 + 2] & 1) << 2) | ((keysDown[i * 8 + 3] & 1) << 3) |
-                        ((keysDown[i * 8 + 4] & 1) << 4) | ((keysDown[i * 8 + 5] & 1) << 5) |
-                        ((keysDown[i * 8 + 6] & 1) << 6) | ((keysDown[i * 8 + 7] & 1) << 7)
-                    )) & 0xff;
-                }
+                returnMessage[returnMessageIdx++ + 4] = ((uint8_t)((mouseWentDown & 0x1) | ((mouseWentUp & 0x1) << 1) |
+                    ((keyWentDown & 0x1) << 2) | ((keyWentUp & 0x1)   << 3) | ((mouseMoved & 0x1)  << 4))) & 0xFF;
+                returnMessage[returnMessageIdx++ + 4] = (((uint32_t)keyThatWentDown)) & 0xFF;
+                returnMessage[returnMessageIdx++ + 4] = (((uint32_t)keyThatWentDown >> 8)) & 0xFF;
+                returnMessage[returnMessageIdx++ + 4] = (((uint32_t)keyThatWentUp)) & 0xFF;
+                returnMessage[returnMessageIdx++ + 4] = (((uint32_t)keyThatWentUp >> 8)) & 0xFF;
                 returned = 1;
                 mouseWentDown = 0;
                 mouseWentUp = 0;
@@ -414,6 +405,17 @@ void HandleMessage() {
                 keyWentUp = 0;
                 mouseMoved = 0;
                 break; }
+            case MSG_GET_KEYS: {
+                // Send first 256 key values (Nope)
+                for (i = 0; i < 32; i++) {
+                    returnMessage[returnMessageIdx++ + 4] = ((uint8_t)(
+                        ((keysDown[i * 8 + 0] & 1) << 0) | ((keysDown[i * 8 + 1] & 1) << 1) |
+                        ((keysDown[i * 8 + 2] & 1) << 2) | ((keysDown[i * 8 + 3] & 1) << 3) |
+                        ((keysDown[i * 8 + 4] & 1) << 4) | ((keysDown[i * 8 + 5] & 1) << 5) |
+                        ((keysDown[i * 8 + 6] & 1) << 6) | ((keysDown[i * 8 + 7] & 1) << 7))) & 0xff;
+                }
+                returned = 1;
+            }
         }
         if (needToRedrawCursor) { SaveUnderCursor(); DrawCursor(); }
         if (!returned) {
@@ -545,12 +547,14 @@ int main(int argc, char *argv[]) {
                         else { // Keyboard key
                             if (evt->value == 1) {
                                 keyWentDown = 1;
+                                keyThatWentDown = evt->code;
                                 if (evt->code == 42 || evt->code == 54) { shiftDown = 1; }
                                 if (evt->code == 29 || evt->code == 97) { ctrlDown = 1; }
                                 for (i = 0; i < NUM_KEYS_CHECKED; i++) { prevKeysDown[i] = keysDown[i]; }
                                 keysDown[evt->code] = 1;
                             } else if (evt->value == 0) {
                                 keyWentUp = 1;
+                                keyThatWentUp = evt->code;
                                 for (i = 0; i < NUM_KEYS_CHECKED; i++) { prevKeysDown[i] = keysDown[i]; }
                                 keysDown[evt->code] = 0;
                                 temp = ctrlDown || (get_nsecs() < (ctrlUpTimeNanos + MOD_LINGER_NANOS));

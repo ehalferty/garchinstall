@@ -11,6 +11,7 @@ use constant MSG_LOAD_BITMAP => 5;
 use constant MSG_DRAW_BITMAP => 6;
 use constant MSG_DRAW_TEXT => 7;
 use constant MSG_GET_EVENTS => 8;
+use constant MSG_GET_KEYS => 9;
 
 sub send_msg {
     my $client = IO::Socket::UNIX->new(Type => SOCK_STREAM(), Peer => $SOCK_PATH);
