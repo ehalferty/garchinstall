@@ -401,10 +401,10 @@ void HandleMessage() {
                 //     returnMessage[returnMessageIdx++ + 4] |= (keysDown[i * 8 + j] & 1) << j;
                 // }
                     returnMessage[returnMessageIdx++ + 4] = ((uint8_t)(
-                        ((keysDown[i * 8] & 1) << 0) | ((keysDown[i * 8 + 1] & 1) << 1) |
-                        ((keysDown[i * 8] & 2) << 2) | ((keysDown[i * 8 + 1] & 3) << 3) |
-                        ((keysDown[i * 8] & 4) << 4) | ((keysDown[i * 8 + 1] & 3) << 3) |
-                        ((keysDown[i * 8] & 6) << 6) | ((keysDown[i * 8 + 1] & 3) << 3) |
+                        ((keysDown[i * 8 + 0] & 1) << 0) | ((keysDown[i * 8 + 1] & 1) << 1) |
+                        ((keysDown[i * 8 + 2] & 1) << 2) | ((keysDown[i * 8 + 3] & 1) << 3) |
+                        ((keysDown[i * 8 + 4] & 1) << 4) | ((keysDown[i * 8 + 5] & 1) << 5) |
+                        ((keysDown[i * 8 + 6] & 1) << 6) | ((keysDown[i * 8 + 7] & 1) << 7)
                     )) & 0xff;
                 }
                 returned = 1;
