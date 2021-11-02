@@ -34,6 +34,18 @@ sub draw_text {
     send_msg(MSG_DRAW_TEXT, $msg);
 }
 
+sub set_fg_color {
+    my ($r, $g, $b) = @_;
+    my $msg = sprintf("%c%c%c", $r, $g, $b);
+    send_msg(MSG_SET_FGCOLOR, $msg);
+}
+
+sub set_bg_color {
+    my ($r, $g, $b) = @_;
+    my $msg = sprintf("%c%c%c", $r, $g, $b);
+    send_msg(MSG_SET_BGCOLOR, $msg);
+}
+
 sub set_corner_radius {
     my $r = @_[0];
     my $msg = sprintf("%c", $r);
@@ -67,7 +79,9 @@ sub get_events {
     return send_msg(MSG_GET_EVENTS, "");
 }
 
+set_fg_color(255, 255, 0);
 draw_rect(0, 400, 100, 50);
+set_fg_color(90, 0, 128);
 draw_rounded_rect(100, 400, 100, 50, 5);
 
 draw_text(100, 100, "Hello, world!");
