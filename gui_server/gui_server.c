@@ -399,10 +399,10 @@ void HandleMessage() {
                 returnMessage[returnMessageIdx++ + 4] = ((uint64_t)events) & 0xff;
                 for (i = 0; i < 8; i++) {
                     returnMessage[returnMessageIdx++ + 4] = ((uint64_t)(
-                        (keysDown[i] & 0x1) | ((keysDown[i + 1] & 0x1) << 1) |
-                        ((keysDown[i + 2] & 0x1) << 2) | ((keysDown[i + 3] & 0x1) << 3) |
-                        ((keysDown[i + 4] & 0x1) << 4) | ((keysDown[i + 5] & 0x1) << 5) |
-                        ((keysDown[i + 6] & 0x1) << 6) | ((keysDown[i + 7] & 0x1) << 7)
+                        (keysDown[i * 8] & 0x1) | ((keysDown[i * 8 + 1] & 0x1) << 1) |
+                        ((keysDown[i * 8 + 2] & 0x1) << 2) | ((keysDown[i * 8 + 3] & 0x1) << 3) |
+                        ((keysDown[i * 8 + 4] & 0x1) << 4) | ((keysDown[i * 8 + 5] & 0x1) << 5) |
+                        ((keysDown[i * 8 + 6] & 0x1) << 6) | ((keysDown[i * 8 + 7] & 0x1) << 7)
                     )) & 0xff;
                 }
                 returned = 1;
