@@ -358,7 +358,7 @@ void HandleMessage() {
                         ((keysDown[i * 8 + 6] & 1) << 6) | ((keysDown[i * 8 + 7] & 1) << 7))) & 0xff;
                 }
                 returned = 1;
-            }
+                break; }
             case MSG_GET_RESOLUTION: {
                 returnMessage[returnMessageIdx++ + 4] = vinfo->xres & 0xFF;
                 returnMessage[returnMessageIdx++ + 4] = (vinfo->xres >> 8) & 0xFF;
@@ -369,7 +369,7 @@ void HandleMessage() {
                 returnMessage[returnMessageIdx++ + 4] = vinfo->green.offset;
                 returnMessage[returnMessageIdx++ + 4] = vinfo->blue.offset;
                 returned = 1;
-            break; }
+                break; }
         }
         if (needToRedrawCursor) { SaveUnderCursor(); DrawCursor(); }
         if (!returned) { returnMessage[returnMessageIdx++ + 4] = 1; } // Append default "OK" message to return buffer
