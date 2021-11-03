@@ -4,23 +4,26 @@ use InstallerHelpers;
 
 my $margin = 15;
 my ($xres, $yres, $bpp) = InstallerHelpers::get_resolution();
+
+# Clear background to grey
 InstallerHelpers::set_bg_color(240, 240, 240);
 InstallerHelpers::clear_screen();
+
+# Draw a nice plain white bg area
 InstallerHelpers::set_fg_color(255, 255, 255);
-InstallerHelpers::set_corner_radius($margin);
-InstallerHelpers::draw_rect($margin, $margin, $xres - $margin * 2, $yres - $margin * 2);
+InstallerHelpers::draw_rounded_rect($margin, $margin, $xres - $margin * 2, $yres - $margin * 2, $margin);
+
+# Draw Arch logo!
 my $arch_logo_ref = InstallerHelpers::load_bmp("bundle/images/archlogo65.png");
 InstallerHelpers::draw_bmp($margin * 2, $margin * 2, 65, 65, $arch_logo_ref);
 
+# Draw install steps list
 my $xoffset = $margin * 4 + 65;
 my ($w, $h) = InstallerHelpers::draw_button(
-    $xoffset, $margin * 2, 10, -1, -1, "Choose Language", 0xf0, 0xf0, 0xf0, 0x17, 0x93, 0xd1
-);
+    $xoffset, $margin * 2, 10, -1, -1, "Choose Language", 0x17, 0x93, 0xd1, 0xdd, 0xdd, 0xdd);
 $xoffset += $w + $margin;
-
 my ($w, $h) = InstallerHelpers::draw_button(
-    $xoffset, $margin * 2, 10, -1, -1, "Choose keyboard Layout", 0xf0, 0xf0, 0xf0, 0x17, 0x93, 0xd1
-);
+    $xoffset, $margin * 2, 10, -1, -1, "Choose keyboard Layout", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
 
 
 # InstallerHelpers::draw_rect($margin * 2, $margin * 2 + 65, 100, );
