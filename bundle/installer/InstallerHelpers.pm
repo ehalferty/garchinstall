@@ -88,6 +88,8 @@ sub get_events {
     return send_msg(MSG_GET_EVENTS, "");
 }
 
+# TODO: Screen resolution > 800x600? Auto-detect and center virtual screen on actual screen.
+# TODO: VERY large screen? (>1600 width, >1200 height)? Upscale 2x (or more!)
 sub get_resolution {
     my ($x, $y, $bpp) = unpack('S<S<C', substr(send_msg(MSG_GET_RESOLUTION, ""), 8));
     return ($x, $y, $bpp);
