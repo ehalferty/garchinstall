@@ -84,10 +84,10 @@ sub get_events {
 
 sub get_resolution {
     my @res = split(send_msg(MSG_GET_RESOLUTION, ""));
-    print map { sprintf '%02X ', ord } split //, $arch_logo_ref;
-    my $x = ord($r[8]) + (ord($r[9]) << 8);
-    my $y = ord($r[10]) + (ord($r[11]) << 8);
-    my $bpp = ord($r[12]);
+    print map { sprintf '%02X ', ord } split //, $res;
+    my $x = $r[8] + ($r[9] << 8);
+    my $y = $r[10] + ($r[11] << 8);
+    my $bpp = $r[12];
     printf("resolution = (${x}, ${y}, ${bpp})\n");
     return ($x, $y, $bpp);
 }
