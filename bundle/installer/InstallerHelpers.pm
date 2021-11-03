@@ -93,9 +93,12 @@ sub get_resolution {
 }
 
 sub draw_button {
-    my ($x, $y, $padding, $w, $h, $text) = @_;
+    my ($x, $y, $padding, $w, $h, $text, $bgr, $bgg, $bgb, $fgr, $fgg, $fgb) = @_;
     my $width = ($w > 0 ? $w : length($text) * 10) + $padding * 2;
     my $height = 16 + $padding * 2;
+    set_fg_color($bgr, $bgg, $bgb);
     draw_rounded_rect($x, $y, $width, $height);
+    set_bg_color($bgr, $bgg, $bgb);
+    set_fg_color($fgr, $fgg, $fgb);
     draw_text($x + $padding, $y + $padding, $text);
 }
