@@ -20,10 +20,10 @@ InstallerHelpers::draw_bmp($margin * 2, $margin * 2, 65, 65, $arch_logo_ref);
 # Draw install steps list
 my $xoffset = $margin * 4 + 65;
 my ($w, $h) = InstallerHelpers::draw_button(
-    $xoffset, $margin * 2, 10, -1, -1, "Choose Language", 0x17, 0x93, 0xd1, 0xdd, 0xdd, 0xdd);
+    $xoffset, $margin * 2, 10, 5, -1, -1, "Choose Language", 0x17, 0x93, 0xd1, 0xdd, 0xdd, 0xdd);
 $xoffset += $w + $margin;
 my ($w, $h) = InstallerHelpers::draw_button(
-    $xoffset, $margin * 2, 10, -1, -1, "Choose keyboard Layout", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
+    $xoffset, $margin * 2, 10, 5, -1, -1, "Choose keyboard Layout", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
 
 
 # InstallerHelpers::draw_rect($margin * 2, $margin * 2 + 65, 100, );
