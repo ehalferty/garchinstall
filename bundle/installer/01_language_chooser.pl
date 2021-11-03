@@ -94,12 +94,12 @@ use InstallerHelpers;
 # }
 
 my $margin = 15;
-my ($xres, $yres, $bpp) = get_resolution();
-set_bg_color(240, 240, 240);
-clear_screen();
-set_fg_color(255, 255, 255);
-set_corner_radius($margin);
-draw_rect($margin, $margin, $xres - $margin * 2, $yres - $margin * 2);
+my ($xres, $yres, $bpp) = InstallerHelpers::get_resolution();
+InstallerHelpers::set_bg_color(240, 240, 240);
+InstallerHelpers::clear_screen();
+InstallerHelpers::set_fg_color(255, 255, 255);
+InstallerHelpers::set_corner_radius($margin);
+InstallerHelpers::draw_rect($margin, $margin, $xres - $margin * 2, $yres - $margin * 2);
 
 
 # printf("resolution = (${xres}, ${yres}) ${bpp}\n");
