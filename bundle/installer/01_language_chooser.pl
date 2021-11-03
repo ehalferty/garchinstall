@@ -25,7 +25,7 @@ printf("xres=${xres} string len = ${str_len}\n");
 InstallerHelpers::draw_text($xres - $str_len, 0, $title_text);
 
 # Draw credits
-$title_text = "by Ed Halferty";
+$title_text = "by \@ed_halferty";
 InstallerHelpers::set_fg_color(99, 99, 99);
 $str_len = length($title_text) * InstallerHelpers::FONT_WIDTH;
 printf("xres=${xres} string len = ${str_len}\n");
@@ -47,7 +47,7 @@ $xoffset += $w + $margin;
 
 # Draw divider
 InstallerHelpers::set_fg_color(240, 240, 240);
-InstallerHelpers::draw_rect(0, ($offset * 3) + 65, $xres, 2);
+InstallerHelpers::draw_rect(0, ($margin * 3) + 65, $xres, 2);
 
 
 # InstallerHelpers::draw_rect($margin * 2, $margin * 2 + 65, 100, );
