@@ -3,6 +3,50 @@
 
 use InstallerHelpers;
 
+my $margin = 15;
+my ($xres, $yres, $bpp) = InstallerHelpers::get_resolution();
+InstallerHelpers::set_bg_color(240, 240, 240);
+InstallerHelpers::clear_screen();
+InstallerHelpers::set_fg_color(255, 255, 255);
+InstallerHelpers::set_corner_radius($margin);
+InstallerHelpers::draw_rect($margin, $margin, $xres - $margin * 2, $yres - $margin * 2);
+my $arch_logo_ref = InstallerHelpers::load_bmp("bundle/images/archlogo65.png");
+InstallerHelpers::draw_bmp($margin * 2, $margin * 2, 65, 65, $arch_logo_ref);
+exit 1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+# set_fg_color(0, 50, 200);
+# draw_rect(0, 400, 100, 50);
+# set_fg_color(90, 0, 128);
+# draw_rounded_rect(100, 400, 100, 50, 10);
+
+# draw_text(100, 100, "Hello, world!");
+# my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
+# # print "Return val from load_bmp:\n";
+# # print map { sprintf '%02X ', ord } split //, $arch_logo_ref;
+# # print "\n";
+# draw_bmp(150, 150, 65, 65, $arch_logo_ref);
+# # print "Done?\n";
+# # print "\n";
+# my $events = 0;
+# while (1) {
+#     $events = get_events();
+#     print map { sprintf '%02X ', ord } split //, $events;
+#     print "\n";
+# }
+
+
 # my $SOCK_PATH = "/tmp/gui_server_socket";
 
 # # foregroundColor = 0x483dc7FF, backgroundColor = 0xBCC73DFF
@@ -92,47 +136,3 @@ use InstallerHelpers;
 #     my ($x, $y, $bpp) = unpack('S<S<C', substr(send_msg(MSG_GET_RESOLUTION, ""), 8));
 #     return ($x, $y, $bpp);
 # }
-
-my $margin = 15;
-my ($xres, $yres, $bpp) = InstallerHelpers::get_resolution();
-InstallerHelpers::set_bg_color(240, 240, 240);
-InstallerHelpers::clear_screen();
-InstallerHelpers::set_fg_color(255, 255, 255);
-InstallerHelpers::set_corner_radius($margin);
-InstallerHelpers::draw_rect($margin, $margin, $xres - $margin * 2, $yres - $margin * 2);
-
-
-# printf("resolution = (${xres}, ${yres}) ${bpp}\n");
-exit 1;
-
-
-
-
-
-
-
-
-
-
-
-
-
-set_fg_color(0, 50, 200);
-draw_rect(0, 400, 100, 50);
-set_fg_color(90, 0, 128);
-draw_rounded_rect(100, 400, 100, 50, 10);
-
-draw_text(100, 100, "Hello, world!");
-my $arch_logo_ref = load_bmp("bundle/images/archlogo65.png");
-# print "Return val from load_bmp:\n";
-# print map { sprintf '%02X ', ord } split //, $arch_logo_ref;
-# print "\n";
-draw_bmp(150, 150, 65, 65, $arch_logo_ref);
-# print "Done?\n";
-# print "\n";
-my $events = 0;
-while (1) {
-    $events = get_events();
-    print map { sprintf '%02X ', ord } split //, $events;
-    print "\n";
-}
