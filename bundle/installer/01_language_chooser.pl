@@ -83,17 +83,16 @@ sub get_events {
 }
 
 sub get_resolution {
-    my $res = send_msg(MSG_GET_RESOLUTION, "");
-    print map { sprintf '%02X ', ord } split //, $res;
-    # my @r = split(send_msg(MSG_GET_RESOLUTION, ""));
-    # my $x = ord($r[0]) + (ord($r[1]) << 8);
-    # my $y = ord($r[2]) + (ord($r[3]) << 8);
-    # return ($x, $y);
+    my @res = split(send_msg(MSG_GET_RESOLUTION, ""));
+    my $x = ord($r[8]) + (ord($r[9]) << 8);
+    my $y = ord($r[10]) + (ord($r[11]) << 8);
+    my $bpp = ord($r[12]);
+    return ($x, $y, $bpp);
 }
 
 
-get_resolution();
-# printf("$screen_width=${screen_width} $screen_height=${screen_height}\n");
+my ($xres, $yres, $bpp) = get_resolution();
+printf("resolution = ($xres, $yres)\n");
 exit 1;
 
 set_fg_color(0, 50, 200);
