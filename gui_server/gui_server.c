@@ -376,6 +376,7 @@ void HandleMessage() {
                     }
                 }
                 returned = 1;
+                fflush(stdout);
                 break; }
         }
         if (needToRedrawCursor) { SaveUnderCursor(); DrawCursor(); }
