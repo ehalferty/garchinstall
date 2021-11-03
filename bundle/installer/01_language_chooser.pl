@@ -13,14 +13,23 @@ InstallerHelpers::clear_screen();
 InstallerHelpers::set_fg_color(255, 255, 255);
 InstallerHelpers::draw_rounded_rect($margin, $margin, $xres - $margin * 2, $yres - $margin * 2, $margin);
 
-# Draw Arch logo! (TODO: Probably can't use the logo without asking trademarks@archlinux.org)
+# Draw Arch logo!
 my $arch_logo_ref = InstallerHelpers::load_bmp("bundle/images/archlogo65.png");
 InstallerHelpers::draw_bmp($margin * 2, $margin * 2, 65, 65, $arch_logo_ref);
+
+# Draw title
 $title_text = "GArchInstall - Unofficial Graphical Arch Installer";
-InstallerHelpers::set_fg_color(50, 50, 50);
+InstallerHelpers::set_fg_color(99, 99, 99);
 $str_len = length($title_text) * InstallerHelpers::FONT_WIDTH;
 printf("xres=${xres} string len = ${str_len}\n");
 InstallerHelpers::draw_text($xres - $str_len, 0, $title_text);
+
+# Draw credits
+$title_text = "by Ed Halferty";
+InstallerHelpers::set_fg_color(99, 99, 99);
+$str_len = length($title_text) * InstallerHelpers::FONT_WIDTH;
+printf("xres=${xres} string len = ${str_len}\n");
+InstallerHelpers::draw_text($xres - $str_len, $yres - InstallerHelpers::FONT_HEIGHT, $title_text);
 
 # Draw install steps list
 $xoffset = $margin * 4 + 65;
@@ -38,7 +47,7 @@ $xoffset += $w + $margin;
 
 # Draw divider
 InstallerHelpers::set_fg_color(240, 240, 240);
-InstallerHelpers::draw_rect(0, $offset * 3 + 65, $xres, 2);
+InstallerHelpers::draw_rect(0, ($offset * 3) + 65, $xres, 2);
 
 
 # InstallerHelpers::draw_rect($margin * 2, $margin * 2 + 65, 100, );
