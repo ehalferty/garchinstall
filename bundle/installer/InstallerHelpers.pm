@@ -1,7 +1,6 @@
 package InstallerHelpers;
 
 use IO::Socket::UNIX;
-use GD;
 
 my $SOCK_PATH = "/tmp/gui_server_socket";
 
@@ -94,6 +93,9 @@ sub get_resolution {
 }
 
 sub draw_button {
-    my ($x, $y, $w, $h, $minw, $minh, $text) = @_;
-    #
+    my ($x, $y, $padding, $w, $h, $text) = @_;
+    my $width = ($w > 0 ? $w : length($text) * 10) + $padding * 2;
+    my $height = 16 + $padding * 2;
+    draw_rounded_rect($x, $y, $width, $height);
+    draw_text($x + $padding, $y + $padding, $text);
 }
