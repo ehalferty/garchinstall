@@ -95,7 +95,7 @@ sub draw_button {
     my $width = ($w > 0 ? $w : length($text) * 10) + $padding * 2;
     my $height = 16 + $padding * 2;
     set_fg_color($bgr, $bgg, $bgb);
-    draw_rounded_rect($x, $y, $width, $height);
+    draw_rounded_rect($x, $y, $width, $height, 5);
     set_bg_color($bgr, $bgg, $bgb);
     set_fg_color($fgr, $fgg, $fgb);
     draw_text($x + $padding, $y + $padding, $text);
