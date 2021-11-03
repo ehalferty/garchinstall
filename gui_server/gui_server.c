@@ -12,7 +12,8 @@ struct fb_fix_screeninfo *finfo;
 struct fb_var_screeninfo *vinfo;
 struct sockaddr_un remote, local;
 struct stat *st;
-uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFF, keyThatWentDown = 0, keyThatWentUp, mouseIsDown = 0;
+uint32_t foregroundColor = 0x000000FF, backgroundColor = 0xFFFFFFFF, keyThatWentDown = 0, keyThatWentUp;
+uint32_t mouseIsDown = 0;
 uint32_t mouseX = 0, mouseY = 0, mouseDownAtX = 0, mouseDownAtY = 0, mouseUpAtX = 0, mouseUpAtY = 0, mouseMoved = 0;
 uint32_t underCursor[CURSOR_SIZE][CURSOR_SIZE];
 uint32_t underCursorX = 0, underCursorY = 0, mouseWentDown = 0, mouseWentUp = 0, keyWentDown = 0, keyWentUp = 0;
@@ -216,7 +217,9 @@ void DrawRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
 }
 void ClearScreen() {
     uint32_t x, y;
-    for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) { DrawPixel(x, y, 0x00, 0xFF, 0xFF); }}
+    for (x = 0; x < vinfo->xres; x++) { for (y = 0; y < vinfo->yres; y++) {
+        DrawPixel(x, y, (backgroundColor >> 16) & 0xFF, (backgroundColor >> 8) & 0xFF, backgroundColor & 0xFF);
+    } }
 }
 uint8_t * LoadBitmap(const char *path) {
     int x, y, n;
