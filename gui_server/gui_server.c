@@ -192,8 +192,7 @@ void DrawCircle(uint32_t xc, uint32_t yc, uint32_t r, uint32_t c) {
     DrawCirclePixels(xc, yc, x, y, c);
     while (y >= x) {
         x++;
-        if (d > 0) { y--; d = d + 4 * (x - y) + 10; }
-        else { d = d + 4 * x + 6; }
+        if (d > 0) { y--; d = d + 4 * (x - y) + 10; } else { d = d + 4 * x + 6; }
         DrawCirclePixels(xc, yc, x, y, c);
     }
 }
@@ -360,6 +359,17 @@ void HandleMessage() {
                 }
                 returned = 1;
             }
+            case MSG_GET_RESOLUTION: {
+                returnMessage[returnMessageIdx++ + 4] = vinfo->xres & 0xFF;
+                returnMessage[returnMessageIdx++ + 4] = (vinfo->xres >> 8) & 0xFF;
+                returnMessage[returnMessageIdx++ + 4] = vinfo->yres & 0xFF;
+                returnMessage[returnMessageIdx++ + 4] = (vinfo->yres >> 8) & 0xFF;
+                returnMessage[returnMessageIdx++ + 4] = vinfo->bits_per_pixel;
+                returnMessage[returnMessageIdx++ + 4] = vinfo->red.offset;
+                returnMessage[returnMessageIdx++ + 4] = vinfo->green.offset;
+                returnMessage[returnMessageIdx++ + 4] = vinfo->blue.offset;
+                returned = 1;
+            break; }
         }
         if (needToRedrawCursor) { SaveUnderCursor(); DrawCursor(); }
         if (!returned) { returnMessage[returnMessageIdx++ + 4] = 1; } // Append default "OK" message to return buffer

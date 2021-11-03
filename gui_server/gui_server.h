@@ -41,6 +41,7 @@
 #define MSG_GET_EVENTS 8
 #define MSG_GET_KEYS 9
 #define MSG_SET_CORNER_RADIUS 10
+#define MSG_GET_RESOLUTION 11
 
 uint32_t GetFBOffset(uint32_t x, uint32_t y);
 void DrawPixel(uint32_t x2, uint32_t y2, uint8_t r, uint8_t g, uint8_t b);

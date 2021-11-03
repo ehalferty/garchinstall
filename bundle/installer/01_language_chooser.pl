@@ -15,6 +15,7 @@ use constant MSG_DRAW_TEXT => 7;
 use constant MSG_GET_EVENTS => 8;
 use constant MSG_GET_KEYS => 9;
 use constant MSG_SET_CORNER_RADIUS => 10;
+use constant MSG_GET_RESOLUTION => 11;
 
 sub send_msg {
     my $client = IO::Socket::UNIX->new(Type => SOCK_STREAM(), Peer => $SOCK_PATH);
@@ -80,6 +81,18 @@ sub draw_bmp {
 sub get_events {
     return send_msg(MSG_GET_EVENTS, "");
 }
+
+sub get_resolution {
+    my @r = split(send_msg(MSG_GET_RESOLUTION, ""));
+    my $x = ord($r[0]) + (ord($r[1]) << 8);
+    my $y = ord($r[2]) + (ord($r[3]) << 8);
+    return ($x, $y);
+}
+
+
+my ($screen_width, $screen_height) = get_resolution();
+printf("$screen_width=${screen_width} $screen_height=${screen_height}\n");
+exit 1;
 
 set_fg_color(0, 50, 200);
 draw_rect(0, 400, 100, 50);
