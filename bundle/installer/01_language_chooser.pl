@@ -18,7 +18,7 @@ my $arch_logo_ref = InstallerHelpers::load_bmp("bundle/images/archlogo65.png");
 InstallerHelpers::draw_bmp($margin * 2, $margin * 2, 65, 65, $arch_logo_ref);
 $title_text = "GArchInstall - Unofficial Graphical Arch Installer";
 InstallerHelpers::set_fg_color(50, 50, 50);
-InstallerHelpers::draw_text($xres - (length($title_text) * FONT_WIDTH), 0, $title_text);
+InstallerHelpers::draw_text(0, 0, $title_text);
 
 # Draw install steps list
 $xoffset = $margin * 4 + 65;
