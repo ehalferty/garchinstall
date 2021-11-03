@@ -1,5 +1,7 @@
 package InstallerHelpers;
 
+use IO::Socket::UNIX;
+
 my $SOCK_PATH = "/tmp/gui_server_socket";
 
 # foregroundColor = 0x483dc7FF, backgroundColor = 0xBCC73DFF
