@@ -36,7 +36,7 @@ $xoffset += $w + $margin;
 
 # Draw divider
 InstallerHelpers::set_fg_color(240, 240, 240);
-InstallerHelpers::draw_rect(0, $offset * 3 + 65, $xres, $offset * 3 + 67);
+InstallerHelpers::draw_rect(0, $offset * 3 + 65, $xres, 2);
 
 
 # InstallerHelpers::draw_rect($margin * 2, $margin * 2 + 65, 100, );
