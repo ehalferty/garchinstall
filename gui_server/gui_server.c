@@ -160,7 +160,7 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
     }
 }
 void DrawCirclePixels(uint32_t xc, uint32_t yc, uint32_t x, uint32_t y, uint32_t corner) {
-    uint32_t fg = foregroundColor;, i, j;
+    uint32_t fg = foregroundColor, i, j;
     uint8_t r = (fg >> 16) & 0xFF, g = (fg >> 8) & 0xFF, b = fg & 0xFF;
     switch (corner) {
         case 0: {
