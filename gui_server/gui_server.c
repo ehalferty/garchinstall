@@ -167,7 +167,6 @@ void DrawCirclePixels(uint32_t xc, uint32_t yc, uint32_t x, uint32_t y, uint32_t
             DrawPixel(xc - x, yc - y, r, g, b);
             DrawPixel(xc - y, yc - x, r, g, b);
             for (i = x; i < xc; i++) { DrawPixel(i, yc - y, r, g, b); }
-            for (i = x; i < xc; i++) { DrawPixel(i, yc - x, r, g, b); }
             break;
         }
         case 1: { DrawPixel(xc + x, yc - y, r, g, b); DrawPixel(xc + y, yc - x, r, g, b); break; }
