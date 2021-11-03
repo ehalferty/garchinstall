@@ -20,16 +20,16 @@ InstallerHelpers::draw_bmp($margin * 2, $margin * 2, 65, 65, $arch_logo_ref);
 # Draw install steps list
 $xoffset = $margin * 4 + 65;
 ($w, $h) = InstallerHelpers::draw_button(
-    $xoffset, $margin * 2, 10, 5, -1, -1, "Choose Language", 0x17, 0x93, 0xd1, 0xdd, 0xdd, 0xdd);
+    $xoffset, $margin * 2, 10, 5, -1, -1, "1. Choose Language", 0x17, 0x93, 0xd1, 0xdd, 0xdd, 0xdd);
 $xoffset += $w + $margin;
 ($w, $h) = InstallerHelpers::draw_button(
-    $xoffset, $margin * 2, 10, 5, -1, -1, "Choose Keyboard Layout", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
+    $xoffset, $margin * 2, 10, 5, -1, -1, "2. Choose Keyboard Layout", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
 $xoffset += $w + $margin;
 ($w, $h) = InstallerHelpers::draw_button(
-    $xoffset, $margin * 2, 10, 5, -1, -1, "Choose Timezone", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
+    $xoffset, $margin * 2, 10, 5, -1, -1, "3. Choose Timezone", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
 $xoffset = $margin * 4 + 65;
 ($w, $h) = InstallerHelpers::draw_button(
-    $xoffset, $margin * 3 + $h, 10, 5, -1, -1, "Choose Installation Disk", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
+    $xoffset, $margin * 3 + $h, 10, 5, -1, -1, "4. Choose Installation Disk", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
 
 
 # InstallerHelpers::draw_rect($margin * 2, $margin * 2 + 65, 100, );
