@@ -83,7 +83,7 @@ sub get_events {
 }
 
 sub get_resolution {
-    my ($x, $y, $bpp) = unpack('S<S<C', substr(send_msg(MSG_GET_RESOLUTION, ""), 6));
+    my ($x, $y, $bpp) = unpack('S<S<C', substr(send_msg(MSG_GET_RESOLUTION, ""), 4));
 
 
     # my @res = split(send_msg(MSG_GET_RESOLUTION, ""));
