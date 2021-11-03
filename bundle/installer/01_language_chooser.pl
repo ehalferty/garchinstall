@@ -91,12 +91,13 @@ sub get_resolution {
     return ($x, $y, $bpp);
 }
 
+my $margin = 15;
 my ($xres, $yres, $bpp) = get_resolution();
-set_bg_color(220, 220, 220);
+set_bg_color(240, 240, 240);
 clear_screen();
 set_fg_color(255, 255, 255);
-set_corner_radius(10);
-draw_rect(20, 20, $xres - 40, $yeres - 40);
+set_corner_radius($margin);
+draw_rect($margin, $margin, $xres - $margin * 2, $yres - $margin * 2);
 
 
 # printf("resolution = (${xres}, ${yres}) ${bpp}\n");
