@@ -4,6 +4,9 @@ use IO::Socket::UNIX;
 
 my $SOCK_PATH = "/tmp/gui_server_socket";
 
+use constant TEXT_WIDTH => 10;
+use constant TEXT_HEIGHT => 16;
+
 use constant MSG_CLEAR_SCREEN => 1;
 use constant MSG_SET_FGCOLOR => 2;
 use constant MSG_SET_BGCOLOR => 3;
@@ -92,8 +95,8 @@ sub get_resolution {
 
 sub draw_button {
     my ($x, $y, $xpadding, $ypadding, $w, $h, $text, $bgr, $bgg, $bgb, $fgr, $fgg, $fgb) = @_;
-    my $width = ($w > 0 ? $w : length($text) * 10) + $xpadding * 2;
-    my $height = 16 + $ypadding * 2;
+    my $width = ($w > 0 ? $w : length($text) * TEXT_WIDTH) + $xpadding * 2;
+    my $height = TEXT_HEIGHT + $ypadding * 2;
     set_fg_color($bgr, $bgg, $bgb);
     draw_rounded_rect($x, $y, $width, $height, 5);
     set_bg_color($bgr, $bgg, $bgb);

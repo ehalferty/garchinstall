@@ -16,6 +16,9 @@ InstallerHelpers::draw_rounded_rect($margin, $margin, $xres - $margin * 2, $yres
 # Draw Arch logo! (TODO: Probably can't use the logo without asking trademarks@archlinux.org)
 my $arch_logo_ref = InstallerHelpers::load_bmp("bundle/images/archlogo65.png");
 InstallerHelpers::draw_bmp($margin * 2, $margin * 2, 65, 65, $arch_logo_ref);
+$title_text = "GArchInstall - Unofficial Graphical Arch Installer";
+InstallerHelpers::set_fg_color(50, 50, 50);
+InstallerHelpers::draw_text(($xres - length($title_text) * TEXT_WIDTH) / 2, 0, $title_text);
 
 # Draw install steps list
 $xoffset = $margin * 4 + 65;
