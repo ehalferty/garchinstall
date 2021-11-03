@@ -4,8 +4,6 @@ use IO::Socket::UNIX;
 
 my $SOCK_PATH = "/tmp/gui_server_socket";
 
-# foregroundColor = 0x483dc7FF, backgroundColor = 0xBCC73DFF
-
 use constant MSG_CLEAR_SCREEN => 1;
 use constant MSG_SET_FGCOLOR => 2;
 use constant MSG_SET_BGCOLOR => 3;

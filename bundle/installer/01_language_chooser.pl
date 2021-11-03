@@ -1,5 +1,7 @@
 # User selects language and langauge-region here
 
+# foregroundColor = 0x483dc7FF, backgroundColor = 0xBCC73DFF
+
 use InstallerHelpers;
 
 my $margin = 15;
@@ -12,7 +14,9 @@ InstallerHelpers::draw_rect($margin, $margin, $xres - $margin * 2, $yres - $marg
 my $arch_logo_ref = InstallerHelpers::load_bmp("bundle/images/archlogo65.png");
 InstallerHelpers::draw_bmp($margin * 2, $margin * 2, 65, 65, $arch_logo_ref);
 
-InstallerHelpers::draw_button($margin * 2 + 65, $margin * 2, 5, -1, -1, "Choose Language");
+InstallerHelpers::draw_button(
+    $margin * 2 + 65, $margin * 2, 5, -1, -1, "Choose Language", 0x48, 0x3d, 0xc7, 0xbc, 0xc7, 0x3d
+);
 
 
 # InstallerHelpers::draw_rect($margin * 2, $margin * 2 + 65, 100, );
