@@ -1,6 +1,5 @@
 # User selects language and langauge-region here
 
-
 use InstallerHelpers;
 
 my $margin = 15;
@@ -12,6 +11,9 @@ InstallerHelpers::set_corner_radius($margin);
 InstallerHelpers::draw_rect($margin, $margin, $xres - $margin * 2, $yres - $margin * 2);
 my $arch_logo_ref = InstallerHelpers::load_bmp("bundle/images/archlogo65.png");
 InstallerHelpers::draw_bmp($margin * 2, $margin * 2, 65, 65, $arch_logo_ref);
+
+# InstallerHelpers::draw_rect($margin * 2, $margin * 2 + 65, 100, );
+
 exit 1;
 
 

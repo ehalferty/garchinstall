@@ -1,6 +1,7 @@
 package InstallerHelpers;
 
 use IO::Socket::UNIX;
+use GD;
 
 my $SOCK_PATH = "/tmp/gui_server_socket";
 
@@ -90,4 +91,9 @@ sub get_events {
 sub get_resolution {
     my ($x, $y, $bpp) = unpack('S<S<C', substr(send_msg(MSG_GET_RESOLUTION, ""), 8));
     return ($x, $y, $bpp);
+}
+
+sub draw_button {
+    my ($x, $y, $w, $h, $minw, $minh, $text) = @_;
+    #
 }
