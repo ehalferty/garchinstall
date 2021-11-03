@@ -99,4 +99,5 @@ sub draw_button {
     set_bg_color($bgr, $bgg, $bgb);
     set_fg_color($fgr, $fgg, $fgb);
     draw_text($x + $padding, $y + $padding, $text);
+    return ($width, $height);
 }

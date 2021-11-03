@@ -12,8 +12,14 @@ InstallerHelpers::draw_rect($margin, $margin, $xres - $margin * 2, $yres - $marg
 my $arch_logo_ref = InstallerHelpers::load_bmp("bundle/images/archlogo65.png");
 InstallerHelpers::draw_bmp($margin * 2, $margin * 2, 65, 65, $arch_logo_ref);
 
-InstallerHelpers::draw_button(
-    $margin * 4 + 65, $margin * 2, 10, -1, -1, "Choose Language", 0xf0, 0xf0, 0xf0, 0x17, 0x93, 0xd1
+my $xoffset = $margin * 4 + 65;
+my ($w, $h) = InstallerHelpers::draw_button(
+    $xoffset, $margin * 2, 10, -1, -1, "Choose Language", 0xf0, 0xf0, 0xf0, 0x17, 0x93, 0xd1
+);
+$xoffset += $w + $margin;
+
+my ($w, $h) = InstallerHelpers::draw_button(
+    $xoffset, $margin * 2, 10, -1, -1, "Choose keyboard Layout", 0xf0, 0xf0, 0xf0, 0x17, 0x93, 0xd1
 );
 
 
