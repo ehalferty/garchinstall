@@ -135,9 +135,11 @@ void DrawCursor() {
     }
 }
 void SetBGColor(uint8_t r, uint8_t g, uint8_t b) {
+    printf("Setting BG color to: (%d, %d, %d)\n", r, g, b);
     backgroundColor = ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
 }
 void SetFGColor(uint8_t r, uint8_t g, uint8_t b) {
+    printf("Setting FG color to: (%d, %d, %d)\n", r, g, b);
     foregroundColor = ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
 }
 void DrawText(uint32_t x, uint32_t y, char *str) {
