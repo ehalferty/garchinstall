@@ -368,6 +368,13 @@ void HandleMessage() {
                 returnMessage[returnMessageIdx++ + 4] = vinfo->red.offset;
                 returnMessage[returnMessageIdx++ + 4] = vinfo->green.offset;
                 returnMessage[returnMessageIdx++ + 4] = vinfo->blue.offset;
+                printf("MSG_GET_RESOLUTION:\n");
+                for (i = 0; i < returnMessageIdx; i++) {
+                    printf("%02x ", returnMessage[i]);
+                    if (i == 15 || i == 31 || i == returnMessageIdx - 1) {
+                        printf("\n");
+                    }
+                }
                 returned = 1;
                 break; }
         }
