@@ -95,7 +95,7 @@ sub get_resolution {
 }
 
 my ($xres, $yres, $bpp) = get_resolution();
-printf("resolution = (${xres}, ${yres})\n");
+printf("resolution = (${xres}, ${yres}) ${bpp}\n");
 exit 1;
 
 set_fg_color(0, 50, 200);
