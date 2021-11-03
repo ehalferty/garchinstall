@@ -83,11 +83,14 @@ sub get_events {
 }
 
 sub get_resolution {
-    my @res = split(send_msg(MSG_GET_RESOLUTION, ""));
-    my $x = @res[8] + (@res[9] << 8);
-    my $y = @res[10] + (@res[11] << 8);
-    my $bpp = ord(@res[12]);
-    printf("resolution = (${x}, ${y})\n");
+    my ($x, $y, $bpp) = unpack('S<S<C', send_msg(MSG_GET_RESOLUTION, ""));
+
+
+    # my @res = split(send_msg(MSG_GET_RESOLUTION, ""));
+    # my $x = @res[8] + (@res[9] << 8);
+    # my $y = @res[10] + (@res[11] << 8);
+    # my $bpp = ord(@res[12]);
+    # printf("resolution = (${x}, ${y})\n");
     return ($x, $y, $bpp);
 }
 
