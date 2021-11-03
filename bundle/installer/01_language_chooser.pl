@@ -31,6 +31,10 @@ sub send_msg {
     return $res;
 }
 
+sub clear_screen {
+    return send_msg(MSG_CLEAR_SCREEN, "");
+}
+
 sub draw_text {
     my ($x, $y, $str) = @_;
     my $msg = sprintf("%c%c%c%c%s", $x & 0xFF, ($x >> 8) & 0xFF, $y & 0xFF, ($y >> 8) & 0xFF, $str);
@@ -84,18 +88,18 @@ sub get_events {
 
 sub get_resolution {
     my ($x, $y, $bpp) = unpack('S<S<C', substr(send_msg(MSG_GET_RESOLUTION, ""), 8));
-
-
-    # my @res = split(send_msg(MSG_GET_RESOLUTION, ""));
-    # my $x = @res[8] + (@res[9] << 8);
-    # my $y = @res[10] + (@res[11] << 8);
-    # my $bpp = ord(@res[12]);
-    # printf("resolution = (${x}, ${y})\n");
     return ($x, $y, $bpp);
 }
 
 my ($xres, $yres, $bpp) = get_resolution();
-printf("resolution = (${xres}, ${yres}) ${bpp}\n");
+set_bg_color();
+clear_screen();
+set_fg_color(255, 255, 255);
+set_corner_radius(10);
+draw_rect(20, 20, $xres - 40, $yeres - 40);
+
+
+# printf("resolution = (${xres}, ${yres}) ${bpp}\n");
 exit 1;
 
 set_fg_color(0, 50, 200);
