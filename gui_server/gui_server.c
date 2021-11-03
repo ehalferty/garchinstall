@@ -159,49 +159,41 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
         } else if (str[charIdx] == '\n') { xCharPos = 0; yCharPos++; }
     }
 }
-void DrawCirclePixels(uint32_t xc, uint32_t yc, uint32_t x, uint32_t y, uint32_t corner) {
+void DrawCirclePixels(uint32_t xc, uint32_t yc, uint32_t x, uint32_t y, uint32_t c) {
     uint32_t fg = foregroundColor, i, j;
     uint8_t r = (fg >> 16) & 0xFF, g = (fg >> 8) & 0xFF, b = fg & 0xFF;
-    switch (corner) {
+    switch (c) {
         case 0: {
-            // DrawPixel(xc - x, yc - y, r, g, b);
-            // DrawPixel(xc - y, yc - x, r, g, b);
             for (i = xc - x; i < xc; i++) { DrawPixel(i, yc - y, r, g, b); }
             for (i = xc - y; i < xc; i++) { DrawPixel(i, yc - x, r, g, b); }
             break;
         }
         case 1: {
-            // DrawPixel(xc + x, yc - y, r, g, b);
-            // DrawPixel(xc + y, yc - x, r, g, b);
             for (i = xc; i < xc + x; i++) { DrawPixel(i, yc - y, r, g, b); }
             for (i = xc; i < xc + y; i++) { DrawPixel(i, yc - x, r, g, b); }
             break;
         }
         case 2: {
-            // DrawPixel(xc - x, yc + y, r, g, b);
-            // DrawPixel(xc - y, yc + x, r, g, b);
             for (i = xc - x; i < xc; i++) { DrawPixel(i, yc + y, r, g, b); }
             for (i = xc - y; i < xc; i++) { DrawPixel(i, yc + x, r, g, b); }
             break;
         }
         case 3: {
-            // DrawPixel(xc + x, yc + y, r, g, b);
-            // DrawPixel(xc + y, yc + x, r, g, b);
             for (i = xc; i < xc + x; i++) { DrawPixel(i, yc + y, r, g, b); }
             for (i = xc; i < xc + y; i++) { DrawPixel(i, yc + x, r, g, b); }
             break;
         }
     }
 }
-void DrawCircle(uint32_t xc, uint32_t yc, uint32_t r, uint32_t corner) {
+void DrawCircle(uint32_t xc, uint32_t yc, uint32_t r, uint32_t c) {
     int x = 0, y = r;
     int d = 3 - 2 * r;
-    DrawCirclePixels(xc, yc, x, y, corner);
+    DrawCirclePixels(xc, yc, x, y, c);
     while (y >= x) {
         x++;
         if (d > 0) { y--; d = d + 4 * (x - y) + 10; }
         else { d = d + 4 * x + 6; }
-        DrawCirclePixels(xc, yc, x, y, corner);
+        DrawCirclePixels(xc, yc, x, y, c);
     }
 }
 void DrawRoundedRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t r) {
