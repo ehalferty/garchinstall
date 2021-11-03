@@ -13,7 +13,7 @@ InstallerHelpers::clear_screen();
 InstallerHelpers::set_fg_color(255, 255, 255);
 InstallerHelpers::draw_rounded_rect($margin, $margin, $xres - $margin * 2, $yres - $margin * 2, $margin);
 
-# Draw Arch logo!
+# Draw Arch logo! (TODO: Probably can't use the logo without asking trademarks@archlinux.org)
 my $arch_logo_ref = InstallerHelpers::load_bmp("bundle/images/archlogo65.png");
 InstallerHelpers::draw_bmp($margin * 2, $margin * 2, 65, 65, $arch_logo_ref);
 
@@ -30,6 +30,10 @@ $xoffset = $margin * 4 + 65;
 $xoffset += $w + $margin;
 ($w, $h) = InstallerHelpers::draw_button(
     $xoffset, $margin * 3 + $h, 10, 5, -1, -1, "4. Choose Installation Disk", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
+
+# Draw divider
+InstallerHelpers::set_fg_color(240, 240, 240);
+InstallerHelpers::draw_rect(0, $offset * 3 + 65, $xres, $offset * 3 + 67);
 
 
 # InstallerHelpers::draw_rect($margin * 2, $margin * 2 + 65, 100, );
