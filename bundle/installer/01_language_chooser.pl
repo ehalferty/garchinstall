@@ -27,7 +27,7 @@ $xoffset += $w + $margin;
 $xoffset += $w + $margin;
 ($w, $h) = InstallerHelpers::draw_button(
     $xoffset, $margin * 2, 10, 5, -1, -1, "Choose Timezone", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
-$xoffset += $margin * 4 + 65;
+$xoffset = $margin * 4 + 65;
 ($w, $h) = InstallerHelpers::draw_button(
     $xoffset, $margin * 2 + $h, 10, 5, -1, -1, "Choose Installation Disk", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
 
