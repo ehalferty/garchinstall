@@ -360,13 +360,19 @@ void HandleMessage() {
                 returned = 1;
                 break; }
             case MSG_GET_RESOLUTION: {
+                returnMessage[returnMessageIdx++ + 4] = 0xAA;
                 returnMessage[returnMessageIdx++ + 4] = vinfo->xres & 0xFF;
                 returnMessage[returnMessageIdx++ + 4] = (vinfo->xres >> 8) & 0xFF;
+                returnMessage[returnMessageIdx++ + 4] = 0xAA;
                 returnMessage[returnMessageIdx++ + 4] = vinfo->yres & 0xFF;
                 returnMessage[returnMessageIdx++ + 4] = (vinfo->yres >> 8) & 0xFF;
+                returnMessage[returnMessageIdx++ + 4] = 0xAA;
                 returnMessage[returnMessageIdx++ + 4] = vinfo->bits_per_pixel;
+                returnMessage[returnMessageIdx++ + 4] = 0xAA;
                 returnMessage[returnMessageIdx++ + 4] = vinfo->red.offset;
+                returnMessage[returnMessageIdx++ + 4] = 0xAA;
                 returnMessage[returnMessageIdx++ + 4] = vinfo->green.offset;
+                returnMessage[returnMessageIdx++ + 4] = 0xAA;
                 returnMessage[returnMessageIdx++ + 4] = vinfo->blue.offset;
                 returned = 1;
                 break; }
