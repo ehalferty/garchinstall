@@ -160,10 +160,16 @@ void DrawText(uint32_t x, uint32_t y, char *str) {
     }
 }
 void DrawCirclePixels(uint32_t xc, uint32_t yc, uint32_t x, uint32_t y, uint32_t corner) {
-    uint32_t fg = foregroundColor;
+    uint32_t fg = foregroundColor;, i, j;
     uint8_t r = (fg >> 16) & 0xFF, g = (fg >> 8) & 0xFF, b = fg & 0xFF;
     switch (corner) {
-        case 0: { DrawPixel(xc - x, yc - y, r, g, b); DrawPixel(xc - y, yc - x, r, g, b); break; }
+        case 0: {
+            DrawPixel(xc - x, yc - y, r, g, b);
+            DrawPixel(xc - y, yc - x, r, g, b);
+            for (i = xc; i < x; i++) { DrawPixel(i, yc - x, r, g, b); }
+            for (i = xc; i < x; i++) { DrawPixel(i, yc - x, r, g, b); }
+            break;
+        }
         case 1: { DrawPixel(xc + x, yc - y, r, g, b); DrawPixel(xc + y, yc - x, r, g, b); break; }
         case 2: { DrawPixel(xc - x, yc + y, r, g, b); DrawPixel(xc - y, yc + x, r, g, b); break; }
         case 3: { DrawPixel(xc + x, yc + y, r, g, b); DrawPixel(xc + y, yc + x, r, g, b); break; }
@@ -479,6 +485,7 @@ int main(int argc, char *argv[]) {
                     if (((int)mouseY - ydiff) < 0) { mouseY = 0; }
                     else if ((mouseY - ydiff) > vinfo->yres) { mouseY = vinfo->yres; }
                     else { mouseY -= ydiff; }
+                    // TODO: Maybe if the mouse moves quickly, don't draw it every update?
                     RestoreUnderCursor();
                     SaveUnderCursor();
                     DrawCursor();
