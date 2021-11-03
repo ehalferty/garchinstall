@@ -15,7 +15,7 @@ my $arch_logo_ref = InstallerHelpers::load_bmp("bundle/images/archlogo65.png");
 InstallerHelpers::draw_bmp($margin * 2, $margin * 2, 65, 65, $arch_logo_ref);
 
 InstallerHelpers::draw_button(
-    $margin * 3 + 65, $margin * 2, 5, -1, -1, "Choose Language", 0x48, 0x3d, 0xc7, 0xbc, 0xc7, 0x3d
+    $margin * 3 + 65, $margin * 2, 10, -1, -1, "Choose Language", 0x48, 0x3d, 0xc7, 0xbc, 0xc7, 0x3d
 );
 
 
