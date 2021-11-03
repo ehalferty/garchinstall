@@ -436,6 +436,7 @@ int main(int argc, char *argv[]) {
     int ready, x, y, ppid, pid, i;
     uint8_t xdir, ydir, leftBtn, rightBtn, midBtn, temp;
     int8_t xdiff, ydiff;
+    printf("Started gui server...\n");
     struct sigaction sa;
     memset(&sa, 0, sizeof(struct sigaction));
     sigemptyset(&sa.sa_mask);
