@@ -51,8 +51,9 @@ InstallerHelpers::draw_rect(0, ($margin * 3) + 65, $xres, 2);
 #     my ($x, $y, $xpadding, $ypadding, $w, $h, $text) = @_;
 
 # Draw language options
-my ($btnw, $btnh) = InstallerHelpers::get_button_dimensions($xoffset, $margin * 3 + $h, 10, 5, -1, -1, "English");
-($w, $h) = InstallerHelpers::draw_button(($xres - $btnw) / 2, ($yres - (($margin * 4) + 65)) / 2, 10, 5, -1, -1,
+my $btnw = 300;
+# my ($btnw, $btnh) = InstallerHelpers::get_button_dimensions($xoffset, $margin * 3 + $h, 10, 5, -1, -1, "English");
+($w, $h) = InstallerHelpers::draw_button(($xres - $btnw) / 2, ($yres - (($margin * 4) + 65)) / 2, 10, 5, $btnw, -1,
     "English", 0x17, 0x93, 0xd1, 0xdd, 0xdd, 0xdd);
 
 
