@@ -104,7 +104,7 @@ sub get_button_dimensions {
 
 sub draw_button {
     my ($x, $y, $xpadding, $ypadding, $w, $h, $text, $bgr, $bgg, $bgb, $fgr, $fgg, $fgb) = @_;
-    my ($width, $height) = get_button_dimensions($x, $y, $xpadding, $ypadding, $w, $h, $text);
+    my ($width, $height) = get_button_dimensions($xpadding, $ypadding, $w, $h, $text);
     set_fg_color($bgr, $bgg, $bgb);
     draw_rounded_rect($x, $y, $width, $height, 5);
     set_bg_color($bgr, $bgg, $bgb);
