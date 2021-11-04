@@ -135,11 +135,9 @@ void DrawCursor() {
     }
 }
 void SetBGColor(uint8_t r, uint8_t g, uint8_t b) {
-    printf("Setting BG color to: (%d, %d, %d)\n", r, g, b); fflush(stdout);
     backgroundColor = 0xFF000000 | ((uint32_t)b << 16) | ((uint32_t)g << 8) | (uint32_t)r;
 }
 void SetFGColor(uint8_t r, uint8_t g, uint8_t b) {
-    printf("Setting FG color to: (%d, %d, %d)\n", r, g, b); fflush(stdout);
     foregroundColor = 0xFF000000 | ((uint32_t)b << 16) | ((uint32_t)g << 8) | (uint32_t)r;
 }
 void DrawText(uint32_t x, uint32_t y, char *str) {
@@ -311,10 +309,6 @@ void HandleMessage() {
                 idx += strlen(&(tm[idx])) + 8; // This may be wrong lol
                 break; }
             case MSG_DRAW_BITMAP: {
-                for (i = 0; i < 64; i++) {
-                    printf("%02x ", (uint8_t)tm[i + 8]);
-                    if (i == 15 || i == 31 || i == 47 || i ==63) { printf("\n"); }
-                }
                 uint32_t x = (uint8_t)(tm[idx]) + ((uint8_t)(tm[idx + 1]) << 8);
                 uint32_t y = (uint8_t)(tm[idx + 2]) + ((uint8_t)(tm[idx + 3]) << 8);
                 uint32_t w = (uint8_t)(tm[idx + 4]) + ((uint8_t)(tm[idx + 5]) << 8);

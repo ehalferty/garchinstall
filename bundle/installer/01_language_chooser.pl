@@ -21,14 +21,12 @@ InstallerHelpers::draw_bmp($margin * 2, $margin * 2, 65, 65, $arch_logo_ref);
 $title_text = "GArchInstall - Unofficial Graphical Arch Installer";
 InstallerHelpers::set_fg_color(99, 99, 99);
 $str_len = length($title_text) * InstallerHelpers::FONT_WIDTH;
-printf("xres=${xres} string len = ${str_len}\n");
 InstallerHelpers::draw_text($xres - $str_len, 0, $title_text);
 
 # Draw credits
 $title_text = "by \@ed_halferty";
 InstallerHelpers::set_fg_color(99, 99, 99);
 $str_len = length($title_text) * InstallerHelpers::FONT_WIDTH;
-printf("xres=${xres} string len = ${str_len}\n");
 InstallerHelpers::draw_text($xres - $str_len, $yres - InstallerHelpers::FONT_HEIGHT, $title_text);
 
 # Draw install steps list
@@ -49,6 +47,21 @@ $xoffset += $w + $margin;
 InstallerHelpers::set_fg_color(240, 240, 240);
 InstallerHelpers::draw_rect(0, ($margin * 3) + 65, $xres, 2);
 
+# sub get_button_dimensions {
+#     my ($x, $y, $xpadding, $ypadding, $w, $h, $text) = @_;
+
+# Draw language options
+my ($btnw, $btnh) = InstallerHelpers::get_button_dimensions($xoffset, $margin * 3 + $h, 10, 5, -1, -1, "English");
+($w, $h) = InstallerHelpers::draw_button(($xres - $btnw) / 2, ($margin * 4) + 65, 10, 5, -1, -1, "English",
+    0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
+
+
+
+    # $xoffset, $margin * 3 + $h, 10, 5, -1, -1, "English", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
+
+# Draw next button
+# ($w, $h) = InstallerHelpers::draw_button(
+#     $xoffset, $margin * 3 + $h, 10, 5, -1, -1, "Next", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
 
 # InstallerHelpers::draw_rect($margin * 2, $margin * 2 + 65, 100, );
 
