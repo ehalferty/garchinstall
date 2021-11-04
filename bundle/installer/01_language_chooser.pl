@@ -53,7 +53,7 @@ my $btnw = 300;
     "English", 0x17, 0x93, 0xd1, 0xdd, 0xdd, 0xdd);
 
 # Draw next button
-($btnw, %btnh) = InstallerHelpers:get_button_dimensions(10, 5, -1, -1, "Next");
+($btnw, %btnh) = InstallerHelpers::get_button_dimensions(10, 5, -1, -1, "Next");
 ($w, $h) = InstallerHelpers::draw_button($xres - $margin * 2 - $btnw, $yres - $margin * 2 - $btnh,
     10, 5, -1, -1, "Next", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
 
