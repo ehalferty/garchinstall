@@ -54,11 +54,10 @@ my $btnw = 300;
 
 # Draw next button
 ($btnw, %btnh) = InstallerHelpers::get_button_dimensions(10, 5, -1, -1, "Next");
-($w, $h) = InstallerHelpers::draw_button($xres - $margin * 2 - $btnw, $yres - $margin * 2 - $btnh,
-    10, 5, -1, -1, "Next", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
+($w, $h) = InstallerHelpers::draw_button($xres - $margin * 2 - $btnw, $yres - $margin * 3 - $btnh,
+    10, 5, -1, -1, "Next", 0x17, 0x93, 0xd1, 0xdd, 0xdd, 0xdd);
 
-    # $xoffset, $margin * 3 + $h, 10, 5, -1, -1, "Next", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
-
+# $xoffset, $margin * 3 + $h, 10, 5, -1, -1, "Next", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
 # InstallerHelpers::draw_rect($margin * 2, $margin * 2 + 65, 100, );
 
 exit 1;
