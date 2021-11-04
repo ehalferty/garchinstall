@@ -96,7 +96,7 @@ sub get_resolution {
 }
 
 sub get_button_dimensions {
-    my ($x, $y, $xpadding, $ypadding, $w, $h, $text) = @_;
+    my ($xpadding, $ypadding, $w, $h, $text) = @_;
     my $width = ($w > 0 ? $w : length($text) * FONT_WIDTH) + $xpadding * 2;
     my $height = FONT_HEIGHT + $ypadding * 2;
     return ($width, $height);

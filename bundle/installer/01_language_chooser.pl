@@ -47,22 +47,17 @@ $xoffset += $w + $margin;
 InstallerHelpers::set_fg_color(240, 240, 240);
 InstallerHelpers::draw_rect(0, ($margin * 3) + 65, $xres, 2);
 
-# sub get_button_dimensions {
-#     my ($x, $y, $xpadding, $ypadding, $w, $h, $text) = @_;
-
 # Draw language options
 my $btnw = 300;
-# my ($btnw, $btnh) = InstallerHelpers::get_button_dimensions($xoffset, $margin * 3 + $h, 10, 5, -1, -1, "English");
 ($w, $h) = InstallerHelpers::draw_button(($xres - $btnw) / 2, ($yres - (($margin * 4) + 65)) / 2, 10, 5, $btnw, -1,
     "English", 0x17, 0x93, 0xd1, 0xdd, 0xdd, 0xdd);
 
-
-
-    # $xoffset, $margin * 3 + $h, 10, 5, -1, -1, "English", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
-
 # Draw next button
-# ($w, $h) = InstallerHelpers::draw_button(
-#     $xoffset, $margin * 3 + $h, 10, 5, -1, -1, "Next", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
+($btnw, %btnh) = InstallerHelpers:get_button_dimensions(10, 5, -1, -1, "Next");
+($w, $h) = InstallerHelpers::draw_button($xres - $margin * 2 - $btnw, $yres - $margin * 2 - $btnh,
+    10, 5, -1, -1, "Next", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
+
+    # $xoffset, $margin * 3 + $h, 10, 5, -1, -1, "Next", 0xee, 0xee, 0xee, 0xdd, 0xdd, 0xdd);
 
 # InstallerHelpers::draw_rect($margin * 2, $margin * 2 + 65, 100, );
 
