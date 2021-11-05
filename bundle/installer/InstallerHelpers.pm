@@ -19,6 +19,8 @@ use constant MSG_GET_KEYS => 9;
 use constant MSG_SET_CORNER_RADIUS => 10;
 use constant MSG_GET_RESOLUTION => 11;
 
+use constant MSG_2_CLEAR_SCREEN => 100;
+
 sub send_msg {
     my $client = IO::Socket::UNIX->new(Type => SOCK_STREAM(), Peer => $SOCK_PATH);
     my $len = length(@_[1]) + 5;
@@ -103,7 +105,7 @@ sub get_button_dimensions {
 }
 
 sub draw_button {
-    my ($x, $y, $xpadding, $ypadding, $w, $h, $text, $bgr, $bgg, $bgb, $fgr, $fgg, $fgb) = @_;
+    my ($x, $y, $xpadding, $ypadding, $w, $h, $text, $bgr, $bgg, $bgb, $fgr, $fgg, $fgb, $flags) = @_;
     my ($width, $height) = get_button_dimensions($xpadding, $ypadding, $w, $h, $text);
     set_fg_color($bgr, $bgg, $bgb);
     draw_rounded_rect($x, $y, $width, $height, 5);
