@@ -3,19 +3,35 @@ print("Welcome to garchinstaller!\n");
 
 system("stty -echo");
 
-print("Increasing temporary filesystem size to 4GB (I hope you have the RAM buddy!)...\n");
 system("echo \"12e45\n12e45\" | passwd root");
-system("mount -o remount,size=4G /run/archiso/cowspace");
+
+print("Increasing temporary filesystem size to 3GB (I hope you have the RAM buddy!)...\n");
+system("mount -o remount,size=3G /run/archiso/cowspace");
 
 print("Downloading & installing a bunch of graphics packages...\n");
 system("pacman -Syu --noconfirm");
 system("pacman -Syy");
-system("pacman -Sy libffi xf86-video-fbdev xf86-video-vmware xf86-input-libinput xorg-server xorg-xinit xorg-xclock --noconfirm");
+system("pacman -Sy mesa --noconfirm");
+system("pacman -Sy gnu-free-fonts --noconfirm");
+system("pacman -Sy libffi --noconfirm");
+system("pacman -Sy xf86-video-fbdev --noconfirm");
+system("pacman -Sy xf86-video-vmware --noconfirm");
+system("pacman -Sy xf86-input-libinput --noconfirm");
+system("pacman -Sy xorg-server --noconfirm");
+system("pacman -Sy xorg-xinit --noconfirm");
+system("pacman -Sy xorg-apps --noconfirm");
+system("pacman -Sy xterm --noconfirm");
+system("pacman -Sy xorg-xclock --noconfirm");
+
+print("Starting graphics server...\n");
+system("Xorg :0 -configure");
+system("X -config /root/xorg.conf.new &");
+
+
+
+
+
 # system("pacman -Sy glib2 pango gdk-pixbuf2 gtk2 gtk3 perl gtk2-perl perl-gtk3 weston --noconfirm");
-
-
-
-
 # system("mkdir /mnt/installer-root");
 # system("mount -t tmpfs -o size=4g tmpfs /mnt/installer-root");
 # system("pacstrap /mnt/installer-root base linux");
