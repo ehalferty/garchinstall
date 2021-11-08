@@ -5,14 +5,20 @@ system("stty -echo");
 
 system("echo \"12e45\n12e45\" | passwd root");
 
-print("Increasing temporary filesystem size to 3GB (I hope you have the RAM buddy!)...\n");
-system("mount -o remount,size=3G /run/archiso/cowspace");
+print("================================================\n");
+print("Increasing temporary filesystem size to 5GB (I hope you have the RAM buddy!)...\n");
+print("================================================\n");
+system("mount -o remount,size=5G /run/archiso/cowspace");
 
+print("================================================\n");
 print("Updating package list...\n");
+print("================================================\n");
 system("pacman -Syu --noconfirm");
 system("pacman -Syy");
 
+print("================================================\n");
 print("Downloading & installing Xorg stuff...\n");
+print("================================================\n");
 system("pacman -Sy mesa --noconfirm");
 system("pacman -Sy gnu-free-fonts --noconfirm");
 system("pacman -Sy libffi --noconfirm");
@@ -25,19 +31,32 @@ system("pacman -Sy xorg-apps --noconfirm");
 system("pacman -Sy xterm --noconfirm");
 system("pacman -Sy xorg-xclock --noconfirm");
 
-print("Downloading & installing calamares dependencies...\n");
+print("================================================\n");
+print("Downloading & installing gcc & friends...\n");
+print("================================================\n");
+system("pacman -Sy gcc --noconfirm");
+system("pacman -Sy make --noconfirm");
 system("pacman -Sy cmake --noconfirm");
+system("pacman -Sy extra-cmake-modules --noconfirm");
+
+print("================================================\n");
+print("Downloading & installing calamares dependencies...\n");
+print("================================================\n");
 system("pacman -Sy qt5-base --noconfirm");
+system("pacman -Sy qt5-tools --noconfirm");
 system("pacman -Sy yaml-cpp --noconfirm");
 system("pacman -Sy boost --noconfirm");
 system("pacman -Sy kcoreaddons --noconfirm");
-system("pacman -Sy extra-cmake-modules --noconfirm");
 
+print("================================================\n");
 print("Starting graphics server...\n");
+print("================================================\n");
 system("Xorg :0 -configure");
 system("X -config /root/xorg.conf.new &");
 
+print("================================================\n");
 print("Starting Calamares...\n");
+print("================================================\n");
 system("cd bundle/calamares && cmake && make && make install");
 
 
