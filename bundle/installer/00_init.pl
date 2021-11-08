@@ -6,7 +6,8 @@ system("stty -echo");
 system("echo \"12e45\n12e45\" | passwd root");
 
 print("================================================\n");
-print("Increasing temporary filesystem size to 5GB (I hope you have the RAM buddy!)...\n");
+print("Increasing temporary filesystem size to 5GB...\n");
+print("(I hope you have the RAM buddy!)\n");
 print("================================================\n");
 system("mount -o remount,size=5G /run/archiso/cowspace");
 
